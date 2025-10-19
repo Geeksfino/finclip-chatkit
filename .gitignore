@@ -1,0 +1,20 @@
+# Xcode
+DerivedData/
+*.xcworkspace
+xcuserdata/
+
+# SwiftPM
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+
+# Archives
+*.zip
+*.xcarchive
+
+# IDE Files
+.DS_Store
+.idea/
+.vscode/
