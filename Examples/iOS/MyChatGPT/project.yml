@@ -1,0 +1,21 @@
+name: MyChatGPT
+options:
+  bundleIdPrefix: com.finclip.chatkit.examples
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  MyChatGPT:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    settings:
+      PRODUCT_NAME: MyChatGPT
+      INFOPLIST_FILE: Sources/Info.plist
+      SWIFT_VERSION: "6.0"
+    dependencies:
+      - package: ChatKit
+packages:
+  ChatKit:
+    url: https://github.com/Geeksfino/finclip-chatkit.git
+    from: 0.1.0
