@@ -27,7 +27,7 @@ final class MainChatViewController: UIViewController {
   
   private lazy var titleLabel: UILabel = {
     let label = UILabel()
-    label.text = "Select an Agent"
+    label.text = "Select Channel"
     label.font = .systemFont(ofSize: 18, weight: .semibold)
     label.textAlignment = .center
     label.translatesAutoresizingMaskIntoConstraints = false
@@ -107,7 +107,7 @@ final class MainChatViewController: UIViewController {
     if let agent = agent {
       titleLabel.text = agent.name
     } else {
-      titleLabel.text = "Select an Agent"
+      titleLabel.text = "Select Channel"
     }
   }
   
@@ -217,12 +217,13 @@ final class MainChatViewController: UIViewController {
   }
   
   @objc private func addButtonTapped() {
-    let alert = UIAlertController(title: "Select Agent", message: "Choose an agent to start a new conversation", preferredStyle: .actionSheet)
+    let alert = UIAlertController(title: "Select Channel", message: "Choose a channel to start a new conversation", preferredStyle: .actionSheet)
     
-    // Get available agents from catalog
-    let agents = StaticAgentCatalog.defaultAgents
+    // Only show the two channels (Parrot Echo and Personal Banking)
+    let allAgents = StaticAgentCatalog.defaultAgents
+    let channels = allAgents.filter { $0.name == "Parrot Echo" || $0.name == "Personal Banking" }
     
-    for agent in agents {
+    for agent in channels {
       alert.addAction(UIAlertAction(title: agent.name, style: .default) { [weak self] _ in
         self?.startConversationWithAgent(agent)
       })

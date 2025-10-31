@@ -36,10 +36,31 @@ extension StaticAgentCatalog {
       ),
       AgentProfile(
         id: UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!,
-        name: "Agent 1",
+        name: "Personal Banking",
         description: "Sample remote agent served from localhost gateway.",
         address: URL(string: "http://127.0.0.1:3000/agent")!,
         connectionMode: .remote(URL(string: "http://127.0.0.1:3000/agent")!)
+      ),
+      AgentProfile(
+        id: UUID(uuidString: "F2F83C4E-956E-5E6E-C7DB-6661F3754F7C")!,
+        name: "Loan Manager",
+        description: "Handles loan applications and inquiries.",
+        address: URL(string: "https://mock-fixture.local")!,
+        connectionMode: .fixture
+      ),
+      AgentProfile(
+        id: UUID(uuidString: "A3A94D5F-A67F-6F7F-D8EC-7772A4865A8D")!,
+        name: "Customer Service",
+        description: "Provides customer support and account assistance.",
+        address: URL(string: "https://mock-fixture.local")!,
+        connectionMode: .fixture
+      ),
+      AgentProfile(
+        id: UUID(uuidString: "B4B05E6F-B78F-7F8F-E9FD-8883B5976B9E")!,
+        name: "Credit Officer",
+        description: "Manages credit inquiries and credit limit adjustments.",
+        address: URL(string: "https://mock-fixture.local")!,
+        connectionMode: .fixture
       )
     ]
   }

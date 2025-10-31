@@ -18,6 +18,8 @@ final class ChatViewController: UIViewController {
       chatView.inputView.contextPickerEnabled = enabled
     }
   }
+  
+  private let agentManager = DemoAgentManager()
 
   private lazy var hosting = ChatHostingController()
   
@@ -34,6 +36,10 @@ final class ChatViewController: UIViewController {
     } else {
       contextProviders = []
     }
+    
+    // Configure agent selector
+    chatView.inputView.agentManager = agentManager
+    chatView.inputView.agentSelectorEnabled = true
   }
 
   private lazy var statusBanner: UIView = {

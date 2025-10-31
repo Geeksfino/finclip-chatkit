@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F357EC0DBAF17F5FB13D38D /* CalendarContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91C0435A7218423075C43C /* CalendarContextProvider.swift */; };
+		1E0CED3D9AB81A332C751003 /* AgentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2480373C54EFC38C6AC3A540 /* AgentManager.swift */; };
 		24F032EA42A7DC860F80BBB5 /* LocationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F614E5E1C7CA02471ED289C /* LocationContextProvider.swift */; };
 		26D11DD7BD61151297173CE6 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 40EF2B512E1EE409E2FD4F1E /* ChatKit */; };
 		368884601D546F35C900032D /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17AF1E611FE8E3314B9A677D /* ConnectionViewController.swift */; };
@@ -33,6 +34,7 @@
 		17AF1E611FE8E3314B9A677D /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		1A91C0435A7218423075C43C /* CalendarContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContextProvider.swift; sourceTree = "<group>"; };
 		21F45979EFF0FA5308431295 /* ConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListViewController.swift; sourceTree = "<group>"; };
+		2480373C54EFC38C6AC3A540 /* AgentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentManager.swift; sourceTree = "<group>"; };
 		2A6D9E4C14B97581D4389A06 /* MainChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainChatViewController.swift; sourceTree = "<group>"; };
 		32A3C515EC07FE0D94C52B06 /* RuntimeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeCoordinator.swift; sourceTree = "<group>"; };
 		3724B05B2B9C26FE76E18A88 /* AGUIFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AGUIFixtures.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				F615671C774955EC544130AE /* AgentCatalog.swift */,
+				2480373C54EFC38C6AC3A540 /* AgentManager.swift */,
 				1A91C0435A7218423075C43C /* CalendarContextProvider.swift */,
 				51ABBC2C5A99A2D669C0613D /* ChatContextProviders.swift */,
 				152BCFBB18F9ACD7DC843DAE /* ConversationRecord.swift */,
@@ -224,6 +227,7 @@
 			files = (
 				CE0FDCF616160BC95BA44F59 /* AGUIFixtures.swift in Sources */,
 				8F518D303AD9DA0AE6B9E33D /* AgentCatalog.swift in Sources */,
+				1E0CED3D9AB81A332C751003 /* AgentManager.swift in Sources */,
 				4E8C5B0D8570EA1FCC522EC5 /* AppDelegate.swift in Sources */,
 				0F357EC0DBAF17F5FB13D38D /* CalendarContextProvider.swift in Sources */,
 				67C8CF744A46686446B76E07 /* ChatContextProviders.swift in Sources */,
@@ -315,14 +319,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Bank";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.aibank;
 				PRODUCT_NAME = "AI-Bank";
 				SDKROOT = iphoneos;
-				SWIFT_INCLUDE_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -389,14 +395,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Bank";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.aibank;
 				PRODUCT_NAME = "AI-Bank";
 				SDKROOT = iphoneos;
-				SWIFT_INCLUDE_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
