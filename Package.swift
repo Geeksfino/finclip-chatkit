@@ -9,7 +9,6 @@ let package = Package(
     products: [
         .library(
             name: "ChatKit",
-            type: .binary,
             targets: ["ChatKit"]
         )
     ],
