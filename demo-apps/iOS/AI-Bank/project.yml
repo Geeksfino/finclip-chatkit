@@ -1,0 +1,39 @@
+name: AI-Bank
+options:
+  bundleIdPrefix: com.finclip.chatkit
+  deploymentTarget:
+    iOS: "16.0"
+
+schemes:
+  AI-Bank:
+    build:
+      targets:
+        AI-Bank: all
+    run:
+      config: Debug
+
+packages:
+  ChatKit:
+    url: https://github.com/Geeksfino/finclip-chatkit.git
+    from: 0.0.2
+
+targets:
+  AI-Bank:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/App
+      - path: App/Coordinators
+      - path: App/Models
+      - path: App/Network
+      - path: App/ViewControllers
+    resources:
+      - App/Resources/Assets.xcassets
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.finclip.chatkit.aibank
+      PRODUCT_NAME: AI-Bank
+      INFOPLIST_KEY_CFBundleDisplayName: AI-Bank
+      INFOPLIST_FILE: App/App/Info.plist
+      ENABLE_BITCODE: NO
+    dependencies:
+      - package: ChatKit

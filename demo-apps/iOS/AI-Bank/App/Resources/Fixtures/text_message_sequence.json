@@ -1,0 +1,49 @@
+[
+  {
+    "type": "RUN_STARTED",
+    "threadId": "DEMO-THREAD",
+    "runId": "demo-run-001",
+    "timestamp": 1759129994996
+  },
+  {
+    "type": "TEXT_MESSAGE_START",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "role": "assistant",
+    "timestamp": 1759129994996
+  },
+  {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "delta": "你好",
+    "timestamp": 1759130011763
+  },
+  {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "delta": "！这是一条演示消息，",
+    "timestamp": 1759130011899
+  },
+  {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "delta": "展示 AG-UI SSE 适配器。",
+    "timestamp": 1759130012030
+  },
+  {
+    "type": "TEXT_MESSAGE_CONTENT",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "delta": "有任何问题随时告诉我。",
+    "timestamp": 1759130012333
+  },
+  {
+    "type": "TEXT_MESSAGE_END",
+    "messageId": "cb2bc78f-00bd-4b19-a30e-61a46833891b",
+    "timestamp": 1759130017641
+  },
+  {
+    "type": "RUN_FINISHED",
+    "threadId": "DEMO-THREAD",
+    "runId": "demo-run-001",
+    "timestamp": 1759130017641
+  }
+]
