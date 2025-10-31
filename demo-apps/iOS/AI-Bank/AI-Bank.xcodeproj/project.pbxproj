@@ -151,6 +151,7 @@
 			buildPhases = (
 				25C6F2D17A09FC62E4C21B23 /* Sources */,
 				F326C56115DF4218F3EF536E /* Frameworks */,
+				EC2F6A8C445EF18A772783D0 /* Sign Nested ChatKit Frameworks */,
 			);
 			buildRules = (
 			);
@@ -194,6 +195,27 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EC2F6A8C445EF18A772783D0 /* Sign Nested ChatKit Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Sign Nested ChatKit Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FRAMEWORK_DIR=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks\"\nif [ -d \"${FRAMEWORK_DIR}\" ]; then\n  find \"${FRAMEWORK_DIR}\" -type d -name \"*.framework\" -print0 | while IFS= read -r -d '' FRAME; do\n    /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" --preserve-metadata=identifier,entitlements \"${FRAME}\" || exit 1\n  done\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		25C6F2D17A09FC62E4C21B23 /* Sources */ = {
@@ -293,15 +315,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Bank";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.aibank;
 				PRODUCT_NAME = "AI-Bank";
 				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -368,15 +389,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AI-Bank";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.aibank;
 				PRODUCT_NAME = "AI-Bank";
 				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
