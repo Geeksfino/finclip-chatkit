@@ -18,4 +18,4 @@ targets:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.1.0
+    from: 0.0.2

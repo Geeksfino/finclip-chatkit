@@ -16,12 +16,12 @@ This guide walks you through installing ChatKit in an iOS application using Swif
    ```text
    https://github.com/Geeksfino/finclip-chatkit.git
    ```
-4. Select the latest tagged version (e.g. `v0.1.0`).
+4. Select the latest tagged version (e.g. `v0.0.2`).
 5. Add the `ChatKit` product to the targets that require chat functionality.
 
 Your `Package.swift` entry should look like:
 ```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.1.0")
+.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.0.2")
 ```
 
 ## 3. Install ChatKit via CocoaPods
@@ -31,7 +31,7 @@ Your `Package.swift` entry should look like:
    ```ruby
    target 'YourApp' do
      use_frameworks!
-     pod 'ChatKit', '~> 0.1'
+     pod 'ChatKit', '~> 0.0.2'
    end
    ```
 3. Run `pod install`.
