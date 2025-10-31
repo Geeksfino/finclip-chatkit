@@ -410,7 +410,7 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.2;
+				minimumVersion = 0.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

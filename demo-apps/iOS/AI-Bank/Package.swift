@@ -13,7 +13,11 @@ let package = Package(
         .target(
             name: "AI-Bank",
             dependencies: [
-                .product(name: "ChatKit", package: "finclip-chatkit")
+                .product(name: "ChatKit", package: "finclip-chatkit"),
+                .product(name: "ConvoUI", package: "finclip-chatkit"),
+                .product(name: "NeuronKit", package: "finclip-chatkit"),
+                .product(name: "SandboxSDK", package: "finclip-chatkit"),
+                .product(name: "convstorelib", package: "finclip-chatkit")
             ]
         )
     ]
