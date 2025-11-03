@@ -1,138 +1,182 @@
-# Getting Started with Finclip ChatKit
+# Getting Started with ChatKit
 
-This guide walks you through installing ChatKit in an iOS application using Swift Package Manager or CocoaPods, configuring the runtime, and rendering your first chat experience.
+Welcome to ChatKit! This guide will help you integrate our conversational AI SDK into your iOS application.
 
-## 1. Prerequisites
+## Quick Start for External Developers
 
-- Xcode 16.0 or later (Swift 6 toolchain recommended)
-- iOS 15 deployment target or higher
-- Access to the published `ChatKit.xcframework` release (see the latest GitHub release in this repository)
+### Prerequisites
+- Xcode 15.0 or later
+- iOS 16.0+ deployment target
+- XcodeGen (`brew install xcodegen`)
+- CocoaPods (`sudo gem install cocoapods`) - optional but recommended
 
-## 2. Install ChatKit via Swift Package Manager
+### Step 1: Create Your Project
 
-1. Open your Xcode project.
-2. Navigate to **File ▸ Add Package Dependencies…**
-3. Enter the repository URL:
+Use our Smart-Gov example as a template. This example demonstrates remote dependency usage without requiring local ChatKit builds.
 
-   ```text
-   https://github.com/Geeksfino/finclip-chatkit.git
-   ```
+### Step 2: Configure Your Project
 
-4. Select the latest tagged version (e.g. `v0.1.0`).
-5. Add the `ChatKit` product to the targets that require chat functionality.
-
-Your `Package.swift` entry should look like:
-
-```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.1.0")
-```
-
-> **Critical:** The `ChatKit` binary bundles several nested frameworks (`FinClipChatKit`, `ConvoUI`, `NeuronKit`, `SandboxSDK`, `convstorelib`). Xcode must be told where to find those nested frameworks when you consume ChatKit via SwiftPM.
-
-### Required Xcode Build Settings
-
-After adding the package, update the target that links ChatKit with the following build configuration changes:
-
-- **Framework Search Paths**
-  - `$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks`
-- **Runpath Search Paths**
-  - `$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks`
-- **Swift Include Paths**
-  - `$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks`
-
-These settings ensure the Swift compiler and dynamic loader can resolve the nested dependencies that FinClipChatKit re-exports.
-
-Finally, add a post-build script to re-sign the embedded frameworks so Xcode will launch the app in the simulator:
-
-```sh
-FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
-if [ -d "${FRAMEWORK_DIR}" ]; then
-  find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
-    /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
-  done
-fi
-```
-
-For XcodeGen users, the equivalent YAML snippet is:
+Create a `project.yml` file in your project root:
 
 ```yaml
-settings:
-  FRAMEWORK_SEARCH_PATHS: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-  LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks
-  SWIFT_INCLUDE_PATHS: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-postbuildScripts:
-  - name: Sign Nested ChatKit Frameworks
-    shell: /bin/sh
-    script: |
-      FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
-      if [ -d "${FRAMEWORK_DIR}" ]; then
-        find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
-          /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
-        done
-      fi
+name: YourApp
+options:
+  bundleIdPrefix: com.yourcompany
+  deploymentTarget:
+    iOS: "16.0"
+
+packages:
+  ChatKit:
+    url: https://github.com/Geeksfino/finclip-chatkit.git
+    from: 0.1.0
+
+targets:
+  YourApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    resources:
+      - App/Resources/Assets.xcassets
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.yourapp
+      PRODUCT_NAME: YourApp
+      INFOPLIST_KEY_CFBundleDisplayName: YourApp
+      INFOPLIST_FILE: App/Info.plist
+      ENABLE_BITCODE: NO
+      # Critical: Framework search paths for nested frameworks
+      FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks
+      SWIFT_INCLUDE_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+    dependencies:
+      - package: ChatKit
+    postbuildScripts:
+      - name: Sign Nested Frameworks
+        shell: /bin/sh
+        script: |
+          FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
+          if [ -d "${FRAMEWORK_DIR}" ]; then
+            find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
+              /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
+            done
+          fi
 ```
 
-## 3. Install ChatKit via CocoaPods
+### Step 3: Build and Run
 
-1. Ensure you have CocoaPods 1.13+ installed.
-2. Add ChatKit to your `Podfile`:
+**Option A: Using CocoaPods (Recommended)**
+```bash
+# Install prerequisites
+brew install xcodegen
+sudo gem install cocoapods
 
-   ```ruby
-   target 'YourApp' do
-     use_frameworks!
-     pod 'ChatKit', '~> 0.1.0'
-   end
-   ```
+# Build and run
+cd your-project
+make run-cocoapods
+```
 
-3. Run `pod install`.
-4. Open the generated `.xcworkspace` and build.
+**Option B: Using SPM**
+```bash
+# Install prerequisites
+brew install xcodegen
 
-## 4. Initialize the SDK
+# Build and run
+cd your-project
+make run
+```
 
-After linking the framework, configure ChatKit at application launch:
+## Understanding the Framework Structure
 
+ChatKit is a composite XCFramework that bundles:
+- **FinClipChatKit.framework** - Main framework
+- **NeuronKit.framework** - AI orchestration layer
+- **ConvoUI.framework** - UI components
+- **SandboxSDK.framework** - Security layer
+- **convstore.framework** - Conversation storage
+
+## Integration Examples
+
+### Basic Chat Integration
 ```swift
 import ChatKit
-import NeuronKit
 
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    let runtime = ChatKitRuntime(configuration: .default)
-    ChatKit.shared.start(runtime: runtime)
-    return true
-  }
+class ChatViewController: UIViewController {
+    private var chatView: FinConvoChatView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        chatView = FinConvoChatView()
+        chatView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(chatView)
+        
+        NSLayoutConstraint.activate([
+            chatView.topAnchor.constraint(equalTo: view.topAnchor),
+            chatView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            chatView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            chatView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
 }
 ```
 
-## 5. Render the Conversation UI
-
+### Custom Configuration
 ```swift
-import SwiftUI
-import ChatKit
-
-struct ConversationView: View {
-  let sessionId: String
-
-  var body: some View {
-    ChatKitView(sessionId: sessionId)
-      .applyDefaultTheme()
-  }
-}
+let config = FinConvoChatConfig(
+    apiKey: "your-api-key",
+    baseURL: "https://your-api-endpoint.com",
+    theme: .light
+)
+let chatView = FinConvoChatView(config: config)
 ```
 
-For UIKit projects, wrap `ChatKitViewController(sessionId:)` inside your view controller hierarchy.
+## Troubleshooting
 
-## 6. Configure NeuronKit (Optional)
+### Common Issues and Solutions
 
-ChatKit integrates tightly with NeuronKit to orchestrate tool and agent execution. Follow `docs/architecture/neuronkit-integration.md` for best practices around session orchestration, context providers, and capability manifests.
+1. **"Framework not found" errors**
+   - Ensure `FinClipChatKit.framework` is used in all search paths
+   - Check that package name is `ChatKit` in project.yml
 
-## 7. Next Steps
+2. **Build failures**
+   - Verify XcodeGen is installed: `brew install xcodegen`
+   - Check that all framework search paths are correctly set
 
-- Explore the `Examples/` directory for runnable reference projects.
-- Review `docs/how-to/customize-ui.md` to theme ChatKit for your brand.
-- Read `docs/reference/runtime.md` for full API coverage.
-- If you are an AI agent, start with `docs/ai-agents/mission.md` to learn the execution protocol.
+3. **Runtime crashes**
+   - Ensure nested frameworks are properly signed
+   - Verify deployment target is iOS 16.0+
 
-Need help? Open an issue or reach out via the Discussions tab.
+## Next Steps
+
+1. **Explore the Smart-Gov example** - Complete working example with remote dependencies
+2. **Check the architecture guide** - Understand the framework structure
+3. **Review customization options** - See how to customize the UI
+4. **Read the reference documentation** - Full API documentation
+
+## Support
+
+For issues or questions:
+- Check the troubleshooting guide above
+- Review the Smart-Gov example for reference
+- File issues on the GitHub repository
+
+## Quick Commands
+
+```bash
+# Generate Xcode project
+make generate
+
+# Build and run with CocoaPods
+make run-cocoapods
+
+# Build and run with SPM
+make run
+
+# Clean build artifacts
+make clean
+
+# Test dependencies
+make validate-deps
+```

@@ -7,7 +7,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.1.0")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.2.1")
     ],
     targets: [
         .target(
