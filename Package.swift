@@ -12,8 +12,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "ChatKit",
-            url: "https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.4.0/ChatKit.xcframework.zip",
-            checksum: "59c43387c276e35c7536125cc6ab0c34314d2f2ea93a7624e88ff48c7761540a"
+            url: "https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.4.1/ChatKit.xcframework.zip",
+            checksum: "ddc7e2ad671d39dc2f55dece2ffa32097e1b2a9cf8ec53f50118f111ba84e62a"
         )
     ]
 )
