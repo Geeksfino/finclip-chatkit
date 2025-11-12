@@ -1,182 +1,311 @@
 # Getting Started with ChatKit
 
-Welcome to ChatKit! This guide will help you integrate our conversational AI SDK into your iOS application.
+Welcome to ChatKit! This guide will get you up and running in minutes.
 
-## Quick Start for External Developers
+> 📚 **Looking for more?** See the [comprehensive Developer Guide](./developer-guide.md) for advanced patterns and best practices.
+
+---
+
+## Quick Start
 
 ### Prerequisites
-- Xcode 15.0 or later
-- iOS 16.0+ deployment target
-- XcodeGen (`brew install xcodegen`)
-- CocoaPods (`sudo gem install cocoapods`) - optional but recommended
 
-### Step 1: Create Your Project
+- **Xcode 15.0+**
+- **iOS 16.0+** deployment target
+- **Swift 5.9+**
 
-Use our Smart-Gov example as a template. This example demonstrates remote dependency usage without requiring local ChatKit builds.
+### 1. Add ChatKit Dependency
 
-### Step 2: Configure Your Project
+Create or update your `Package.swift`:
 
-Create a `project.yml` file in your project root:
-
-```yaml
-name: YourApp
-options:
-  bundleIdPrefix: com.yourcompany
-  deploymentTarget:
-    iOS: "16.0"
-
-packages:
-  ChatKit:
-    url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.1.0
-
-targets:
-  YourApp:
-    type: application
-    platform: iOS
-    sources:
-      - path: App
-    resources:
-      - App/Resources/Assets.xcassets
-    settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.yourapp
-      PRODUCT_NAME: YourApp
-      INFOPLIST_KEY_CFBundleDisplayName: YourApp
-      INFOPLIST_FILE: App/Info.plist
-      ENABLE_BITCODE: NO
-      # Critical: Framework search paths for nested frameworks
-      FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks
-      SWIFT_INCLUDE_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-    dependencies:
-      - package: ChatKit
-    postbuildScripts:
-      - name: Sign Nested Frameworks
-        shell: /bin/sh
-        script: |
-          FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
-          if [ -d "${FRAMEWORK_DIR}" ]; then
-            find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
-              /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
-            done
-          fi
-```
-
-### Step 3: Build and Run
-
-**Option A: Using CocoaPods (Recommended)**
-```bash
-# Install prerequisites
-brew install xcodegen
-sudo gem install cocoapods
-
-# Build and run
-cd your-project
-make run-cocoapods
-```
-
-**Option B: Using SPM**
-```bash
-# Install prerequisites
-brew install xcodegen
-
-# Build and run
-cd your-project
-make run
-```
-
-## Understanding the Framework Structure
-
-ChatKit is a composite XCFramework that bundles:
-- **FinClipChatKit.framework** - Main framework
-- **NeuronKit.framework** - AI orchestration layer
-- **ConvoUI.framework** - UI components
-- **SandboxSDK.framework** - Security layer
-- **convstore.framework** - Conversation storage
-
-## Integration Examples
-
-### Basic Chat Integration
 ```swift
-import ChatKit
+// swift-tools-version: 5.9
+import PackageDescription
 
-class ChatViewController: UIViewController {
-    private var chatView: FinConvoChatView!
+let package = Package(
+    name: "MyAIChat",
+    platforms: [
+        .iOS(.v16)
+    ],
+    dependencies: [
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+    ],
+    targets: [
+        .target(
+            name: "MyAIChat",
+            dependencies: [
+                .product(name: "ChatKit", package: "finclip-chatkit")
+            ]
+        )
+    ]
+)
+```
+
+### 2. Initialize Runtime (Do This Once!)
+
+**IMPORTANT**: Initialize runtime at app launch, but don't create conversations yet.
+
+```swift
+import UIKit
+import FinClipChatKit
+
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // Store coordinator at app level - manages runtime lifecycle
+    var chatCoordinator: ChatKitCoordinator!
+    
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        // 1. Create configuration
+        let config = NeuronKitConfig(
+            serverURL: URL(string: "https://your-agent-server.com")!,
+            deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
+            userId: "user-123",
+            storage: .persistent
+        )
         
-        chatView = FinConvoChatView()
-        chatView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(chatView)
+        // 2. Initialize ChatKitCoordinator (creates runtime once)
+        chatCoordinator = ChatKitCoordinator(config: config)
         
-        NSLayoutConstraint.activate([
-            chatView.topAnchor.constraint(equalTo: view.topAnchor),
-            chatView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            chatView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            chatView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        // 3. Show main UI (with empty state or conversation list)
+        let mainVC = MainViewController(coordinator: chatCoordinator)
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = UINavigationController(rootViewController: mainVC)
+        window?.makeKeyAndVisible()
+        
+        return true
     }
 }
 ```
 
-### Custom Configuration
+### 3. Create Conversation When User Requests It
+
+**Don't create conversations at app launch!** Wait for user action:
+
 ```swift
-let config = FinConvoChatConfig(
-    apiKey: "your-api-key",
-    baseURL: "https://your-api-endpoint.com",
-    theme: .light
-)
-let chatView = FinConvoChatView(config: config)
+class MainViewController: UIViewController {
+    private let coordinator: ChatKitCoordinator
+    
+    init(coordinator: ChatKitCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        
+        // Show "New Chat" button or conversation list
+        let button = UIButton(type: .system)
+        button.setTitle("Start New Chat", for: .normal)
+        button.addTarget(self, action: #selector(startNewChat), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    @objc private func startNewChat() {
+        // NOW create conversation (user requested it)
+        let agentId = UUID() // Your AI agent ID
+        
+        let conversation = coordinator.runtime.openConversation(
+            sessionId: UUID(),
+            agentId: agentId
+        )
+        
+        // Show chat UI
+        let chatVC = ChatViewController(conversation: conversation)
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
+}
 ```
 
-## Troubleshooting
+### That's It!
 
-### Common Issues and Solutions
+You now have a working AI chat app with:
+- ✅ Persistent conversation storage
+- ✅ Safe runtime lifecycle management
+- ✅ Full-featured chat UI
+- ✅ Message history
 
-1. **"Framework not found" errors**
-   - Ensure `FinClipChatKit.framework` is used in all search paths
-   - Check that package name is `ChatKit` in project.yml
+---
 
-2. **Build failures**
-   - Verify XcodeGen is installed: `brew install xcodegen`
-   - Check that all framework search paths are correctly set
+## Key Concepts
 
-3. **Runtime crashes**
-   - Ensure nested frameworks are properly signed
-   - Verify deployment target is iOS 16.0+
+### The Two-Step Pattern
+
+Understanding the difference between these steps is crucial:
+
+#### Step 1: Runtime Initialization (Once, at App Launch)
+```swift
+// Do this in AppDelegate/SceneDelegate
+let coordinator = ChatKitCoordinator(config: config)
+```
+
+**What happens:**
+- Creates `NeuronRuntime` instance
+- Establishes server connection
+- Loads persisted state
+- Prepares infrastructure
+
+**When:** App launch, once per app lifecycle
+
+#### Step 2: Conversation Creation (Many Times, User-Initiated)
+```swift
+// Do this when user taps "New Chat" or selects from history
+let conversation = coordinator.runtime.openConversation(sessionId: UUID(), agentId: agentId)
+```
+
+**What happens:**
+- Creates conversation session
+- Associates with AI agent
+- Opens chat stream
+
+**When:** User requests it (button tap, select from list)
+
+### ChatKitCoordinator
+
+The **recommended way** to manage `NeuronRuntime` lifecycle.
+
+**Why use it?** Creating a new runtime destroys the old one, losing all conversation state. `ChatKitCoordinator` ensures runtime persists across your app.
+
+**Where to store it?** At app-level (AppDelegate, SceneDelegate, or root coordinator).
+
+### Common Pitfall
+
+```swift
+// ❌ WRONG: Creates conversation too early
+func application(...) -> Bool {
+    let coordinator = ChatKitCoordinator(config: config)
+    let conversation = coordinator.runtime.openConversation(...) // Too soon!
+    return true
+}
+
+// ✅ CORRECT: Initialize runtime, create conversation later
+func application(...) -> Bool {
+    chatCoordinator = ChatKitCoordinator(config: config) // Just runtime
+    // Show empty state or conversation list
+    return true
+}
+
+// Later, when user taps button:
+@objc func newChat() {
+    let conversation = chatCoordinator.runtime.openConversation(...) // Now!
+}
+```
+
+---
 
 ## Next Steps
 
-1. **Explore the Smart-Gov example** - Complete working example with remote dependencies
-2. **Check the architecture guide** - Understand the framework structure
-3. **Review customization options** - See how to customize the UI
-4. **Read the reference documentation** - Full API documentation
+Choose your learning path:
+
+### 📖 Want to Learn More?
+
+→ Read the [Developer Guide](./developer-guide.md) for:
+- **Part 1**: Simple chat app (detailed walkthrough)
+- **Part 2**: Managing multiple conversations
+- **Part 3**: Building conversation history UI
+
+### 🎨 Ready to Customize?
+
+→ See [Customize UI Guide](./how-to/customize-ui.md)
+
+### 🏗️ Understanding Architecture?
+
+→ Check [Architecture Overview](./architecture/overview.md)
+
+### 🔧 Having Issues?
+
+→ Visit [Troubleshooting Guide](./troubleshooting.md)
+
+### 🧪 Want to See Examples?
+
+→ Explore the demos:
+
+**AI-Bank Demo:**
+```bash
+cd demo-apps/iOS/AI-Bank
+make run
+```
+
+**Smart-Gov Demo:**
+```bash
+cd demo-apps/iOS/Smart-Gov
+make run
+```
+
+**Note:** These examples demonstrate app-level patterns (like agent management and testing modes) that are NOT part of the SDK - they're application design choices.
+
+---
+
+## Quick Reference
+
+### Minimum Viable Chat App
+
+```swift
+// 1. Initialize runtime (once, at app launch)
+let config = NeuronKitConfig(
+    serverURL: URL(string: "https://your-server.com")!,
+    deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
+    userId: "user-id",
+    storage: .persistent
+)
+let coordinator = ChatKitCoordinator(config: config)
+
+// 2. Later, when user requests chat:
+let conversation = coordinator.runtime.openConversation(
+    sessionId: UUID(),
+    agentId: agentId
+)
+
+// 3. Show UI
+let chatVC = ChatViewController(conversation: conversation)
+```
+
+### With Conversation Manager (Multi-Session Apps)
+
+```swift
+// 1. Initialize
+let coordinator = ChatKitCoordinator(config: config)
+let manager = ChatKitConversationManager()
+manager.attach(runtime: coordinator.runtime)
+
+// 2. Create conversation
+if let (record, conversation) = manager.createConversation(agentId: agentId) {
+    let chatVC = ChatViewController(conversation: conversation)
+}
+
+// 3. Observe updates
+manager.recordsPublisher
+    .sink { records in
+        // Update UI with conversation list
+    }
+    .store(in: &cancellables)
+```
+
+---
 
 ## Support
 
-For issues or questions:
-- Check the troubleshooting guide above
-- Review the Smart-Gov example for reference
-- File issues on the GitHub repository
+- **Comprehensive Guide**: [Developer Guide](./developer-guide.md)
+- **Examples**: `demo-apps/iOS/AI-Bank` and `demo-apps/iOS/Smart-Gov`
+- **Issues**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
 
-## Quick Commands
-
-```bash
-# Generate Xcode project
-make generate
-
-# Build and run with CocoaPods
-make run-cocoapods
-
-# Build and run with SPM
-make run
-
-# Clean build artifacts
-make clean
-
-# Test dependencies
-make validate-deps
-```
+Happy coding! 🚀

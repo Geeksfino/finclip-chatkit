@@ -1,0 +1,51 @@
+name: Simple
+options:
+  bundleIdPrefix: com.finclip.chatkit
+  deploymentTarget:
+    iOS: "16.0"
+
+schemes:
+  Simple:
+    build:
+      targets:
+        Simple: all
+    run:
+      config: Debug
+
+packages:
+  ChatKit:
+    url: https://github.com/Geeksfino/finclip-chatkit.git
+    from: 0.6.1
+
+targets:
+  Simple:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/App
+      - path: App/Extensions
+      - path: App/ViewControllers
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.finclip.chatkit.simple
+      PRODUCT_NAME: Simple
+      INFOPLIST_KEY_CFBundleDisplayName: Simple
+      INFOPLIST_FILE: App/App/Info.plist
+      ENABLE_BITCODE: NO
+      FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks
+      SWIFT_INCLUDE_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+      SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
+    postbuildScripts:
+      - name: Sign Nested ChatKit Frameworks
+        shell: /bin/sh
+        script: |
+          FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
+          if [ -d "${FRAMEWORK_DIR}" ]; then
+            find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
+              /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
+            done
+          fi
+    dependencies:
+      - package: ChatKit
+
