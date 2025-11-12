@@ -9,12 +9,9 @@
 /* Begin PBXBuildFile section */
 		0EC5CAB11CDF9F37CF9A4E1B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43806A7D8BCEF50A6B98AAE0 /* AppDelegate.swift */; };
 		0F0E29864F3610452F8689FB /* MainChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C81C84F2A25FE1DC9500CFC /* MainChatViewController.swift */; };
-		187790036310717FF5188BCE /* ConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E9173EFB67189FB1FDB78D /* ConversationListViewController.swift */; };
 		1B097C0438BFC2FFFC91FC65 /* ComposerToolsExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E088539FA0EA3091236F7E /* ComposerToolsExample.swift */; };
 		1E5CBCDFFF374DE9238D7684 /* ChatContextProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0D8FFD7BAEF8A01060BFF /* ChatContextProviders.swift */; };
 		32F2BD265726A0B607C92F1E /* LocationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FADFCDA2DCEA1441996423 /* LocationContextProvider.swift */; };
-		512C7FCE840ABCFA23258517 /* ConversationPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DF2D48648F03658D1CEE1C /* ConversationPreviewViewController.swift */; };
-		5F6177BC27A7676487B20AC6 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304D9995891B0F262684BBA4 /* ConnectionViewController.swift */; };
 		6A5D696B52E702AFD93CB0E0 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 110C914E608F30D65F0C1945 /* ChatKit */; };
 		74C0EC8150A8042ACBBB674F /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5E3C6E2EA2B5AB64032294 /* DrawerContainerViewController.swift */; };
 		853AEAB5D90061867533F8EA /* CalendarContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B55CE32D188C3D3ACA8848A /* CalendarContextProvider.swift */; };
@@ -27,13 +24,10 @@
 
 /* Begin PBXFileReference section */
 		0C81C84F2A25FE1DC9500CFC /* MainChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainChatViewController.swift; sourceTree = "<group>"; };
-		304D9995891B0F262684BBA4 /* ConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		43806A7D8BCEF50A6B98AAE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5B55CE32D188C3D3ACA8848A /* CalendarContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContextProvider.swift; sourceTree = "<group>"; };
 		62D8E7F8E7B87E199583C0AF /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		64E9173EFB67189FB1FDB78D /* ConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListViewController.swift; sourceTree = "<group>"; };
 		6890E4CE4AEDA796E7773FC0 /* DrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerViewController.swift; sourceTree = "<group>"; };
-		71DF2D48648F03658D1CEE1C /* ConversationPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationPreviewViewController.swift; sourceTree = "<group>"; };
 		90B5AA543F70FE00E1D0FAAC /* Simple.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Simple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B085964268F6233FFAB68DA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B0FADFCDA2DCEA1441996423 /* LocationContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationContextProvider.swift; sourceTree = "<group>"; };
@@ -80,9 +74,6 @@
 			isa = PBXGroup;
 			children = (
 				62D8E7F8E7B87E199583C0AF /* ChatViewController.swift */,
-				304D9995891B0F262684BBA4 /* ConnectionViewController.swift */,
-				64E9173EFB67189FB1FDB78D /* ConversationListViewController.swift */,
-				71DF2D48648F03658D1CEE1C /* ConversationPreviewViewController.swift */,
 				BB5E3C6E2EA2B5AB64032294 /* DrawerContainerViewController.swift */,
 				6890E4CE4AEDA796E7773FC0 /* DrawerViewController.swift */,
 				0C81C84F2A25FE1DC9500CFC /* MainChatViewController.swift */,
@@ -201,9 +192,6 @@
 				1E5CBCDFFF374DE9238D7684 /* ChatContextProviders.swift in Sources */,
 				ED941FDC7C61FDD353D1A173 /* ChatViewController.swift in Sources */,
 				1B097C0438BFC2FFFC91FC65 /* ComposerToolsExample.swift in Sources */,
-				5F6177BC27A7676487B20AC6 /* ConnectionViewController.swift in Sources */,
-				187790036310717FF5188BCE /* ConversationListViewController.swift in Sources */,
-				512C7FCE840ABCFA23258517 /* ConversationPreviewViewController.swift in Sources */,
 				74C0EC8150A8042ACBBB674F /* DrawerContainerViewController.swift in Sources */,
 				88439F5AF35AB72A3C8B41B8 /* DrawerViewController.swift in Sources */,
 				A1CA7AEC3DDCF698B5AF0414 /* LocalizationHelper.swift in Sources */,

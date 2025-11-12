@@ -10,7 +10,8 @@ A demonstration app showcasing ChatKit's **high-level APIs** for rapid developme
 > - `ChatKitConversationListViewController` - Ready-made conversation list component
 > - Provider customization (context providers, tools)
 >  
-> **Result**: Complete chat app with ~200 lines of code (vs 1000+ with low-level APIs)
+> **Result**: Complete chat app with **~477 lines of code** in ViewControllers (vs 1000+ with low-level APIs)  
+> Uses high-level components to eliminate boilerplate - no custom list/cell implementations needed!
 
 ## 🎯 Overview
 
@@ -133,39 +134,42 @@ The app uses Swift Package Manager to fetch ChatKit from GitHub:
 Simple/
 ├── App/
 │   ├── App/
-│   │   ├── SceneDelegate.swift            # Initialize ChatKitCoordinator
+│   │   ├── SceneDelegate.swift            # Initialize ChatKitCoordinator (no connection screen!)
 │   │   ├── AppConfig.swift                # App configuration constants
 │   │   ├── ComposerToolsExample.swift     # Composer tools demo
 │   │   └── LocalizationHelper.swift       # i18n utilities
 │   ├── Extensions/
-│   │   ├── ChatContextProviderFactory.swift  # Provider factory
+│   │   ├── ChatContextProviders.swift        # Provider factory
 │   │   ├── CalendarContextProvider.swift     # Calendar context provider
 │   │   └── LocationContextProvider.swift     # Location context provider
-│   └── ViewControllers/
-│       ├── DrawerContainerViewController.swift    # Drawer container
-│       ├── DrawerViewController.swift             # Uses ChatKitConversationListViewController
-│       ├── MainChatViewController.swift            # Main chat container
-│       └── ChatViewController.swift               # Uses ChatKitConversationViewController
-├── Package.swift                            # Swift Package Manager manifest
+│   └── ViewControllers/                      # Just 4 files - 477 lines total!
+│       ├── DrawerContainerViewController.swift    # Drawer container (155 lines)
+│       ├── DrawerViewController.swift             # Thin wrapper around ChatKitConversationListViewController (64 lines)
+│       ├── MainChatViewController.swift            # Main chat container (220 lines)
+│       └── ChatViewController.swift               # Thin wrapper around ChatKitConversationViewController (38 lines)
 ├── project.yml                             # XcodeGen configuration
 └── Makefile                                # Build automation
 ```
 
 ### Key Architecture Points
 
-**High-Level Component Usage**:
-- `DrawerViewController` inherits from `ChatKitConversationListViewController`
-- `ChatViewController` inherits from `ChatKitConversationViewController`
-- Minimal custom code - mostly configuration
+**Maximum Use of High-Level APIs**:
+- `DrawerViewController` - 64-line thin wrapper around `ChatKitConversationListViewController`
+- `ChatViewController` - 38-line thin wrapper around `ChatKitConversationViewController`
+- **Zero custom list/cell implementations** - framework handles everything
+- **No connection screen** - coordinator initialized directly in SceneDelegate
 
-**Component Embedding**:
-- Drawer pattern demonstrates container-agnostic design
-- Components work in any container (navigation, drawer, sheet, tab)
+**What You DON'T Need to Implement**:
+- ❌ Custom table view cells for conversations
+- ❌ Custom search/filter logic
+- ❌ Custom swipe-to-delete handlers
+- ❌ Custom empty state views
+- ❌ Connection management UI
 
-**Provider Customization**:
-- Context providers registered via `ChatKitConversationConfiguration`
-- Tools provider registered via configuration
-- Welcome message via configuration
+**Container-Agnostic Design**:
+- Drawer pattern demonstrates flexibility
+- Components work in navigation stacks, sheets, drawers, tabs
+- Just configure and present - framework handles the rest
 
 ## 💡 Key Code Patterns
 
