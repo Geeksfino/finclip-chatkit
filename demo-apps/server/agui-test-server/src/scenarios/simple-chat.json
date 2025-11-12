@@ -1,0 +1,48 @@
+{
+  "id": "simple-chat",
+  "name": "Simple Chat",
+  "description": "Basic conversation with greeting",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*hello.*|.*hi.*"
+      },
+      "events": [
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_simple_1",
+          "delta": "Hello! "
+        },
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_simple_1",
+          "delta": "How can I "
+        },
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_simple_1",
+          "delta": "help you today?"
+        }
+      ],
+      "delayMs": 150
+    },
+    {
+      "trigger": {
+        "userMessage": "*"
+      },
+      "events": [
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_simple_2",
+          "delta": "I understand. "
+        },
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_simple_2",
+          "delta": "Let me help you with that."
+        }
+      ],
+      "delayMs": 150
+    }
+  ]
+}

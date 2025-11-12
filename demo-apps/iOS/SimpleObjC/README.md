@@ -68,6 +68,22 @@ CKTChatKitCoordinator *coordinator = [[CKTChatKitCoordinator alloc] initWithConf
 - Xcode 15.0+
 - iOS 16.0+
 - XcodeGen (`brew install xcodegen`)
+- **Node.js 20+** (for backend server)
+
+### Backend Server Setup
+
+**Important**: This demo requires a running backend server. Start the server first:
+
+```bash
+# In a separate terminal window
+cd ../../server/agui-test-server
+npm install
+npm run dev
+```
+
+The server will start on `http://localhost:3000`.
+
+**See**: [Server Documentation](../../server/README.md) for detailed server setup, configuration options, and troubleshooting.
 
 ### Building the App
 

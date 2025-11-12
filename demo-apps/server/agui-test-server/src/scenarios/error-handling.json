@@ -1,0 +1,24 @@
+{
+  "id": "error-handling",
+  "name": "Error Handling",
+  "description": "Demonstrates error scenarios",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*error.*|.*fail.*"
+      },
+      "events": [
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_error_1",
+          "delta": "Simulating an error..."
+        },
+        {
+          "type": "RUN_ERROR",
+          "message": "Simulated error for testing purposes"
+        }
+      ],
+      "delayMs": 100
+    }
+  ]
+}

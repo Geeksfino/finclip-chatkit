@@ -1,0 +1,68 @@
+{
+  "id": "tool-call",
+  "name": "Tool Call Demo",
+  "description": "Demonstrates tool invocation flow",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*camera.*|.*photo.*|.*capture.*"
+      },
+      "events": [
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_tool_1",
+          "delta": "I'll capture a photo for you."
+        },
+        {
+          "type": "TOOL_CALL_START",
+          "toolCallId": "call_camera_1",
+          "toolName": "demo.ask.camera_capture",
+          "parentMessageId": "msg_tool_1"
+        },
+        {
+          "type": "TOOL_CALL_ARGS",
+          "toolCallId": "call_camera_1",
+          "delta": "{\"mode\":"
+        },
+        {
+          "type": "TOOL_CALL_ARGS",
+          "toolCallId": "call_camera_1",
+          "delta": "\"photo\"}"
+        },
+        {
+          "type": "TOOL_CALL_END",
+          "toolCallId": "call_camera_1"
+        }
+      ],
+      "delayMs": 200
+    },
+    {
+      "trigger": {
+        "userMessage": ".*payment.*|.*pay.*"
+      },
+      "events": [
+        {
+          "type": "TEXT_MESSAGE_CHUNK",
+          "messageId": "msg_tool_2",
+          "delta": "Opening the payment page..."
+        },
+        {
+          "type": "TOOL_CALL_START",
+          "toolCallId": "call_payment_1",
+          "toolName": "open_payment_page",
+          "parentMessageId": "msg_tool_2"
+        },
+        {
+          "type": "TOOL_CALL_ARGS",
+          "toolCallId": "call_payment_1",
+          "delta": "{\"mode\":\"quick\"}"
+        },
+        {
+          "type": "TOOL_CALL_END",
+          "toolCallId": "call_payment_1"
+        }
+      ],
+      "delayMs": 200
+    }
+  ]
+}
