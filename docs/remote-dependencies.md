@@ -153,21 +153,18 @@ let package = Package(
 - Automatically resolves binary XCFramework from GitHub releases
 - Supports both iOS and macOS targets (configured in project.yml)
 
-### CocoaPods (Podfile - auto-generated)
+### CocoaPods (Podfile)
 
 ```ruby
 platform :ios, '16.0'
 
 target 'iLoveHK' do
-  pod 'ChatKit', '~> 0.1.0'
-  
-  # Required dependencies (bundled in ChatKit)
-  pod 'NeuronKit'
-  pod 'ConvoUI'
-  pod 'SandboxSDK'
-  pod 'convstore'
+  # Use direct podspec URL ("ChatKit" name is occupied on CocoaPods trunk)
+  pod 'ChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'
 end
 ```
+
+> **Note**: All dependencies (NeuronKit, ConvoUI, SandboxSDK, convstore) are bundled in the ChatKit XCFramework.
 
 **Features:**
 - Flexible version constraint (`~> 0.1.0`)

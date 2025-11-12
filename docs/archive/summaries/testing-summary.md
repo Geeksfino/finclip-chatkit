@@ -1,7 +1,12 @@
 # Smart-Gov Remote Dependency Testing - Summary Report
 
-**Date**: November 3, 2025
-**Status**: ✅ **PASSED**
+**Date**: November 3, 2025  
+**Status**: ⚠️ **OUTDATED** (CocoaPods instructions updated - see note below)  
+**Original Status**: ✅ **PASSED**
+
+> ⚠️ **Update (November 12, 2025)**: The CocoaPods installation method has changed.  
+> Use `:podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'`  
+> instead of version-based installation, as "ChatKit" name on CocoaPods trunk is occupied.
 
 ## Executive Summary
 

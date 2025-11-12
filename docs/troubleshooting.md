@@ -394,7 +394,7 @@ Ensure you're using v0.3.1 or later:
 
 **Podfile:**
 ```ruby
-pod 'ChatKit', '~> 0.3.1'
+pod 'ChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'
 ```
 
 Then update:

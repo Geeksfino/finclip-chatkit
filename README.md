@@ -260,13 +260,15 @@ let package = Package(
 ### CocoaPods
 
 ```ruby
-pod 'ChatKit', '~> 0.6.1'
+pod 'ChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'
 ```
 
 Then run:
 ```bash
 pod install
 ```
+
+> **Note**: We use a direct podspec URL because the "ChatKit" name on CocoaPods trunk is occupied by a different project.
 
 ---
 

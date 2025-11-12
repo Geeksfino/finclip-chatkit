@@ -96,9 +96,11 @@ platform :ios, '16.0'
 use_frameworks!
 
 target 'YourApp' do
-  pod 'ChatKit', '~> 0.6.1'
+  pod 'ChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'
 end
 ```
+
+> **Note**: We use a direct podspec URL because the "ChatKit" name on CocoaPods trunk is occupied by a different project.
 
 ### Install and Build
 
