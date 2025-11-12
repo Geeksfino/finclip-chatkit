@@ -140,11 +140,9 @@ SimpleObjC/
 ├── App/
 │   ├── AppDelegate.h/m          # App delegate
 │   ├── SceneDelegate.h/m        # Scene delegate (initializes coordinator directly)
-│   ├── ViewControllers/         # Just 2 files - thin wrappers!
-│   │   ├── ConversationListViewController.h/m  # Embeds ChatKitConversationListViewController
-│   │   └── ChatViewController.h/m              # Uses ChatKitConversationViewController directly
-│   └── Network/
-│       └── MockSSEURLProtocol.h/m   # Mock network for testing
+│   └── ViewControllers/         # Just 2 files - thin wrappers!
+│       ├── ConversationListViewController.h/m  # Embeds ChatKitConversationListViewController
+│       └── ChatViewController.h/m              # Uses ChatKitConversationViewController directly
 ├── project.yml                  # XcodeGen configuration
 └── Makefile                     # Build automation
 ```

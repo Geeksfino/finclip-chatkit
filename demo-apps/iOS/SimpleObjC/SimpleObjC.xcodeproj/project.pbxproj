@@ -10,7 +10,6 @@
 		3BAB9ACE51B7FCD443CE7B22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */; };
 		5A3D1EDE2CA8BD0FF5B7BA6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2888DCB4D8E9C972AA7455A /* LaunchScreen.storyboard */; };
 		5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A750D14341E9AEE7F203FF5 /* AppDelegate.m */; };
-		7A604970F5EC96E02887801F /* MockSSEURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = C9854EC47C67AAF6B9A0C019 /* MockSSEURLProtocol.m */; };
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
@@ -28,11 +27,9 @@
 		799671B1E6F4F885E5105A19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79E36A951C326EC6DFD7D2BA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		82E33F624593CE528F406222 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		945360CDBBFF3B71725001CC /* MockSSEURLProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MockSSEURLProtocol.h; sourceTree = "<group>"; };
 		9A750D14341E9AEE7F203FF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		AD0A97D77528EE614C1B2BBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF1610C8E696E0196497E49B /* ConversationListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConversationListViewController.m; sourceTree = "<group>"; };
-		C9854EC47C67AAF6B9A0C019 /* MockSSEURLProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MockSSEURLProtocol.m; sourceTree = "<group>"; };
 		D28DB85E98D0CBCC72EADB95 /* ChatViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,15 +53,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		287F8C52B8BFA7086A43B427 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				945360CDBBFF3B71725001CC /* MockSSEURLProtocol.h */,
-				C9854EC47C67AAF6B9A0C019 /* MockSSEURLProtocol.m */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
 		9FCD3F5A2398D6DE24C57227 = {
 			isa = PBXGroup;
 			children = (
@@ -86,7 +74,6 @@
 				19FC6DB87C94C3A6954DC2E1 /* main.m */,
 				64CF903F67674B6A543D9F5C /* SceneDelegate.h */,
 				82E33F624593CE528F406222 /* SceneDelegate.m */,
-				287F8C52B8BFA7086A43B427 /* Network */,
 				EF77EF244CFE6149C690C2CD /* ViewControllers */,
 			);
 			path = App;
@@ -197,7 +184,6 @@
 				5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */,
 				B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */,
 				B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */,
-				7A604970F5EC96E02887801F /* MockSSEURLProtocol.m in Sources */,
 				D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */,
 				EB6FD90EE98F3747E2812014 /* main.m in Sources */,
 			);
