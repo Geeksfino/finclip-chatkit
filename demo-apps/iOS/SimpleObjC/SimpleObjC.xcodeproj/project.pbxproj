@@ -7,31 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A6661E4B1A59EAF75BC2F03 /* AgentCatalog.m in Sources */ = {isa = PBXBuildFile; fileRef = E5BF694C680E2A5D7F6A3A07 /* AgentCatalog.m */; };
-		2901E9D3480C912409FDB1E7 /* ConversationRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = D86F9F86D0889E410BA15973 /* ConversationRecord.m */; };
-		3B8C4102B81FDD72DEB3B895 /* ChatCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD66F68138DEC797287E7B1 /* ChatCoordinator.m */; };
 		3BAB9ACE51B7FCD443CE7B22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */; };
 		5A3D1EDE2CA8BD0FF5B7BA6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2888DCB4D8E9C972AA7455A /* LaunchScreen.storyboard */; };
 		5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A750D14341E9AEE7F203FF5 /* AppDelegate.m */; };
 		7A604970F5EC96E02887801F /* MockSSEURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = C9854EC47C67AAF6B9A0C019 /* MockSSEURLProtocol.m */; };
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
-		B4BC4C724A7DCD86EA2183B7 /* AgentProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 58ABC9904B138F6E9B353C89 /* AgentProfile.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
-		BE331AC5BAC566F5A40DFC97 /* ConnectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F67729AF2AECD3A0AE7B84 /* ConnectionViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
 		D838ECD1BDED30949B5012D9 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 67E3C9BC173127A28A9956A7 /* ChatKit */; };
-		E27DD709A42E94CB506BE615 /* ConnectionMode.m in Sources */ = {isa = PBXBuildFile; fileRef = E063EA7B2016E65464C1FAE9 /* ConnectionMode.m */; };
 		EB6FD90EE98F3747E2812014 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19FC6DB87C94C3A6954DC2E1 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		19FC6DB87C94C3A6954DC2E1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2BD66F68138DEC797287E7B1 /* ChatCoordinator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatCoordinator.m; sourceTree = "<group>"; };
-		2CC0235545C9EEA5821ABC1D /* ChatCoordinator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatCoordinator.h; sourceTree = "<group>"; };
 		3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		450CF46924B3FEFF29A93CEA /* AgentProfile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AgentProfile.h; sourceTree = "<group>"; };
-		58ABC9904B138F6E9B353C89 /* AgentProfile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AgentProfile.m; sourceTree = "<group>"; };
 		606532D85361CBD6014858C8 /* ConversationListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConversationListViewController.h; sourceTree = "<group>"; };
 		60FEA79275FC6B48F6017B1C /* SimpleObjC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SimpleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF903F67674B6A543D9F5C /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
@@ -42,16 +32,8 @@
 		9A750D14341E9AEE7F203FF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		AD0A97D77528EE614C1B2BBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF1610C8E696E0196497E49B /* ConversationListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConversationListViewController.m; sourceTree = "<group>"; };
-		B219CC233E2773D2FC31233A /* ConnectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConnectionViewController.h; sourceTree = "<group>"; };
-		B6F67729AF2AECD3A0AE7B84 /* ConnectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConnectionViewController.m; sourceTree = "<group>"; };
-		C5ED0984EB868A0A4244E5DE /* ConnectionMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConnectionMode.h; sourceTree = "<group>"; };
-		C7494900345820D89C355A8D /* AgentCatalog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AgentCatalog.h; sourceTree = "<group>"; };
 		C9854EC47C67AAF6B9A0C019 /* MockSSEURLProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MockSSEURLProtocol.m; sourceTree = "<group>"; };
 		D28DB85E98D0CBCC72EADB95 /* ChatViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
-		D86F9F86D0889E410BA15973 /* ConversationRecord.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConversationRecord.m; sourceTree = "<group>"; };
-		E063EA7B2016E65464C1FAE9 /* ConnectionMode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConnectionMode.m; sourceTree = "<group>"; };
-		E247BE6EEF317F62675616F2 /* ConversationRecord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConversationRecord.h; sourceTree = "<group>"; };
-		E5BF694C680E2A5D7F6A3A07 /* AgentCatalog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AgentCatalog.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,15 +48,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0481DA18DF1CD7DF499ADD76 /* Coordinators */ = {
-			isa = PBXGroup;
-			children = (
-				2CC0235545C9EEA5821ABC1D /* ChatCoordinator.h */,
-				2BD66F68138DEC797287E7B1 /* ChatCoordinator.m */,
-			);
-			path = Coordinators;
-			sourceTree = "<group>";
-		};
 		05F053391A243C1F26E4A6FC /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,34 +86,15 @@
 				19FC6DB87C94C3A6954DC2E1 /* main.m */,
 				64CF903F67674B6A543D9F5C /* SceneDelegate.h */,
 				82E33F624593CE528F406222 /* SceneDelegate.m */,
-				0481DA18DF1CD7DF499ADD76 /* Coordinators */,
-				C2C3F9851C75E3C7BE3B6AEE /* Models */,
 				287F8C52B8BFA7086A43B427 /* Network */,
 				EF77EF244CFE6149C690C2CD /* ViewControllers */,
 			);
 			path = App;
 			sourceTree = "<group>";
 		};
-		C2C3F9851C75E3C7BE3B6AEE /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				C7494900345820D89C355A8D /* AgentCatalog.h */,
-				E5BF694C680E2A5D7F6A3A07 /* AgentCatalog.m */,
-				450CF46924B3FEFF29A93CEA /* AgentProfile.h */,
-				58ABC9904B138F6E9B353C89 /* AgentProfile.m */,
-				C5ED0984EB868A0A4244E5DE /* ConnectionMode.h */,
-				E063EA7B2016E65464C1FAE9 /* ConnectionMode.m */,
-				E247BE6EEF317F62675616F2 /* ConversationRecord.h */,
-				D86F9F86D0889E410BA15973 /* ConversationRecord.m */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		EF77EF244CFE6149C690C2CD /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				B219CC233E2773D2FC31233A /* ConnectionViewController.h */,
-				B6F67729AF2AECD3A0AE7B84 /* ConnectionViewController.m */,
 				606532D85361CBD6014858C8 /* ConversationListViewController.h */,
 				AF1610C8E696E0196497E49B /* ConversationListViewController.m */,
 			);
@@ -240,15 +194,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A6661E4B1A59EAF75BC2F03 /* AgentCatalog.m in Sources */,
-				B4BC4C724A7DCD86EA2183B7 /* AgentProfile.m in Sources */,
 				5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */,
-				3B8C4102B81FDD72DEB3B895 /* ChatCoordinator.m in Sources */,
 				B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */,
-				E27DD709A42E94CB506BE615 /* ConnectionMode.m in Sources */,
-				BE331AC5BAC566F5A40DFC97 /* ConnectionViewController.m in Sources */,
 				B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */,
-				2901E9D3480C912409FDB1E7 /* ConversationRecord.m in Sources */,
 				7A604970F5EC96E02887801F /* MockSSEURLProtocol.m in Sources */,
 				D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */,
 				EB6FD90EE98F3747E2812014 /* main.m in Sources */,

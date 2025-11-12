@@ -5,12 +5,13 @@ Objective-C demonstration app showcasing ChatKit's **high-level Objective-C APIs
 > **📘 Key Focus: High-Level Objective-C APIs**  
 >  
 > This example demonstrates ChatKit's **high-level Objective-C APIs**:
-> - `CKTChatKitCoordinator` - Runtime lifecycle management
+> - `CKTChatKitCoordinator` - Runtime lifecycle management (no wrapper needed!)
 > - `ChatKitConversationViewController` - Ready-made chat UI component (ObjC-compatible)
 > - `ChatKitConversationListViewController` - Ready-made conversation list component (ObjC-compatible)
 > - Provider customization support
 >  
-> **Result**: Complete Objective-C chat app with minimal code
+> **Result**: Complete Objective-C chat app with **~218 lines of code** in key files  
+> Uses high-level components directly - no custom wrappers or boilerplate!
 
 ## 🎯 Overview
 
@@ -138,34 +139,38 @@ The framework is automatically resolved as a remote binary dependency when you b
 SimpleObjC/
 ├── App/
 │   ├── AppDelegate.h/m          # App delegate
-│   ├── SceneDelegate.h/m        # Scene delegate
-│   ├── Coordinators/
-│   │   └── ChatCoordinator.h/m  # Chat coordination logic
-│   ├── Models/
-│   │   ├── ConversationRecord.h/m
-│   │   └── AgentProfile.h/m
-│   ├── ViewControllers/
-│   │   ├── ConnectionViewController.h/m      # Server connection setup
-│   │   ├── ConversationListViewController.h/m # Uses ChatKitConversationListViewController
-│   │   └── ChatViewController.h/m             # Uses ChatKitConversationViewController
+│   ├── SceneDelegate.h/m        # Scene delegate (initializes coordinator directly)
+│   ├── ViewControllers/         # Just 2 files - thin wrappers!
+│   │   ├── ConversationListViewController.h/m  # Embeds ChatKitConversationListViewController
+│   │   └── ChatViewController.h/m              # Uses ChatKitConversationViewController directly
 │   └── Network/
-│       └── MockSSEURLProtocol.h/m            # Mock network for testing
-├── Package.swift                            # Swift Package Manager manifest
-├── project.yml                             # XcodeGen configuration
-└── Makefile                                # Build automation
+│       └── MockSSEURLProtocol.h/m   # Mock network for testing
+├── project.yml                  # XcodeGen configuration
+└── Makefile                     # Build automation
 ```
 
 ### Key Architecture Points
 
-**High-Level Component Usage**:
-- `ConversationListViewController` embeds `ChatKitConversationListViewController`
-- `ChatViewController` uses `ChatKitConversationViewController` (deprecated pattern - new code should use directly)
-- Minimal custom code - mostly configuration
+**Maximum Use of High-Level Objective-C APIs**:
+- `ConversationListViewController` - Thin wrapper **embedding** `ChatKitConversationListViewController` as child
+- **Zero custom coordinator wrapper** - uses `CKTChatKitCoordinator` directly
+- **No connection screen** - coordinator initialized directly in SceneDelegate
+- Framework handles all list management, search, swipe-to-delete automatically
 
-**Objective-C Patterns**:
-- Uses Objective-C compatible APIs (`CKTChatKitCoordinator`, `CKTConversationManager`)
-- Swift components accessible via bridging headers
-- Standard Objective-C memory management
+**Note**: ChatKit view controllers are marked `final` in Swift, so Objective-C code must use composition (embedding as child view controller) rather than inheritance.
+
+**What You DON'T Need in ObjC**:
+- ❌ Custom `ChatCoordinator` wrapper around SDK coordinator
+- ❌ Custom table view cells or data source implementations
+- ❌ Custom search/filter logic
+- ❌ Connection management UI
+- ❌ Model classes (use `CKTConversationRecord` directly)
+
+**Objective-C Best Practices**:
+- Direct use of `CKTChatKitCoordinator` - no wrapping needed!
+- Swift components accessible via `@import FinClipChatKit`
+- ObjC-friendly initializers: `initWithObjCCoordinator:objcConfiguration:`
+- Delegate pattern for callbacks
 
 ## 💡 Key Code Patterns
 

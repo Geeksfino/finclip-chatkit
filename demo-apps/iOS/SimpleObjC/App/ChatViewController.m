@@ -8,7 +8,6 @@
 //
 
 #import "ChatViewController.h"
-#import "ConversationRecord.h"
 @import FinClipChatKit;
 @import ConvoUI;
 #import <FinClipChatKit/ChatKit-ObjC.h>

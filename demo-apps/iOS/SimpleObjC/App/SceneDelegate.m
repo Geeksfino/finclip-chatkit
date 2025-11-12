@@ -2,14 +2,15 @@
 //  SceneDelegate.m
 //  SimpleChatObjC
 //
-//  Scene lifecycle management
+//  Scene lifecycle management - Simplified to use high-level ChatKit API directly
 //
 
 #import "SceneDelegate.h"
-#import "ConnectionViewController.h"
+#import "ConversationListViewController.h"
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
 
 @interface SceneDelegate ()
-
+@property (nonatomic, strong) CKTChatKitCoordinator *coordinator;
 @end
 
 @implementation SceneDelegate
@@ -22,9 +23,17 @@
     UIWindowScene *windowScene = (UIWindowScene *)scene;
     self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
     
-    // Create connection view controller with navigation
-    ConnectionViewController *connectionVC = [[ConnectionViewController alloc] init];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:connectionVC];
+    // Initialize ChatKitCoordinator directly - no wrapper needed!
+    NSURL *serverURL = [NSURL URLWithString:@"http://127.0.0.1:3000/agent"];
+    CKTCoordinatorConfig *config = [[CKTCoordinatorConfig alloc] initWithServerURL:serverURL
+                                                                             userId:@"demo-user"
+                                                                           deviceId:nil];
+    config.storageMode = CKTStorageModePersistent;
+    self.coordinator = [[CKTChatKitCoordinator alloc] initWithConfig:config];
+    
+    // Create conversation list with navigation
+    ConversationListViewController *listVC = [[ConversationListViewController alloc] initWithCoordinator:self.coordinator];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:listVC];
     
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
