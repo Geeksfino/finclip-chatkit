@@ -2,7 +2,40 @@
 
 **The conversational AI SDK for iOS apps.**
 
-FinClip ChatKit provides a complete framework for building AI-powered chat experiences in your iOS applications. From simple single-agent conversations to complex multi-session apps with conversation history.
+FinClip ChatKit is a production-ready framework that brings intelligent, context-aware conversational experiences to your iOS apps. Built for developers who want to add powerful AI chat capabilities without rebuilding everything from scratch.
+
+## Why ChatKit?
+
+Modern AI assistants need more than just text back-and-forth—they need to understand context, execute actions safely, and integrate seamlessly into your app's existing flows. ChatKit delivers:
+
+**🧠 Context-Aware Intelligence**  
+Automatically captures rich device signals—location, time, sensors, network status, calendar events—so your AI understands the user's situation without extra work from you. Context providers run efficiently in the background, enriching every conversation with relevant environmental data.
+
+**🎨 Production-Ready UI Components**  
+Ship chat experiences in hours, not weeks. Drop-in view controllers with rich message rendering (Markdown, multimedia, forms, buttons, cards), real-time streaming text, typing indicators, and support for press-to-talk speech input. Light/dark mode and full theming support included.
+
+**🔒 Security-First Architecture**  
+Every AI-initiated action runs through a capability-based sandbox with fine-grained policy controls. Require explicit user consent, enforce rate limits, set sensitivity levels, and maintain complete audit trails—all built-in. Your users stay in control, always.
+
+**💾 Persistent Conversation Management**  
+Multi-session support with automatic persistence. Track conversation history, resume sessions across app launches, manage multiple agents, and sync seamlessly with cloud storage—all handled by the framework's integrated storage layer.
+
+**🔌 Flexible Integration**  
+High-level APIs for rapid development (20-30 lines to a working chat UI) or low-level APIs when you need maximum control. Works with WebSocket/HTTP backends, supports custom network adapters, and embeds easily in navigation stacks, sheets, drawers, or tabs.
+
+**📱 Native Performance**  
+Pure iOS/Swift implementation with native WKWebView rendering for interactive components. No cross-platform compromises—built specifically for iOS with optimal memory usage and smooth 60fps scrolling even with hundreds of messages.
+
+### What You Can Build
+
+- **Customer support bots** with agent handoff and rich media attachments  
+- **Personal AI assistants** that access device sensors and calendar to help users  
+- **In-app shopping advisors** that understand user preferences and purchase history  
+- **Health coaching apps** with context-aware recommendations based on time and location  
+- **Enterprise automation** tools where AI proposes actions requiring user approval  
+- **Educational tutors** with interactive forms, quizzes, and progress tracking
+
+---
 
 ---
 
@@ -14,39 +47,49 @@ FinClip ChatKit provides a complete framework for building AI-powered chat exper
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
 ]
 ```
 
-**2. Initialize runtime at app launch:**
+**2. Initialize coordinator at app launch:**
 
 ```swift
+import UIKit
 import FinClipChatKit
 
-// In AppDelegate
-let config = NeuronKitConfig(
-    serverURL: URL(string: "https://your-agent-server.com")!,
-    deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString,
-    userId: "user-123",
-    storage: .persistent
-)
+// In SceneDelegate or AppDelegate
+let config = NeuronKitConfig.default(serverURL: URL(string: "http://127.0.0.1:3000/agent")!)
+    .withUserId("demo-user")
 let coordinator = ChatKitCoordinator(config: config)
 ```
 
-**3. Create conversation when user requests it:**
+**3. Create conversation and show chat UI:**
 
 ```swift
 // When user taps "New Chat" button
-let conversation = coordinator.runtime.openConversation(
-    sessionId: UUID(),
-    agentId: yourAgentId
-)
-
-// Show chat UI
-let chatVC = ChatViewController(conversation: conversation)
+Task { @MainActor in
+    let agentId = UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!
+    let (record, conversation) = try await coordinator.startConversation(
+        agentId: agentId,
+        title: nil,
+        agentName: "My Agent"
+    )
+    
+    // Show ready-made chat UI
+    let chatVC = ChatKitConversationViewController(
+        record: record,
+        conversation: conversation,
+        coordinator: coordinator,
+        configuration: .default
+    )
+    
+    navigationController?.pushViewController(chatVC, animated: true)
+}
 ```
 
-That's it! You now have a working AI chat app.
+That's it! You now have a working AI chat app with persistent storage and full-featured UI.
+
+**📖 For detailed examples**: See [Quick Start Guide](docs/quick-start.md) for Swift and Objective-C skeleton code.
 
 ---
 
@@ -54,20 +97,30 @@ That's it! You now have a working AI chat app.
 
 Start with the right guide for your needs:
 
-### For Beginners
-- **[Getting Started](docs/getting-started.md)** - Build your first chat app in 10 minutes
+### Quick Start
+- **[Quick Start Guide](docs/quick-start.md)** - Minimal skeleton code (Swift & Objective-C) - **Start here!**
+- **[Getting Started Guide](docs/getting-started.md)** - Detailed walkthrough with explanations
 
-### For Intermediate Developers
-- **[Developer Guide](docs/developer-guide.md)** - Comprehensive guide covering:
-  - Part 1: Simple chat app (beginner)
-  - Part 2: Multiple conversations (intermediate)
-  - Part 3: Conversation history UI (advanced)
+### Core Guides
 
-### For Reference
+#### Swift
+- **[Swift Developer Guide](docs/guides/developer-guide.md)** - Comprehensive Swift guide from beginner to expert
+
+#### Objective-C
+- **[Objective-C Developer Guide](docs/guides/objective-c-guide.md)** - Complete Objective-C guide with API reference
+
+#### Shared Concepts
+- **[API Levels Guide](docs/api-levels.md)** - Understanding high-level vs low-level APIs
+- **[Component Embedding Guide](docs/component-embedding.md)** - Embed components in sheets, drawers, tabs (Swift & Objective-C)
+- **[Build Tooling Guide](docs/build-tooling.md)** - Reproducible builds with Makefile and XcodeGen
+
+### Reference
 - **[Architecture Overview](docs/architecture/overview.md)** - Understanding the framework structure
 - **[Customize UI Guide](docs/how-to/customize-ui.md)** - Styling and theming
 - **[Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
 - **[Integration Guide](docs/integration-guide.md)** - SPM, CocoaPods, deployment
+
+**📑 [Full Documentation Index](docs/README.md)** - Complete navigation and learning paths
 
 ---
 
@@ -75,35 +128,36 @@ Start with the right guide for your needs:
 
 Explore fully working examples in `demo-apps/iOS/`:
 
-### AI-Bank
-A banking-themed demo showing multi-conversation management.
+### Simple (Swift) - Recommended
+Demonstrates high-level APIs with minimal code.
 
 ```bash
-cd demo-apps/iOS/AI-Bank
+cd demo-apps/iOS/Simple
 make run
 ```
 
 **What it demonstrates:**
-- Multiple conversation sessions
-- Conversation history
-- Persistent storage
+- High-level APIs (`ChatKitCoordinator`, `ChatKitConversationViewController`)
+- Drawer-based navigation pattern
+- Component embedding
+- Standard build tooling (Makefile, XcodeGen)
 
-**Note:** This example includes app-level patterns (agent management, testing modes) that are NOT part of the SDK.
+**See**: [Simple README](demo-apps/iOS/Simple/README.md)
 
-### Smart-Gov
-A government services demo with conversation management.
+### SimpleObjC (Objective-C)
+Objective-C version using high-level APIs.
 
 ```bash
-cd demo-apps/iOS/Smart-Gov
+cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
 **What it demonstrates:**
-- Multi-session support
-- Conversation persistence
-- List UI implementation
+- Objective-C high-level APIs (`CKTChatKitCoordinator`, `ChatKitConversationViewController`)
+- Navigation-based flow
+- Remote dependency usage
 
-**Note:** Agent selection and testing modes shown here are app design choices, not SDK features.
+**See**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
 
 ---
 
@@ -118,7 +172,8 @@ make run
 - ✅ **Reactive Updates** - Combine publishers for UI binding
 
 ### UI Components
-- ✅ **ChatViewController** - Full-featured chat interface
+- ✅ **ChatKitConversationViewController** - Ready-made chat UI component
+- ✅ **ChatKitConversationListViewController** - Ready-made conversation list component
 - ✅ **Message Bubbles** - User and agent message rendering
 - ✅ **Input Composer** - Rich text input with attachments
 - ✅ **Typing Indicators** - Real-time typing feedback
@@ -133,22 +188,39 @@ make run
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ API Levels
 
-ChatKit is a composite framework that bundles:
+ChatKit provides multiple API levels to suit different needs:
 
-- **FinClipChatKit** - Main framework and coordinator
-- **NeuronKit** - AI orchestration layer
-- **ConvoUI** - UI components and themes
-- **SandboxSDK** - Security and sandboxing
-- **convstore** - Conversation persistence
+### High-Level APIs (Recommended)
+Ready-made components for rapid development:
+- `ChatKitCoordinator` - Runtime lifecycle management
+- `ChatKitConversationViewController` - Complete chat UI
+- `ChatKitConversationListViewController` - Conversation list UI
+- Minimal code (20-30 lines for basic chat)
 
-```
-Your App
-  └─ ChatKitCoordinator (initialize once at app launch)
-      └─ NeuronRuntime (core orchestration)
-          └─ Conversations (created on user action)
-```
+**Best for**: Most applications, standard chat UI, rapid development
+
+**See**: [API Levels Guide](docs/api-levels.md#high-level-apis-recommended) | [Simple Demo](demo-apps/iOS/Simple/)
+
+### Low-Level APIs (Advanced)
+Direct access for maximum flexibility:
+- Direct runtime access
+- Manual UI binding
+- Custom implementations
+- More code (200+ lines), more control
+
+**Best for**: Custom UI requirements, specialized layouts
+
+**See**: [API Levels Guide](docs/api-levels.md#low-level-apis-advanced)
+
+### Provider Mechanism
+Customize framework behavior without modifying code:
+- Context Providers - Attach location, calendar, etc.
+- ASR Providers - Custom speech recognition
+- Title Generation Providers - Custom conversation titles
+
+**See**: [API Levels Guide](docs/api-levels.md#provider-mechanism)
 
 ---
 
@@ -166,7 +238,7 @@ let package = Package(
     name: "MyApp",
     platforms: [.iOS(.v16)],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
     ],
     targets: [
         .target(
@@ -183,12 +255,12 @@ let package = Package(
 
 1. File → Add Package Dependencies
 2. Enter: `https://github.com/Geeksfino/finclip-chatkit.git`
-3. Select version: `0.3.1` or later
+3. Select version: `0.6.1` or later
 
 ### CocoaPods
 
 ```ruby
-pod 'ChatKit', '~> 0.3.1'
+pod 'ChatKit', '~> 0.6.1'
 ```
 
 Then run:
@@ -202,16 +274,24 @@ pod install
 
 ### ✅ DO
 
-1. **Initialize runtime once at app launch**
+1. **Initialize coordinator once at app launch**
    ```swift
-   // In AppDelegate
-   chatCoordinator = ChatKitCoordinator(config: config)
+   // In SceneDelegate or AppDelegate
+   let coordinator = ChatKitCoordinator(config: config)
    ```
 
-2. **Create conversations when user requests them**
+2. **Use high-level APIs for standard chat UI**
    ```swift
-   // When user taps "New Chat"
-   let conversation = coordinator.runtime.openConversation(...)
+   // Create conversation
+   let (record, conversation) = try await coordinator.startConversation(...)
+   
+   // Show ready-made chat UI
+   let chatVC = ChatKitConversationViewController(
+       record: record,
+       conversation: conversation,
+       coordinator: coordinator,
+       configuration: .default
+   )
    ```
 
 3. **Use ConversationManager for multi-session apps**
@@ -227,10 +307,10 @@ pod install
        .store(in: &cancellables)
    ```
 
-5. **Clean up resources**
+5. **Embed components in any container**
    ```swift
-   conversation.unbindUI() // Before destroying UI
-   manager.deleteConversation(sessionId) // To remove permanently
+   // Navigation, sheet, drawer, tab - all work!
+   navigationController?.pushViewController(chatVC, animated: true)
    ```
 
 ### ❌ DON'T
@@ -240,7 +320,7 @@ pod install
    // ❌ BAD: Too early, user hasn't requested it
    func application(...) -> Bool {
        let coordinator = ChatKitCoordinator(config: config)
-       let conversation = coordinator.runtime.openConversation(...) // Don't!
+       let conversation = try await coordinator.startConversation(...) // Don't!
    }
    ```
 
@@ -261,22 +341,24 @@ pod install
    }
    ```
 
-4. **Don't block main thread**
+4. **Don't use low-level APIs unless necessary**
    ```swift
-   // ❌ BAD: Persistence is async
-   manager.createConversation(...)
-   waitForIt() // Don't!
+   // ❌ BAD: Unnecessary complexity for standard use case
+   let hosting = ChatHostingController()
+   let adapter = ChatKitAdapter(chatView: hosting.chatView)
+   conversation.bindUI(adapter) // Too verbose!
    
-   // ✅ GOOD: Happens automatically in background
-   manager.createConversation(...) // Just use it
+   // ✅ GOOD: Use high-level component
+   let chatVC = ChatKitConversationViewController(...) // Simple!
    ```
 
-5. **Don't leak conversations**
+5. **Don't edit generated Xcode projects**
    ```swift
-   // ✅ GOOD: Always unbind in deinit
-   deinit {
-       conversation?.unbindUI()
-   }
+   // ❌ BAD: Changes lost on regeneration
+   // Edit .xcodeproj directly
+   
+   // ✅ GOOD: Edit project.yml, then regenerate
+   // make generate
    ```
 
 ---
@@ -284,9 +366,9 @@ pod install
 ## 🔧 Troubleshooting
 
 ### ChatKitCoordinator not found
-**Solution**: Update to v0.3.1 or later
+**Solution**: Update to v0.6.1 or later
 ```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
 ```
 
 ### Conversations not persisting
@@ -304,24 +386,33 @@ See the full [Troubleshooting Guide](docs/troubleshooting.md).
 
 Follow this progressive path to master ChatKit:
 
-1. **Start Simple** → [Getting Started](docs/getting-started.md)
-   - Build your first chat app in 10 minutes
+1. **Quick Start** → [Quick Start Guide](docs/quick-start.md)
+   - Minimal skeleton code (5 minutes)
+   - Swift and Objective-C examples
 
-2. **Understand Core Concepts** → [Developer Guide Part 1](docs/developer-guide.md#part-1-getting-started)
-   - Runtime vs Conversation
-   - When to create what
+2. **Learn the Basics** → [Getting Started Guide](docs/getting-started.md)
+   - Detailed walkthrough
+   - Key concepts explained
 
-3. **Add Multiple Conversations** → [Developer Guide Part 2](docs/developer-guide.md#part-2-managing-multiple-conversations)
-   - Using ConversationManager
-   - Reactive updates
+3. **Understand APIs** → [API Levels Guide](docs/api-levels.md)
+   - High-level vs low-level APIs
+   - When to use each
 
-4. **Build History UI** → [Developer Guide Part 3](docs/developer-guide.md#part-3-building-a-conversation-list-ui)
-   - Conversation list
-   - Resume and delete
+4. **Build Features**
+   - **Swift**: [Swift Developer Guide](docs/guides/developer-guide.md) - Multiple conversations, history, advanced patterns
+   - **Objective-C**: [Objective-C Developer Guide](docs/guides/objective-c-guide.md) - Multiple conversations, list UI, API reference
 
-5. **Study Examples** → `demo-apps/iOS/`
-   - AI-Bank and Smart-Gov demos
-   - App-level patterns
+5. **Customize & Embed** → [Component Embedding Guide](docs/component-embedding.md)
+   - Embed in sheets, drawers, tabs
+   - Custom container patterns
+
+6. **Set Up Builds** → [Build Tooling Guide](docs/build-tooling.md)
+   - Reproducible builds
+   - Makefile and XcodeGen
+
+7. **Study Examples** → `demo-apps/iOS/Simple/` and `demo-apps/iOS/SimpleObjC/`
+   - Complete working examples
+   - High-level API patterns
 
 ---
 
@@ -355,18 +446,37 @@ See [LICENSE](LICENSE) for details.
 
 From the examples and documentation:
 
+- ✅ High-level APIs for rapid development
 - ✅ Safe runtime lifecycle management with `ChatKitCoordinator`
-- ✅ When to initialize runtime vs create conversations
-- ✅ Building simple single-conversation apps
-- ✅ Managing multiple conversations with `ConversationManager`
-- ✅ Implementing conversation history UI
-- ✅ Persisting conversations with convstore
-- ✅ Reactive UI updates with Combine
+- ✅ Ready-made UI components (`ChatKitConversationViewController`, `ChatKitConversationListViewController`)
+- ✅ Component embedding in various containers (navigation, sheets, drawers, tabs)
+- ✅ Managing multiple conversations with `ChatKitConversationManager`
+- ✅ Provider mechanisms (context, ASR, title generation)
+- ✅ Reproducible builds with Makefile and XcodeGen
 - ✅ Best practices and common pitfalls
 
 ---
 
-**Ready to build?** Start with [Getting Started](docs/getting-started.md) →
+## 🔧 Build Tooling
+
+ChatKit examples use standardized build tools for reproducibility:
+
+- **XcodeGen** - Generate Xcode projects from YAML
+- **Makefile** - Standardized build commands
+- **project.yml** - Version-controlled project configuration
+
+**See**: [Build Tooling Guide](docs/build-tooling.md) for complete instructions.
+
+**Quick start**:
+```bash
+cd demo-apps/iOS/Simple
+make generate  # Generate Xcode project
+make run       # Build and run on simulator
+```
+
+---
+
+**Ready to build?** Start with [Quick Start Guide](docs/quick-start.md) →
 
 ---
 

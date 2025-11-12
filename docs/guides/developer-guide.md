@@ -1,6 +1,10 @@
-# ChatKit Developer Guide
+# Swift Developer Guide
 
-A comprehensive guide to building conversational AI apps with ChatKit SDK, from beginner to expert.
+A comprehensive guide to building conversational AI apps with ChatKit SDK in Swift, from beginner to expert.
+
+> 🚀 **New to ChatKit?** Start with the [Swift Quick Start](../getting-started.md#swift-quick-start) for a 5-minute setup.
+> 
+> 📘 **Objective-C Developer?** See the [Objective-C Developer Guide](./objective-c-guide.md).
 
 ---
 
@@ -9,7 +13,8 @@ A comprehensive guide to building conversational AI apps with ChatKit SDK, from 
 1. [Part 1: Getting Started - Your First AI Chat App](#part-1-getting-started)
 2. [Part 2: Managing Multiple Conversations](#part-2-managing-multiple-conversations)
 3. [Part 3: Building a Conversation List UI](#part-3-building-a-conversation-list-ui)
-4. [Complete Examples](#complete-examples)
+4. [API Levels and Provider Customization](#api-levels-and-provider-customization)
+5. [Complete Examples](#complete-examples)
 
 ---
 
@@ -37,7 +42,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
     ],
     targets: [
         .target(
@@ -79,16 +84,26 @@ class AppCoordinator {
     }
     
     // Later, when user taps "New Chat" button:
-    func userRequestedNewChat(agentId: UUID) {
+    func userRequestedNewChat(agentId: UUID) async {
         // 3. NOW we create a conversation
-        let conversation = chatCoordinator.runtime.openConversation(
-            sessionId: UUID(),
-            agentId: agentId
-        )
-        
-        // 4. Show chat UI
-        let chatVC = ChatViewController(conversation: conversation)
-        navigationController?.pushViewController(chatVC, animated: true)
+        do {
+            let (record, conversation) = try await chatCoordinator.startConversation(
+                agentId: agentId,
+                title: nil,
+                agentName: "My Agent"
+            )
+            
+            // 4. Show ready-made chat UI using high-level component
+            let chatVC = ChatKitConversationViewController(
+                record: record,
+                conversation: conversation,
+                coordinator: chatCoordinator,
+                configuration: .default
+            )
+            navigationController?.pushViewController(chatVC, animated: true)
+        } catch {
+            print("Failed to create conversation: \(error)")
+        }
     }
 }
 ```
@@ -177,16 +192,29 @@ class MainViewController: UIViewController {
     }
     
     @objc private func startNewChat() {
-        // NOW create conversation (user requested it)
-        let agentId = UUID() // Your agent ID
-        let conversation = coordinator.runtime.openConversation(
-            sessionId: UUID(),
-            agentId: agentId
-        )
-        
-        // Show chat UI
-        let chatVC = ChatViewController(conversation: conversation)
-        navigationController?.pushViewController(chatVC, animated: true)
+        Task { @MainActor in
+            // NOW create conversation (user requested it)
+            let agentId = UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!
+            
+            do {
+                let (record, conversation) = try await coordinator.startConversation(
+                    agentId: agentId,
+                    title: nil,
+                    agentName: "My Agent"
+                )
+                
+                // Show ready-made chat UI using high-level component
+                let chatVC = ChatKitConversationViewController(
+                    record: record,
+                    conversation: conversation,
+                    coordinator: coordinator,
+                    configuration: .default
+                )
+                navigationController?.pushViewController(chatVC, animated: true)
+            } catch {
+                print("Failed to create conversation: \(error)")
+            }
+        }
     }
 }
 ```
@@ -201,12 +229,14 @@ The **recommended way** to manage `NeuronRuntime` lifecycle. It ensures:
 
 **Why use it?** Creating a new `NeuronRuntime` directly destroys the previous one, losing all conversation state. `ChatKitCoordinator` prevents this.
 
-#### NeuronRuntime
-The core orchestration layer that:
+#### Runtime
+The core orchestration layer (accessed via `coordinator.runtime`) that:
 - Connects to your AI agent server
 - Manages conversation state
 - Handles message routing
 - Provides conversation persistence
+
+**Note**: You typically don't access the runtime directly. Use `ChatKitCoordinator` methods instead.
 
 #### Conversation
 Represents a single chat session. Each conversation has:
@@ -216,6 +246,8 @@ Represents a single chat session. Each conversation has:
 - UI binding capability
 
 **When to create?** When the user explicitly requests it (tap button, select from list), NOT during app initialization.
+
+**How to show?** Use `ChatKitConversationViewController` - a ready-made component that handles all UI automatically.
 
 ---
 
@@ -266,21 +298,29 @@ class AppCoordinator {
 ### Step 2: Create Conversations
 
 ```swift
-func createNewConversation(agentId: UUID, title: String? = nil) {
-    guard let (record, conversation) = conversationManager.createConversation(
-        agentId: agentId,
-        title: title
-    ) else {
-        print("Failed to create conversation")
-        return
+func createNewConversation(agentId: UUID, title: String? = nil) async {
+    do {
+        let (record, conversation) = try await conversationManager.createConversation(
+            agentId: agentId,
+            title: title,
+            agentName: "My Agent",
+            deviceId: deviceId
+        )
+        
+        // record: metadata (id, title, lastMessage, etc.)
+        // conversation: the actual Conversation instance
+        
+        // Show ready-made chat UI
+        let chatVC = ChatKitConversationViewController(
+            record: record,
+            conversation: conversation,
+            coordinator: chatCoordinator,
+            configuration: .default
+        )
+        navigationController?.pushViewController(chatVC, animated: true)
+    } catch {
+        print("Failed to create conversation: \(error)")
     }
-    
-    // record: metadata (id, title, lastMessage, etc.)
-    // conversation: the actual Conversation instance
-    
-    // Show in UI
-    let chatVC = ChatViewController(conversation: conversation)
-    navigationController?.pushViewController(chatVC, animated: true)
 }
 ```
 
@@ -294,8 +334,13 @@ func resumeConversation(sessionId: UUID) {
         return
     }
     
-    // Show in UI
-    let chatVC = ChatViewController(conversation: conversation)
+    // Show ready-made chat UI
+    let chatVC = ChatKitConversationViewController(
+        record: record,
+        conversation: conversation,
+        coordinator: chatCoordinator,
+        configuration: .default
+    )
     navigationController?.pushViewController(chatVC, animated: true)
 }
 ```
@@ -363,7 +408,104 @@ func deleteConversation(sessionId: UUID) {
 
 ## Part 3: Building a Conversation List UI
 
-Now let's build a conversation history view using the manager.
+Now let's build a conversation history view. ChatKit provides a ready-made component: `ChatKitConversationListViewController`.
+
+### Option 1: Use Ready-Made Component (Recommended)
+
+The easiest way is to use `ChatKitConversationListViewController`:
+
+```swift
+import UIKit
+import FinClipChatKit
+
+class MainViewController: UIViewController {
+    private let coordinator: ChatKitCoordinator
+    
+    init(coordinator: ChatKitCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Create ready-made conversation list
+        var config = ChatKitConversationListConfiguration.default
+        config.headerTitle = "Conversations"
+        config.showSearchBar = true
+        config.showNewButton = true
+        config.enableSwipeToDelete = true
+        
+        let listVC = ChatKitConversationListViewController(
+            coordinator: coordinator,
+            configuration: config
+        )
+        listVC.delegate = self
+        
+        // Embed in navigation controller
+        addChild(listVC)
+        view.addSubview(listVC.view)
+        listVC.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            listVC.view.topAnchor.constraint(equalTo: view.topAnchor),
+            listVC.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            listVC.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            listVC.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        listVC.didMove(toParent: self)
+    }
+}
+
+extension MainViewController: ChatKitConversationListViewControllerDelegate {
+    func conversationListViewController(
+        _ controller: ChatKitConversationListViewController,
+        didSelectConversation record: ConversationRecord
+    ) {
+        // User selected a conversation - show chat
+        guard let conversation = coordinator.conversation(for: record.id) else { return }
+        
+        let chatVC = ChatKitConversationViewController(
+            record: record,
+            conversation: conversation,
+            coordinator: coordinator,
+            configuration: .default
+        )
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
+    
+    func conversationListViewControllerDidRequestNewConversation(
+        _ controller: ChatKitConversationListViewController
+    ) {
+        // User tapped "New" button - create conversation
+        Task { @MainActor in
+            let agentId = UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!
+            let (record, conversation) = try await coordinator.startConversation(
+                agentId: agentId,
+                title: nil,
+                agentName: "My Agent"
+            )
+            
+            let chatVC = ChatKitConversationViewController(
+                record: record,
+                conversation: conversation,
+                coordinator: coordinator,
+                configuration: .default
+            )
+            navigationController?.pushViewController(chatVC, animated: true)
+        }
+    }
+}
+```
+
+**Benefits**:
+- ✅ Minimal code (20-30 lines)
+- ✅ Built-in search, swipe actions, selection handling
+- ✅ Automatic updates via Combine
+- ✅ Consistent UI and behavior
+
+### Option 2: Custom Implementation
+
+If you need a custom UI, you can build your own using the manager:
 
 ### Step 1: Create the View Controller
 
@@ -423,14 +565,28 @@ class ConversationListViewController: UIViewController {
     }
     
     @objc private func createNewChat() {
-        let agentId = UUID() // Your agent ID
-        
-        guard let (_, conversation) = conversationManager.createConversation(
-            agentId: agentId
-        ) else { return }
-        
-        let chatVC = ChatViewController(conversation: conversation)
-        navigationController?.pushViewController(chatVC, animated: true)
+        Task { @MainActor in
+            let agentId = UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!
+            
+            do {
+                let (record, conversation) = try await conversationManager.createConversation(
+                    agentId: agentId,
+                    title: nil,
+                    agentName: "My Agent",
+                    deviceId: deviceId
+                )
+                
+                let chatVC = ChatKitConversationViewController(
+                    record: record,
+                    conversation: conversation,
+                    coordinator: coordinator,
+                    configuration: .default
+                )
+                navigationController?.pushViewController(chatVC, animated: true)
+            } catch {
+                print("Failed to create conversation: \(error)")
+            }
+        }
     }
 }
 ```
@@ -460,7 +616,12 @@ extension ConversationListViewController: UITableViewDelegate {
             return
         }
         
-        let chatVC = ChatViewController(conversation: conversation)
+        let chatVC = ChatKitConversationViewController(
+            record: record,
+            conversation: conversation,
+            coordinator: coordinator,
+            configuration: .default
+        )
         navigationController?.pushViewController(chatVC, animated: true)
     }
     
@@ -513,40 +674,148 @@ You now have a full-featured conversation list with:
 
 ---
 
+## API Levels and Provider Customization
+
+### Understanding API Levels
+
+ChatKit provides multiple API levels:
+
+#### High-Level APIs (Recommended)
+- `ChatKitCoordinator` - Runtime lifecycle
+- `ChatKitConversationViewController` - Ready-made chat UI
+- `ChatKitConversationListViewController` - Ready-made list UI
+- Minimal code, maximum productivity
+
+**See**: [API Levels Guide](../api-levels.md#high-level-apis-recommended)
+
+#### Low-Level APIs (Advanced)
+- Direct runtime access
+- Manual UI binding
+- Custom implementations
+- More code, more control
+
+**See**: [API Levels Guide](../api-levels.md#low-level-apis-advanced)
+
+### Provider Customization
+
+Customize framework behavior without modifying framework code:
+
+#### Context Providers
+Attach contextual information (location, calendar events) to messages:
+
+```swift
+class LocationContextProvider: ConvoUIContextProvider {
+    func provideContext(completion: @escaping (ConvoUIContext?) -> Void) {
+        // Your location logic
+        let context = ConvoUIContext(
+            title: "Current Location",
+            content: "Lat: 37.7749, Lng: -122.4194"
+        )
+        completion(context)
+    }
+}
+
+// Register in configuration
+var config = ChatKitConversationConfiguration.default
+config.contextProvidersProvider = {
+    MainActor.assumeIsolated {
+        [ConvoUIContextProviderBridge(provider: LocationContextProvider())]
+    }
+}
+```
+
+#### ASR Providers
+Custom Automatic Speech Recognition for voice input:
+
+```objc
+@interface MyASRProvider : NSObject <FinConvoSpeechRecognizer>
+@end
+
+@implementation MyASRProvider
+
+- (void)transcribeAudio:(NSURL *)audioFileURL
+             completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+    // Your ASR implementation
+    completion(transcribedText, nil);
+}
+
+@end
+```
+
+#### Title Generation Providers
+Custom conversation title generation:
+
+```swift
+class CustomTitleProvider: ConversationTitleProvider {
+    func shouldGenerateTitle(sessionId: UUID, messageCount: Int, currentTitle: String?) async -> Bool {
+        return messageCount >= 3 && currentTitle == nil
+    }
+    
+    func generateTitle(messages: [NeuronMessage]) async throws -> String? {
+        // Your title generation logic (e.g., LLM call)
+        return try await callLLMForTitle(messages: messages)
+    }
+}
+
+// Register when creating manager
+let manager = ChatKitConversationManager(titleProvider: CustomTitleProvider())
+```
+
+**See**: [API Levels Guide](../api-levels.md#provider-mechanism) for complete details.
+
+---
+
 ## Complete Examples
 
-Explore the working examples in this repository for advanced patterns:
+Explore the working examples in this repository:
 
-### AI-Bank
-**Location**: `demo-apps/iOS/AI-Bank`
+### Simple (Swift)
+**Location**: `demo-apps/iOS/Simple/`
 
-**Features:**
-- Multiple AI agents (wealth advisor, customer support)
-- Full conversation history
-- Custom agent switching logic
-- Connection mode handling (fixture/remote)
+**What it demonstrates**:
+- High-level APIs (`ChatKitCoordinator`, `ChatKitConversationViewController`)
+- Drawer-based navigation pattern
+- Component embedding
+- Standard build tooling
 
-**Run it:**
+**Run it**:
 ```bash
-cd demo-apps/iOS/AI-Bank
+cd demo-apps/iOS/Simple
 make run
 ```
 
-**Note:** This example shows **app-level** patterns like agent management and connection modes. These are NOT part of the ChatKit SDK - they're design choices the app makes.
+**See**: [Simple README](../../../demo-apps/iOS/Simple/README.md)
 
-### Smart-Gov
-**Location**: `demo-apps/iOS/Smart-Gov`
+### SimpleObjC (Objective-C)
+**Location**: `demo-apps/iOS/SimpleObjC/`
 
-**Features:**
-- Government service agents
-- Multi-session management
-- Localized conversations
+**What it demonstrates**:
+- Objective-C high-level APIs
+- Navigation-based flow
+- Remote dependency usage
 
-**Run it:**
+**Run it**:
 ```bash
-cd demo-apps/iOS/Smart-Gov
+cd demo-apps/iOS/SimpleObjC
 make run
 ```
+
+**See**: [SimpleObjC README](../../../demo-apps/iOS/SimpleObjC/README.md)
+
+### Additional Examples
+
+For more advanced patterns and use cases, explore the complete working examples:
+
+- **Simple Demo** (`demo-apps/iOS/Simple/`) - Swift high-level APIs
+- **SimpleObjC Demo** (`demo-apps/iOS/SimpleObjC/`) - Objective-C high-level APIs
+
+Both examples demonstrate:
+- High-level API usage
+- Component embedding patterns
+- Provider customization
+- Standard build tooling
+
+**Note:** These examples demonstrate high-level APIs with minimal code - perfect for learning!
 
 ---
 
@@ -563,7 +832,8 @@ make run
 2. **Create conversations when user requests them**
    ```swift
    // When user taps "New Chat"
-   let conversation = coordinator.runtime.openConversation(...)
+   let (record, conversation) = try await coordinator.startConversation(...)
+   let chatVC = ChatKitConversationViewController(...)
    ```
 
 3. **Use ChatKitConversationManager for multi-session apps**
@@ -579,10 +849,11 @@ make run
        .store(in: &cancellables)
    ```
 
-5. **Clean up when done**
+5. **Use high-level components**
    ```swift
-   conversation.unbindUI() // Before destroying UI
-   manager.deleteConversation(sessionId) // To permanently remove
+   // Ready-made components handle lifecycle automatically
+   let chatVC = ChatKitConversationViewController(...)
+   let listVC = ChatKitConversationListViewController(...)
    ```
 
 ### ❌ DON'T
@@ -591,7 +862,7 @@ make run
    ```swift
    // ❌ BAD: Creates conversation too early
    let coordinator = ChatKitCoordinator(config: config)
-   let conversation = coordinator.runtime.openConversation(...) // Too soon!
+   let conversation = try await coordinator.startConversation(...) // Too soon!
    ```
 
 2. **Don't create multiple coordinators**
@@ -627,18 +898,15 @@ make run
    // Use conversation immediately, persistence happens async
    ```
 
-5. **Don't leak conversations**
+5. **Don't use low-level APIs unless necessary**
    ```swift
-   // ❌ BAD: Never unbinds UI
-   class ChatVC: UIViewController {
-       var conversation: Conversation?
-       // No cleanup in deinit
-   }
+   // ❌ BAD: Unnecessary complexity
+   let hosting = ChatHostingController()
+   let adapter = ChatKitAdapter(chatView: hosting.chatView)
+   conversation.bindUI(adapter) // Too verbose!
    
-   // ✅ GOOD: Always unbind
-   deinit {
-       conversation?.unbindUI()
-   }
+   // ✅ GOOD: Use high-level component
+   let chatVC = ChatKitConversationViewController(...) // Simple!
    ```
 
 ---
@@ -647,21 +915,18 @@ make run
 
 ### "ChatKitCoordinator not found"
 
-**Solution**: Ensure you're using ChatKit v0.3.1 or later:
+**Solution**: Ensure you're using ChatKit v0.6.1 or later:
 ```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.3.1")
+.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
 ```
 
 ### Conversations not persisting
 
 **Solution**: Ensure you're using `.persistent` storage:
 ```swift
-let config = NeuronKitConfig(
-    serverURL: url,
-    deviceId: deviceId,
-    userId: userId,
-    storage: .persistent // Important!
-)
+let config = NeuronKitConfig.default(serverURL: url)
+    .withUserId(userId)
+// Persistent storage is the default
 ```
 
 ### Messages not updating in UI
@@ -762,7 +1027,7 @@ public final class Conversation {
 1. **Build your first app** - Start with Part 1
 2. **Add conversation management** - Follow Part 2
 3. **Implement history UI** - Complete Part 3
-4. **Explore demos** - Study AI-Bank and Smart-Gov
+4. **Explore demos** - Study Simple and SimpleObjC examples
 5. **Customize** - See `docs/how-to/customize-ui.md`
 
 ---
