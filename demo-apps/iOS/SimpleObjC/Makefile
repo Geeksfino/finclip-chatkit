@@ -2,7 +2,8 @@ PROJECT_NAME=SimpleObjC
 PROJECT_FILE=$(PROJECT_NAME).xcodeproj
 XCODEGEN=which xcodegen
 SIMULATOR_DEVICE?=iPhone 17
-SIMULATOR_DESTINATION?=platform=iOS Simulator,name=$(SIMULATOR_DEVICE)
+SIMULATOR_OS?=latest
+SIMULATOR_DESTINATION?=platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_OS)
 
 .PHONY: generate open clean deep-clean run
 
@@ -21,21 +22,29 @@ open: generate
 
 run: generate
 	@echo "🚀 Building and running $(PROJECT_NAME) on iOS simulator..."
+	@echo "📱 Finding simulator UUID for $(SIMULATOR_DEVICE)..."
+	SIM_UUID=$$(xcrun simctl list devices available | grep "$(SIMULATOR_DEVICE) (" | head -n 1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/'); \
+	if [ -z "$$SIM_UUID" ]; then \
+		echo "❌ No available simulator found matching '$(SIMULATOR_DEVICE)'"; \
+		echo "💡 Run 'xcrun simctl list devices available' to see available simulators"; \
+		exit 1; \
+	fi; \
+	echo "✓ Using simulator: $$SIM_UUID"; \
 	xcodebuild \
 	  -project "$(PROJECT_FILE)" \
 	  -scheme "$(PROJECT_NAME)" \
-	  -destination '$(SIMULATOR_DESTINATION)' \
+	  -destination "platform=iOS Simulator,id=$$SIM_UUID" \
 	  -configuration Debug \
 	  -derivedDataPath build/DerivedData \
-	  build
+	  build; \
 	APP_PATH="build/DerivedData/Build/Products/Debug-iphonesimulator/$(PROJECT_NAME).app"; \
 	if [ ! -d "$$APP_PATH" ]; then \
 		echo "❌ Built app not found at $$APP_PATH"; \
 		exit 1; \
 	fi; \
-	xcrun simctl boot "$(SIMULATOR_DEVICE)" >/dev/null 2>&1 || true; \
-	xcrun simctl install booted "$$APP_PATH"; \
-	xcrun simctl launch booted com.finclip.chatkit.simpleobjc
+	xcrun simctl boot "$$SIM_UUID" >/dev/null 2>&1 || true; \
+	xcrun simctl install "$$SIM_UUID" "$$APP_PATH"; \
+	xcrun simctl launch "$$SIM_UUID" com.finclip.chatkit.simpleobjc
 	@echo "✅ $(PROJECT_NAME) launched on simulator"
 
 clean:
