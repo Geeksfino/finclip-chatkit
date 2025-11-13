@@ -578,7 +578,7 @@ manager.recordsPublisher
 
 ## 支持
 
-- **全面指南**: [开发者指南](./developer-guide.zh.md)
+- **全面指南**: [开发者指南](./guides/developer-guide.zh.md)
 - **示例**: `demo-apps/iOS/AI-Bank` 和 `demo-apps/iOS/Smart-Gov`
 - **问题**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
 
