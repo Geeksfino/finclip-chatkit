@@ -12,13 +12,17 @@
 		1B097C0438BFC2FFFC91FC65 /* ComposerToolsExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E088539FA0EA3091236F7E /* ComposerToolsExample.swift */; };
 		1E5CBCDFFF374DE9238D7684 /* ChatContextProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0D8FFD7BAEF8A01060BFF /* ChatContextProviders.swift */; };
 		32F2BD265726A0B607C92F1E /* LocationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FADFCDA2DCEA1441996423 /* LocationContextProvider.swift */; };
+		433B62E6530F3316E0D7DAD8 /* NeuronKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8BB662629D2BA2A80082EBDF /* NeuronKit */; };
 		6A5D696B52E702AFD93CB0E0 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 110C914E608F30D65F0C1945 /* ChatKit */; };
 		74C0EC8150A8042ACBBB674F /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5E3C6E2EA2B5AB64032294 /* DrawerContainerViewController.swift */; };
 		853AEAB5D90061867533F8EA /* CalendarContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B55CE32D188C3D3ACA8848A /* CalendarContextProvider.swift */; };
 		88439F5AF35AB72A3C8B41B8 /* DrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6890E4CE4AEDA796E7773FC0 /* DrawerViewController.swift */; };
 		A1CA7AEC3DDCF698B5AF0414 /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6BCCFF9C83F8F22211BD887 /* LocalizationHelper.swift */; };
+		A4915021EFDC8CE7FE077FF4 /* ConvoUI in Frameworks */ = {isa = PBXBuildFile; productRef = FB4A5FA9838E4F3DE017B36D /* ConvoUI */; };
+		C7553EE507B1C3D9CF966448 /* convstorelib in Frameworks */ = {isa = PBXBuildFile; productRef = 168ECEB0811BAD3171A9D8DE /* convstorelib */; };
 		CCFA0A4216DF715CA14AD9B3 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE09628904B945EFC17DBD /* AppConfig.swift */; };
 		ED941FDC7C61FDD353D1A173 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D8E7F8E7B87E199583C0AF /* ChatViewController.swift */; };
+		EDC396094A417E2FEEE43230 /* SandboxSDK in Frameworks */ = {isa = PBXBuildFile; productRef = C2F0A4AF6FD5CF0C4C5CB225 /* SandboxSDK */; };
 		EDFC1AC98BDDF1F3AFF9C05C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4304A358B28D0439FF850 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +49,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A5D696B52E702AFD93CB0E0 /* ChatKit in Frameworks */,
+				433B62E6530F3316E0D7DAD8 /* NeuronKit in Frameworks */,
+				EDC396094A417E2FEEE43230 /* SandboxSDK in Frameworks */,
+				C7553EE507B1C3D9CF966448 /* convstorelib in Frameworks */,
+				A4915021EFDC8CE7FE077FF4 /* ConvoUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,7 +123,6 @@
 			buildPhases = (
 				BCA9457679BF60740C638B7B /* Sources */,
 				FF1BB5D4080F882B00F01454 /* Frameworks */,
-				624685D5E625EF4B9733ED65 /* Sign Nested ChatKit Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,6 +131,10 @@
 			name = Simple;
 			packageProductDependencies = (
 				110C914E608F30D65F0C1945 /* ChatKit */,
+				8BB662629D2BA2A80082EBDF /* NeuronKit */,
+				C2F0A4AF6FD5CF0C4C5CB225 /* SandboxSDK */,
+				168ECEB0811BAD3171A9D8DE /* convstorelib */,
+				FB4A5FA9838E4F3DE017B36D /* ConvoUI */,
 			);
 			productName = Simple;
 			productReference = 90B5AA543F70FE00E1D0FAAC /* Simple.app */;
@@ -150,6 +161,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5CFE8088C58BF7576778A9BB /* XCRemoteSwiftPackageReference "finclip-chatkit" */,
+				DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -159,27 +171,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		624685D5E625EF4B9733ED65 /* Sign Nested ChatKit Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Sign Nested ChatKit Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "FRAMEWORK_DIR=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks\"\nif [ -d \"${FRAMEWORK_DIR}\" ]; then\n  find \"${FRAMEWORK_DIR}\" -type d -name \"*.framework\" -print0 | while IFS= read -r -d '' FRAME; do\n    /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" --preserve-metadata=identifier,entitlements \"${FRAME}\" || exit 1\n  done\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BCA9457679BF60740C638B7B /* Sources */ = {
@@ -273,16 +264,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Simple;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simple;
 				PRODUCT_NAME = Simple;
 				SDKROOT = iphoneos;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -293,16 +283,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Simple;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simple;
 				PRODUCT_NAME = Simple;
 				SDKROOT = iphoneos;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -392,7 +381,15 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.1;
+				minimumVersion = 0.7.0;
+			};
+		};
+		DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Geeksfino/finclip-neuron.git";
+			requirement = {
+				branch = "main-swift6_0";
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -402,6 +399,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5CFE8088C58BF7576778A9BB /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
 			productName = ChatKit;
+		};
+		168ECEB0811BAD3171A9D8DE /* convstorelib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = convstorelib;
+		};
+		8BB662629D2BA2A80082EBDF /* NeuronKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = NeuronKit;
+		};
+		C2F0A4AF6FD5CF0C4C5CB225 /* SandboxSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = SandboxSDK;
+		};
+		FB4A5FA9838E4F3DE017B36D /* ConvoUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = ConvoUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -8,8 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		3BAB9ACE51B7FCD443CE7B22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */; };
+		3FE748CE7F306EA16962F517 /* ConvoUI in Frameworks */ = {isa = PBXBuildFile; productRef = BF4703720C2C9DF58B64C139 /* ConvoUI */; };
+		58739E5F66867C038A547314 /* SandboxSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 77030A425EE80BEF3333ABF7 /* SandboxSDK */; };
 		5A3D1EDE2CA8BD0FF5B7BA6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2888DCB4D8E9C972AA7455A /* LaunchScreen.storyboard */; };
 		5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A750D14341E9AEE7F203FF5 /* AppDelegate.m */; };
+		66478895D49FB1359F4F3081 /* NeuronKit in Frameworks */ = {isa = PBXBuildFile; productRef = 74F96B464F123EDB1ABA697E /* NeuronKit */; };
+		9822134BAC42EB7E0624B438 /* convstorelib in Frameworks */ = {isa = PBXBuildFile; productRef = BC31D1D072C351808278329D /* convstorelib */; };
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
@@ -39,6 +43,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				D838ECD1BDED30949B5012D9 /* ChatKit in Frameworks */,
+				66478895D49FB1359F4F3081 /* NeuronKit in Frameworks */,
+				58739E5F66867C038A547314 /* SandboxSDK in Frameworks */,
+				9822134BAC42EB7E0624B438 /* convstorelib in Frameworks */,
+				3FE748CE7F306EA16962F517 /* ConvoUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +106,6 @@
 				0FC5B0223D31A3BE755C243C /* Sources */,
 				624342ED76518ED11C6E1245 /* Resources */,
 				D299B431DE216B2FC82FECBF /* Frameworks */,
-				809F05C9B84EC829DD49313B /* Sign Nested ChatKit Frameworks */,
 			);
 			buildRules = (
 			);
@@ -107,6 +114,10 @@
 			name = SimpleObjC;
 			packageProductDependencies = (
 				67E3C9BC173127A28A9956A7 /* ChatKit */,
+				74F96B464F123EDB1ABA697E /* NeuronKit */,
+				77030A425EE80BEF3333ABF7 /* SandboxSDK */,
+				BC31D1D072C351808278329D /* convstorelib */,
+				BF4703720C2C9DF58B64C139 /* ConvoUI */,
 			);
 			productName = SimpleObjC;
 			productReference = 60FEA79275FC6B48F6017B1C /* SimpleObjC.app */;
@@ -133,6 +144,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */,
+				E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -154,27 +166,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		809F05C9B84EC829DD49313B /* Sign Nested ChatKit Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Sign Nested ChatKit Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "FRAMEWORK_DIR=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks\"\nif [ -d \"${FRAMEWORK_DIR}\" ]; then\n  find \"${FRAMEWORK_DIR}\" -type d -name \"*.framework\" -print0 | while IFS= read -r -d '' FRAME; do\n    /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" --preserve-metadata=identifier,entitlements \"${FRAME}\" || exit 1\n  done\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0FC5B0223D31A3BE755C243C /* Sources */ = {
@@ -272,16 +263,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SimpleObjC;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simpleobjc;
 				PRODUCT_NAME = SimpleObjC;
 				SDKROOT = iphoneos;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -292,16 +282,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SimpleObjC;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simpleobjc;
 				PRODUCT_NAME = SimpleObjC;
 				SDKROOT = iphoneos;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -391,7 +380,15 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.1;
+				minimumVersion = 0.7.0;
+			};
+		};
+		E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Geeksfino/finclip-neuron.git";
+			requirement = {
+				branch = "main-swift6_0";
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -401,6 +398,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
 			productName = ChatKit;
+		};
+		74F96B464F123EDB1ABA697E /* NeuronKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = NeuronKit;
+		};
+		77030A425EE80BEF3333ABF7 /* SandboxSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = SandboxSDK;
+		};
+		BC31D1D072C351808278329D /* convstorelib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = convstorelib;
+		};
+		BF4703720C2C9DF58B64C139 /* ConvoUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
+			productName = ConvoUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

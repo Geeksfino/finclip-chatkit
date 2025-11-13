@@ -15,7 +15,10 @@ schemes:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.6.1
+    from: 0.7.0
+  finclip-neuron:
+    url: https://github.com/Geeksfino/finclip-neuron.git
+    branch: main-swift6_0
 
 targets:
   Simple:
@@ -31,21 +34,14 @@ targets:
       INFOPLIST_KEY_CFBundleDisplayName: Simple
       INFOPLIST_FILE: App/App/Info.plist
       ENABLE_BITCODE: NO
-      FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/Frameworks/FinClipChatKit.framework/Frameworks
-      SWIFT_INCLUDE_PATHS[sdk=iphoneos*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-      SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]: $(inherited) $(BUILT_PRODUCTS_DIR)/FinClipChatKit.framework/Frameworks
-    postbuildScripts:
-      - name: Sign Nested ChatKit Frameworks
-        shell: /bin/sh
-        script: |
-          FRAMEWORK_DIR="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FinClipChatKit.framework/Frameworks"
-          if [ -d "${FRAMEWORK_DIR}" ]; then
-            find "${FRAMEWORK_DIR}" -type d -name "*.framework" -print0 | while IFS= read -r -d '' FRAME; do
-              /usr/bin/codesign --force --sign "${EXPANDED_CODE_SIGN_IDENTITY}" --preserve-metadata=identifier,entitlements "${FRAME}" || exit 1
-            done
-          fi
     dependencies:
       - package: ChatKit
+      - product: NeuronKit
+        package: finclip-neuron
+      - product: SandboxSDK
+        package: finclip-neuron
+      - product: convstorelib
+        package: finclip-neuron
+      - product: ConvoUI
+        package: finclip-neuron
 
