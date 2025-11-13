@@ -4,12 +4,14 @@
 
 ## TL;DR - 5 分钟快速开始
 
+> **注意：** 默认情况下，服务器使用**模拟响应**（预脚本场景）。要使用**真实 AI**（DeepSeek 或其他 LLM 提供商），请参见下面的[使用真实 AI](#使用真实-aideepseek-或其他-llm-提供商)。
+
 ### 终端 1：启动后端服务器
 
 ```bash
 cd demo-apps/server/agui-test-server
 npm install  # 仅首次需要
-npm run dev
+npm run dev  # 默认使用模拟响应
 ```
 
 等待：`✓ Server listening at http://0.0.0.0:3000`
@@ -53,6 +55,12 @@ make run
 
 后端服务器提供响应聊天消息的 AI 代理。
 
+**两种可用模式：**
+- **模拟模式**（默认）：使用预脚本场景，无需 API 密钥
+- **LLM 模式**：使用真实 AI 提供商（DeepSeek、OpenAI 等）- 需要配置
+
+#### 以模拟模式启动（默认）
+
 ```bash
 # 导航到服务器目录
 cd demo-apps/server/agui-test-server
@@ -60,14 +68,23 @@ cd demo-apps/server/agui-test-server
 # 安装依赖（仅首次需要）
 npm install
 
-# 以开发模式启动
+# 以模拟模式启动（预脚本响应）
 npm run dev
+```
+
+#### 以 LLM 模式启动（真实 AI）
+
+首先配置您的 LLM 提供商（参见[使用真实 AI](#使用真实-aideepseek-或其他-llm-提供商)），然后：
+
+```bash
+# 启用 LLM 提供商启动
+npm run dev --use-llm
 ```
 
 **预期输出：**
 ```
 [11:43:41.000] INFO: Starting AG-UI test server...
-[11:43:41.123] INFO: Default agent type: scenario
+[11:43:41.123] INFO: Agent mode: emulated  # 如果使用 --use-llm 则为 "llm"
 [11:43:41.456] INFO: Server listening at http://0.0.0.0:3000
 ```
 
@@ -204,22 +221,67 @@ make run SIMULATOR_DEVICE="iPhone 16"
 
 ## 高级用法
 
-### 使用真实 AI（DeepSeek）
+### 使用真实 AI（DeepSeek 或其他 LLM 提供商）
 
-1. 从 [DeepSeek](https://platform.deepseek.com/) 获取 API 密钥
+要使用真实 AI 而不是模拟响应，您需要配置 LLM 提供商。
 
-2. 配置服务器（`demo-apps/server/agui-test-server/.env`）：
-   ```env
-   DEFAULT_AGENT=deepseek
-   DEEPSEEK_API_KEY=sk-your-key-here
-   ```
+**我们推荐使用 DeepSeek**，因为它以低成本提供高质量响应。
 
-3. 重启服务器：
-   ```bash
-   npm run dev
-   ```
+#### 步骤 1：获取 API 密钥
+
+从 [DeepSeek 平台](https://platform.deepseek.com/)（或您首选的 OpenAI 兼容提供商）获取 API 密钥。
+
+#### 步骤 2：配置环境
+
+复制示例配置文件：
+
+```bash
+cd demo-apps/server/agui-test-server
+cp .env.example .env
+```
+
+然后使用您的首选配置编辑 `.env`：
+
+**选项 A：直接使用 DeepSeek（推荐）**
+```env
+# 取消注释这些行：
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+**选项 B：通过 LiteLLM（支持多个提供商）**
+```env
+LLM_PROVIDER=litellm
+LITELLM_ENDPOINT=http://localhost:4000/v1
+LITELLM_MODEL=deepseek-chat
+LITELLM_API_KEY=your-api-key-here
+```
+
+> **注意：** LiteLLM 充当代理，通过统一接口支持多个 LLM 提供商。如果使用此选项，您需要单独设置 LiteLLM。
+
+#### 步骤 3：以 LLM 模式启动服务器
+
+**重要：** 您必须使用 `--use-llm` 标志来启用 LLM 模式：
+
+```bash
+npm run dev --use-llm
+```
+
+**预期输出：**
+```
+[11:43:41.000] INFO: Starting AG-UI test server...
+[11:43:41.123] INFO: Agent mode: llm          # ← 确认 LLM 模式已激活
+[11:43:41.234] INFO: LLM provider: deepseek   # ← 显示您的提供商
+[11:43:41.456] INFO: Server listening at http://0.0.0.0:3000
+```
 
 现在您的 iOS 应用将获得真实的 AI 响应！
+
+**故障排除：**
+- 如果您看到 `Agent mode: emulated` 而不是 `llm`，请确保包含了 `--use-llm` 标志
+- 如果出现 API 错误，请验证 `.env` 中的 API 密钥是否正确
+- 检查 `.env` 文件是否在 `demo-apps/server/agui-test-server/` 目录中
 
 ### 在物理设备上运行
 

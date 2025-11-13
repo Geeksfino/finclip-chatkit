@@ -4,12 +4,14 @@ Quick guide to get ChatKit demos running with the backend server.
 
 ## TL;DR - Get Started in 5 Minutes
 
+> **Note:** By default, the server uses **emulated responses** (pre-scripted scenarios). To use **real AI** (DeepSeek or other LLM providers), see [Using Real AI](#using-real-ai-deepseek-or-other-llm-providers) below.
+
 ### Terminal 1: Start Backend Server
 
 ```bash
 cd demo-apps/server/agui-test-server
 npm install  # First time only
-npm run dev
+npm run dev  # Uses emulated responses by default
 ```
 
 Wait for: `✓ Server listening at http://0.0.0.0:3000`
@@ -53,6 +55,12 @@ That's it! The app will launch on the iOS Simulator and connect to the server.
 
 The backend server provides the AI agent that responds to chat messages.
 
+**Two modes available:**
+- **Emulated mode** (default): Uses pre-scripted scenarios, no API keys needed
+- **LLM mode**: Uses real AI providers (DeepSeek, OpenAI, etc.) - requires configuration
+
+#### Starting in Emulated Mode (Default)
+
 ```bash
 # Navigate to server directory
 cd demo-apps/server/agui-test-server
@@ -60,14 +68,23 @@ cd demo-apps/server/agui-test-server
 # Install dependencies (first time only)
 npm install
 
-# Start in development mode
+# Start in emulated mode (pre-scripted responses)
 npm run dev
+```
+
+#### Starting in LLM Mode (Real AI)
+
+First configure your LLM provider (see [Using Real AI](#using-real-ai-deepseek-or-other-llm-providers)), then:
+
+```bash
+# Start with LLM provider enabled
+npm run dev --use-llm
 ```
 
 **Expected output:**
 ```
 [11:43:41.000] INFO: Starting AG-UI test server...
-[11:43:41.123] INFO: Default agent type: scenario
+[11:43:41.123] INFO: Agent mode: emulated  # or "llm" if using --use-llm
 [11:43:41.456] INFO: Server listening at http://0.0.0.0:3000
 ```
 
@@ -204,22 +221,67 @@ make run SIMULATOR_DEVICE="iPhone 16"
 
 ## Advanced Usage
 
-### Using Real AI (DeepSeek)
+### Using Real AI (DeepSeek or Other LLM Providers)
 
-1. Get API key from [DeepSeek](https://platform.deepseek.com/)
+To use real AI instead of emulated responses, you need to configure an LLM provider.
 
-2. Configure server (`demo-apps/server/agui-test-server/.env`):
-   ```env
-   DEFAULT_AGENT=deepseek
-   DEEPSEEK_API_KEY=sk-your-key-here
-   ```
+**We recommend using DeepSeek** as it provides high-quality responses at low cost.
 
-3. Restart server:
-   ```bash
-   npm run dev
-   ```
+#### Step 1: Get an API Key
+
+Get your API key from [DeepSeek Platform](https://platform.deepseek.com/) (or your preferred OpenAI-compatible provider).
+
+#### Step 2: Configure the Environment
+
+Copy the example configuration file:
+
+```bash
+cd demo-apps/server/agui-test-server
+cp .env.example .env
+```
+
+Then edit `.env` with your preferred configuration:
+
+**Option A: Direct DeepSeek (Recommended)**
+```env
+# Uncomment these lines:
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+**Option B: Via LiteLLM (supports multiple providers)**
+```env
+LLM_PROVIDER=litellm
+LITELLM_ENDPOINT=http://localhost:4000/v1
+LITELLM_MODEL=deepseek-chat
+LITELLM_API_KEY=your-api-key-here
+```
+
+> **Note:** LiteLLM acts as a proxy that supports multiple LLM providers with a unified interface. You'll need to set up LiteLLM separately if using this option.
+
+#### Step 3: Start Server with LLM Mode
+
+**Important:** You must use the `--use-llm` flag to enable LLM mode:
+
+```bash
+npm run dev --use-llm
+```
+
+**Expected output:**
+```
+[11:43:41.000] INFO: Starting AG-UI test server...
+[11:43:41.123] INFO: Agent mode: llm          # ← Confirms LLM mode is active
+[11:43:41.234] INFO: LLM provider: deepseek   # ← Shows your provider
+[11:43:41.456] INFO: Server listening at http://0.0.0.0:3000
+```
 
 Now your iOS app will get real AI responses!
+
+**Troubleshooting:**
+- If you see `Agent mode: emulated` instead of `llm`, make sure you included the `--use-llm` flag
+- If you get API errors, verify your API key is correct in `.env`
+- Check that `.env` file is in `demo-apps/server/agui-test-server/` directory
 
 ### Running on Physical Device
 
