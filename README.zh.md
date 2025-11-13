@@ -1,5 +1,7 @@
 # FinClip ChatKit
 
+[English](README.md) | [简体中文](README.zh.md)
+
 **为 iOS 应用打造的对话式 AI SDK。**
 
 FinClip ChatKit 是一个可嵌入的 SDK,让您能够直接在 iOS 应用中构建智能的、上下文感知的对话体验。它提供了即插即用的聊天界面、安全的代理操作沙箱,以及对代理协议(如 AG-UI、OpenAI Apps SDK 和 MCP-UI)的原生桥接——所有功能集于一身。
