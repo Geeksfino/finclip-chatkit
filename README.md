@@ -1,5 +1,7 @@
 # FinClip ChatKit
 
+[English](README.md) | [简体中文](README.zh.md)
+
 **The conversational AI SDK for iOS apps.**
 
 FinClip ChatKit is an embeddable SDK that lets you build intelligent, context-aware conversational experiences directly inside your iOS apps. It provides a drop-in chat interface, secure sandbox for agent actions, and native bridges for agent protocols such as AG-UI, OpenAI Apps SDK, and MCP-UI — all in one package.
