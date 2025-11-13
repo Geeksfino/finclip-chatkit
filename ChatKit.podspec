@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ChatKit"
-  s.version      = "0.6.1"
+  s.version      = "0.6.5"
   s.summary          = "Finclip conversational AI SDK for iOS."
   s.description      = <<-DESC
   ChatKit bundles the Finclip NeuronKit orchestration layer with ConvoUI components,
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => "Commercial", :file => "LICENSE" }
   s.author           = { "Finclip" => "support@finclip.com" }
   s.source           = {
-    :http => "https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.6.1/ChatKit.xcframework.zip"
+    :http => "https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.6.5/ChatKit.xcframework.zip"
   }
   s.vendored_frameworks = "ChatKit.xcframework"
   s.platform         = :ios, "15.0"
