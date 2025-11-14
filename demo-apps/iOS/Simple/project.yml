@@ -13,9 +13,9 @@ schemes:
       config: Debug
 
 packages:
-  ChatKit:
+  FinClipChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.7.0
+    from: 0.7.2
   finclip-neuron:
     url: https://github.com/Geeksfino/finclip-neuron.git
     branch: main-swift6_0
@@ -35,13 +35,14 @@ targets:
       INFOPLIST_FILE: App/App/Info.plist
       ENABLE_BITCODE: NO
     dependencies:
-      - package: ChatKit
+      - product: FinClipChatKit
+        package: FinClipChatKit
       - product: NeuronKit
         package: finclip-neuron
       - product: SandboxSDK
-        package: finclip-neuron
+        package: finclip-neuron  
       - product: convstorelib
         package: finclip-neuron
       - product: ConvoUI
-        package: finclip-neuron
+        package: finclip-neuron  
 

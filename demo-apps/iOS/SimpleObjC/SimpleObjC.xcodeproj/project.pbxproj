@@ -17,7 +17,7 @@
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
-		D838ECD1BDED30949B5012D9 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 67E3C9BC173127A28A9956A7 /* ChatKit */; };
+		D838ECD1BDED30949B5012D9 /* FinClipChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0C2E21E68569B0134FD4CA00 /* FinClipChatKit */; };
 		EB6FD90EE98F3747E2812014 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19FC6DB87C94C3A6954DC2E1 /* main.m */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D838ECD1BDED30949B5012D9 /* ChatKit in Frameworks */,
+				D838ECD1BDED30949B5012D9 /* FinClipChatKit in Frameworks */,
 				66478895D49FB1359F4F3081 /* NeuronKit in Frameworks */,
 				58739E5F66867C038A547314 /* SandboxSDK in Frameworks */,
 				9822134BAC42EB7E0624B438 /* convstorelib in Frameworks */,
@@ -113,7 +113,7 @@
 			);
 			name = SimpleObjC;
 			packageProductDependencies = (
-				67E3C9BC173127A28A9956A7 /* ChatKit */,
+				0C2E21E68569B0134FD4CA00 /* FinClipChatKit */,
 				74F96B464F123EDB1ABA697E /* NeuronKit */,
 				77030A425EE80BEF3333ABF7 /* SandboxSDK */,
 				BC31D1D072C351808278329D /* convstorelib */,
@@ -380,7 +380,7 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.0;
+				minimumVersion = 0.7.2;
 			};
 		};
 		E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
@@ -394,10 +394,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		67E3C9BC173127A28A9956A7 /* ChatKit */ = {
+		0C2E21E68569B0134FD4CA00 /* FinClipChatKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
-			productName = ChatKit;
+			productName = FinClipChatKit;
 		};
 		74F96B464F123EDB1ABA697E /* NeuronKit */ = {
 			isa = XCSwiftPackageProductDependency;

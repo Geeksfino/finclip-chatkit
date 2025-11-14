@@ -13,7 +13,7 @@
 		1E5CBCDFFF374DE9238D7684 /* ChatContextProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0D8FFD7BAEF8A01060BFF /* ChatContextProviders.swift */; };
 		32F2BD265726A0B607C92F1E /* LocationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0FADFCDA2DCEA1441996423 /* LocationContextProvider.swift */; };
 		433B62E6530F3316E0D7DAD8 /* NeuronKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8BB662629D2BA2A80082EBDF /* NeuronKit */; };
-		6A5D696B52E702AFD93CB0E0 /* ChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 110C914E608F30D65F0C1945 /* ChatKit */; };
+		6A5D696B52E702AFD93CB0E0 /* FinClipChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83D48593673899B6316E3C81 /* FinClipChatKit */; };
 		74C0EC8150A8042ACBBB674F /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5E3C6E2EA2B5AB64032294 /* DrawerContainerViewController.swift */; };
 		853AEAB5D90061867533F8EA /* CalendarContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B55CE32D188C3D3ACA8848A /* CalendarContextProvider.swift */; };
 		88439F5AF35AB72A3C8B41B8 /* DrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6890E4CE4AEDA796E7773FC0 /* DrawerViewController.swift */; };
@@ -48,7 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A5D696B52E702AFD93CB0E0 /* ChatKit in Frameworks */,
+				6A5D696B52E702AFD93CB0E0 /* FinClipChatKit in Frameworks */,
 				433B62E6530F3316E0D7DAD8 /* NeuronKit in Frameworks */,
 				EDC396094A417E2FEEE43230 /* SandboxSDK in Frameworks */,
 				C7553EE507B1C3D9CF966448 /* convstorelib in Frameworks */,
@@ -130,7 +130,7 @@
 			);
 			name = Simple;
 			packageProductDependencies = (
-				110C914E608F30D65F0C1945 /* ChatKit */,
+				83D48593673899B6316E3C81 /* FinClipChatKit */,
 				8BB662629D2BA2A80082EBDF /* NeuronKit */,
 				C2F0A4AF6FD5CF0C4C5CB225 /* SandboxSDK */,
 				168ECEB0811BAD3171A9D8DE /* convstorelib */,
@@ -381,7 +381,7 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.0;
+				minimumVersion = 0.7.2;
 			};
 		};
 		DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
@@ -395,15 +395,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		110C914E608F30D65F0C1945 /* ChatKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5CFE8088C58BF7576778A9BB /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
-			productName = ChatKit;
-		};
 		168ECEB0811BAD3171A9D8DE /* convstorelib */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
 			productName = convstorelib;
+		};
+		83D48593673899B6316E3C81 /* FinClipChatKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CFE8088C58BF7576778A9BB /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
+			productName = FinClipChatKit;
 		};
 		8BB662629D2BA2A80082EBDF /* NeuronKit */ = {
 			isa = XCSwiftPackageProductDependency;

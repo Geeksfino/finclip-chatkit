@@ -7,13 +7,13 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.2")
     ],
     targets: [
         .target(
             name: "MyPal",
             dependencies: [
-                .product(name: "ChatKit", package: "finclip-chatkit")
+                .product(name: "FinClipChatKit", package: "finclip-chatkit")
             ]
         )
     ]
