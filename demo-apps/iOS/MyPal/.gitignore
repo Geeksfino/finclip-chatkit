@@ -1,0 +1,34 @@
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+
+# Build
+build/
+DerivedData/
+
+# Model files and directories (large binary files, ~150MB+ each)
+# Ignore entire model directories to exclude all large files
+App/Models/gemma-3-270m-it/
+App/Models/gemma-3-270m-it-4bit/
+
+# Also ignore large model files individually (in case directories are tracked)
+App/Models/**/*.safetensors
+App/Models/**/*.safetensors.index.json
+App/Models/**/tokenizer.json
+App/Models/**/tokenizer.model
+App/Models/**/tokenizer_config.json
+
+# Keep model source code and small config files
+!App/Models/**/*.swift
+!App/Models/**/.gitkeep
+!App/Models/**/config.json
+!App/Models/**/generation_config.json
+!App/Models/**/added_tokens.json
+!App/Models/**/special_tokens_map.json
+!App/Models/**/chat_template.jinja
+!App/Models/**/README.md
+

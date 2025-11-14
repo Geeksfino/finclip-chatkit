@@ -1,0 +1,89 @@
+name: MyPal
+options:
+  bundleIdPrefix: com.finclip.chatkit
+  deploymentTarget:
+    iOS: "16.0"
+
+schemes:
+  MyPal:
+    build:
+      targets:
+        MyPal: all
+    run:
+      config: Debug
+
+packages:
+  ChatKit:
+    url: https://github.com/Geeksfino/finclip-chatkit.git
+    from: 0.7.0
+  finclip-neuron:
+    url: https://github.com/Geeksfino/finclip-neuron.git
+    branch: main-swift6_0
+  MLX:
+    url: https://github.com/ml-explore/mlx-swift
+    from: 0.29.1
+  Tokenizers:
+    url: https://github.com/huggingface/swift-transformers
+    from: 1.0.0
+
+targets:
+  MyPal:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/App
+      - path: App/Extensions
+      - path: App/ViewControllers
+      - path: App/Network
+      - path: App/Adapters
+      - path: App/Models
+        excludes:
+          - "**/*.safetensors"
+          - "**/*.json"
+          - "**/*.model"
+          - "**/*.md"
+          - "**/README.md"
+          - "**/gemma-3-270m-it-4bit/**"
+    prebuildScripts:
+      - name: Copy Model Files to Bundle
+        shell: /bin/sh
+        script: |
+          MODEL_SRC="${SRCROOT}/App/Models/gemma-3-270m-it-4bit"
+          MODEL_DST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models/gemma-3-270m-it-4bit"
+          if [ -d "${MODEL_SRC}" ]; then
+            mkdir -p "${MODEL_DST}"
+            [ -f "${MODEL_SRC}/model.safetensors" ] && cp "${MODEL_SRC}/model.safetensors" "${MODEL_DST}/" && echo "✅ Copied model.safetensors"
+            [ -f "${MODEL_SRC}/config.json" ] && cp "${MODEL_SRC}/config.json" "${MODEL_DST}/" && echo "✅ Copied config.json"
+            [ -f "${MODEL_SRC}/tokenizer.json" ] && cp "${MODEL_SRC}/tokenizer.json" "${MODEL_DST}/" && echo "✅ Copied tokenizer.json"
+            [ -f "${MODEL_SRC}/tokenizer.model" ] && cp "${MODEL_SRC}/tokenizer.model" "${MODEL_DST}/" && echo "✅ Copied tokenizer.model"
+          else
+            echo "⚠️ Model source directory not found: ${MODEL_SRC}"
+          fi
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.finclip.chatkit.mypal
+      PRODUCT_NAME: MyPal
+      INFOPLIST_KEY_CFBundleDisplayName: MyPal
+      INFOPLIST_FILE: App/App/Info.plist
+      CODE_SIGN_ENTITLEMENTS: App/App/MyPal.entitlements
+      ENABLE_BITCODE: NO
+    dependencies:
+      - package: ChatKit
+      - product: NeuronKit
+        package: finclip-neuron
+      - product: SandboxSDK
+        package: finclip-neuron
+      - product: convstorelib
+        package: finclip-neuron
+      - product: ConvoUI
+        package: finclip-neuron
+      - package: MLX
+        product: MLX
+      - package: MLX
+        product: MLXNN
+      - package: MLX
+        product: MLXRandom
+      - package: Tokenizers
+        product: Tokenizers
+      - package: Tokenizers
+        product: Hub
+

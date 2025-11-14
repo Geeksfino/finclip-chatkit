@@ -1,0 +1,5 @@
+# This directory contains the Gemma 270M model files
+# Run scripts/download-model.sh to download the model files here
+# Model files are large (~500MB+) and should be excluded from git
+# Add to .gitignore if not using Git LFS
+
