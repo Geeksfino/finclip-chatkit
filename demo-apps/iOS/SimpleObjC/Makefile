@@ -5,7 +5,7 @@ SIMULATOR_DEVICE?=iPhone 17
 SIMULATOR_OS?=latest
 SIMULATOR_DESTINATION?=platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_OS)
 
-.PHONY: spm-generate spm-open spm-run clean deep-clean pod-project pod-install pod-build pod-run pod-clean
+.PHONY: help spm-generate spm-open spm-run clean deep-clean pod-project pod-install pod-build pod-run pod-clean
 
 help:
 	@echo "SimpleObjC Example Build System"
