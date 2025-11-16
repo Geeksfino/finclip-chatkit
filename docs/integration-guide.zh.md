@@ -36,7 +36,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
     ],
     targets: [
         .target(
@@ -55,7 +55,7 @@ let package = Package(
 
 1. **File → Add Package Dependencies...**
 2. 输入仓库 URL：`https://github.com/Geeksfino/finclip-chatkit.git`
-3. 选择版本：`0.6.1` 或更高
+3. 选择版本：`0.7.4` 或更高
 4. 选择 `ChatKit` 产品
 5. 添加到您的目标
 
@@ -73,7 +73,7 @@ options:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.6.1
+    from: 0.7.4
 
 targets:
   YourApp:
@@ -133,7 +133,7 @@ pod update
 从 [GitHub Releases](https://github.com/Geeksfino/finclip-chatkit/releases) 下载 `ChatKit.xcframework.zip`：
 
 ```bash
-curl -LO https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.6.1/ChatKit.xcframework.zip
+curl -LO https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.7.4/ChatKit.xcframework.zip
 unzip ChatKit.xcframework.zip
 ```
 
@@ -226,7 +226,7 @@ postbuildScripts:
 
 ChatKit 已准备好提交 App Store。无需特殊步骤。
 
-**重要**：确保您使用 **v0.6.1 或更高版本**，其中包含所有嵌套框架的正确代码签名。
+**重要**：确保您使用 **v0.7.4 或更高版本**，其中包含所有嵌套框架的正确代码签名。
 
 ### TestFlight Beta
 
@@ -347,7 +347,7 @@ pod install
 
 1. 更新依赖版本：
    ```swift
-   .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+   .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
    ```
 
 2. 替换直接运行时创建：

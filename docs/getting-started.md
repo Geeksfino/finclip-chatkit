@@ -39,7 +39,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
     ],
     targets: [
         .target(
@@ -250,7 +250,7 @@ Add to your `Package.swift` or configure in Xcode:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
 ]
 ```
 

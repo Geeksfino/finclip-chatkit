@@ -34,7 +34,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
 ]
 ```
 
