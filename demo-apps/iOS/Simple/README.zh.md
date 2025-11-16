@@ -103,7 +103,7 @@ make run
 
 应用使用 Swift Package Manager 从 GitHub 获取 ChatKit：
 - **包名**：`https://github.com/Geeksfino/finclip-chatkit.git`
-- **版本**：`0.6.1`
+- **版本**：`0.7.4`
 
 ## 📱 使用应用
 

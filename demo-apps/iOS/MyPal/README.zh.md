@@ -71,7 +71,7 @@ make run
 ### 依赖项
 
 应用使用 Swift Package Manager：
-- **ChatKit**：`https://github.com/Geeksfino/finclip-chatkit.git`（v0.6.1）
+- **ChatKit**：`https://github.com/Geeksfino/finclip-chatkit.git`（v0.7.4）
 - **MLX-Swift**：`https://github.com/ml-explore/mlx-swift`（用于本地 LLM）
 
 ## 📱 使用应用

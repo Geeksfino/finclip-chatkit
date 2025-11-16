@@ -17,7 +17,7 @@ Objective-C 演示应用，展示 ChatKit 的**高级 Objective-C API** 用于�
 
 SimpleObjC 演示了：
 - ✅ **高级 Objective-C API** - 为 ObjC 开发者提供的现成组件
-- ✅ **远程二进制依赖** - 使用来自 GitHub 的 ChatKit（版本 0.6.1）
+- ✅ **远程二进制依赖** - 使用来自 GitHub 的 ChatKit（版本 0.7.4）
 - ✅ **基于导航的流程** - 标准的 iOS 导航模式
 - ✅ **持久化存储** - 自动对话持久化
 - ✅ **多对话管理** - 多个同时进行的对话
@@ -129,7 +129,7 @@ make pod-run
 
 应用使用 Swift Package Manager 从 GitHub 获取 ChatKit：
 - **包名**：`https://github.com/Geeksfino/finclip-chatkit.git`
-- **版本**：`0.6.1`
+- **版本**：`0.7.4`
 
 构建项目时，框架会自动解析为远程二进制依赖项。
 
