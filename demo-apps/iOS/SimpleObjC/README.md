@@ -88,20 +88,42 @@ The server will start on `http://localhost:3000`.
 
 ### Building the App
 
+This demo supports **two build systems** so you can validate both distribution methods:
+
+#### Option A – SPM (separate frameworks)
+Uses `project.yml`, XcodeGen, and Swift Package Manager to pull ChatKit + dependencies directly.
+
 ```bash
 cd demo-apps/iOS/SimpleObjC
 
 # Generate Xcode project from project.yml
-make generate
+make spm-generate
 
 # Open in Xcode
-make open
+make spm-open
 
 # Or build and run directly
-make run
+make spm-run
 ```
 
-**Build Tooling**: This app uses [XcodeGen](https://github.com/yonaskolb/XcodeGen) and a Makefile for reproducible builds. See the [Build Tooling Guide](../../docs/build-tooling.md) for details.
+#### Option B – CocoaPods (bundled distribution)
+Uses `project-cocoapods.yml`, CocoaPods, and the single bundled pod produced by the release workflow.
+
+```bash
+cd demo-apps/iOS/SimpleObjC
+
+# Generate CocoaPods-ready Xcode project
+make pod-project
+
+# Install bundled dependencies (automatically handles SSL issues by caching podspec)
+make pod-install
+
+# Build / run via the workspace
+make pod-build
+make pod-run
+```
+
+**Build Tooling**: This app uses [XcodeGen](https://github.com/yonaskolb/XcodeGen) + Makefile for both flows. See the [Build Tooling Guide](../../docs/build-tooling.md) for details.
 
 ### Dependencies
 

@@ -1,0 +1,16 @@
+# SimpleObjC Podfile
+# Using bundled FinClipChatKit via CocoaPods
+#
+# This example works standalone - developers don't need to clone the finclip-chatkit repo.
+# The podspec is fetched from the remote GitHub repository.
+
+platform :ios, '16.0'
+use_frameworks!
+
+target 'SimpleObjC' do
+  # Use podspec from remote GitHub repository (updated by release workflow)
+  # This points to the bundled zip from GitHub releases
+  # Works for standalone apps - no need to clone the finclip-chatkit repo
+  pod 'FinClipChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/FinClipChatKit.podspec'
+end
+

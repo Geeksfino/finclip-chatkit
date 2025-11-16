@@ -8,16 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		3BAB9ACE51B7FCD443CE7B22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */; };
-		3FE748CE7F306EA16962F517 /* ConvoUI in Frameworks */ = {isa = PBXBuildFile; productRef = BF4703720C2C9DF58B64C139 /* ConvoUI */; };
-		58739E5F66867C038A547314 /* SandboxSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 77030A425EE80BEF3333ABF7 /* SandboxSDK */; };
+		562B5F4282F32EB9DE81699C /* Pods_SimpleObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6519BC4B24C9A01EF5EA3AF /* Pods_SimpleObjC.framework */; };
 		5A3D1EDE2CA8BD0FF5B7BA6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2888DCB4D8E9C972AA7455A /* LaunchScreen.storyboard */; };
 		5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A750D14341E9AEE7F203FF5 /* AppDelegate.m */; };
-		66478895D49FB1359F4F3081 /* NeuronKit in Frameworks */ = {isa = PBXBuildFile; productRef = 74F96B464F123EDB1ABA697E /* NeuronKit */; };
-		9822134BAC42EB7E0624B438 /* convstorelib in Frameworks */ = {isa = PBXBuildFile; productRef = BC31D1D072C351808278329D /* convstorelib */; };
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
-		D838ECD1BDED30949B5012D9 /* FinClipChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0C2E21E68569B0134FD4CA00 /* FinClipChatKit */; };
 		EB6FD90EE98F3747E2812014 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19FC6DB87C94C3A6954DC2E1 /* main.m */; };
 /* End PBXBuildFile section */
 
@@ -28,25 +24,24 @@
 		606532D85361CBD6014858C8 /* ConversationListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConversationListViewController.h; sourceTree = "<group>"; };
 		60FEA79275FC6B48F6017B1C /* SimpleObjC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SimpleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF903F67674B6A543D9F5C /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		701EFCDCCF51B1DA1075ED1C /* Pods-SimpleObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.release.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.release.xcconfig"; sourceTree = "<group>"; };
 		799671B1E6F4F885E5105A19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79E36A951C326EC6DFD7D2BA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		82E33F624593CE528F406222 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		9A750D14341E9AEE7F203FF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		AD0A97D77528EE614C1B2BBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF1610C8E696E0196497E49B /* ConversationListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConversationListViewController.m; sourceTree = "<group>"; };
+		C0012A3D00D9971AD31808E3 /* Pods-SimpleObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.debug.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.debug.xcconfig"; sourceTree = "<group>"; };
+		C6519BC4B24C9A01EF5EA3AF /* Pods_SimpleObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D28DB85E98D0CBCC72EADB95 /* ChatViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		D299B431DE216B2FC82FECBF /* Frameworks */ = {
+		C0793BAD6FBA4A33CB763E08 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D838ECD1BDED30949B5012D9 /* FinClipChatKit in Frameworks */,
-				66478895D49FB1359F4F3081 /* NeuronKit in Frameworks */,
-				58739E5F66867C038A547314 /* SandboxSDK in Frameworks */,
-				9822134BAC42EB7E0624B438 /* convstorelib in Frameworks */,
-				3FE748CE7F306EA16962F517 /* ConvoUI in Frameworks */,
+				562B5F4282F32EB9DE81699C /* Pods_SimpleObjC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,11 +56,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		784D73375BE634D5EC354817 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C0012A3D00D9971AD31808E3 /* Pods-SimpleObjC.debug.xcconfig */,
+				701EFCDCCF51B1DA1075ED1C /* Pods-SimpleObjC.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		9FCD3F5A2398D6DE24C57227 = {
 			isa = PBXGroup;
 			children = (
 				BBAC4E774CE4E355751851C4 /* App */,
 				05F053391A243C1F26E4A6FC /* Products */,
+				784D73375BE634D5EC354817 /* Pods */,
+				F5D4E90DB3F64BD198EE1A08 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +103,14 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
+		F5D4E90DB3F64BD198EE1A08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C6519BC4B24C9A01EF5EA3AF /* Pods_SimpleObjC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -103,22 +118,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D6656E65CA4F91C6E5EE8B3 /* Build configuration list for PBXNativeTarget "SimpleObjC" */;
 			buildPhases = (
+				A2E925C33606D20AA993DA27 /* [CP] Check Pods Manifest.lock */,
 				0FC5B0223D31A3BE755C243C /* Sources */,
 				624342ED76518ED11C6E1245 /* Resources */,
-				D299B431DE216B2FC82FECBF /* Frameworks */,
+				C0793BAD6FBA4A33CB763E08 /* Frameworks */,
+				B581B229FD1CDF8D19B2880A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = SimpleObjC;
-			packageProductDependencies = (
-				0C2E21E68569B0134FD4CA00 /* FinClipChatKit */,
-				74F96B464F123EDB1ABA697E /* NeuronKit */,
-				77030A425EE80BEF3333ABF7 /* SandboxSDK */,
-				BC31D1D072C351808278329D /* convstorelib */,
-				BF4703720C2C9DF58B64C139 /* ConvoUI */,
-			);
 			productName = SimpleObjC;
 			productReference = 60FEA79275FC6B48F6017B1C /* SimpleObjC.app */;
 			productType = "com.apple.product-type.application";
@@ -142,11 +152,8 @@
 			);
 			mainGroup = 9FCD3F5A2398D6DE24C57227;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */,
-				E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */,
-			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 05F053391A243C1F26E4A6FC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -166,6 +173,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A2E925C33606D20AA993DA27 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SimpleObjC-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B581B229FD1CDF8D19B2880A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0FC5B0223D31A3BE755C243C /* Sources */ = {
@@ -259,10 +308,17 @@
 		};
 		5F4B2EBE3366BD6EABDC1604 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 701EFCDCCF51B1DA1075ED1C /* Pods-SimpleObjC.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILT_PRODUCTS_DIR)",
+					"$(PODS_CONFIGURATION_BUILD_DIR)",
+				);
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SimpleObjC;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -272,16 +328,24 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simpleobjc;
 				PRODUCT_NAME = SimpleObjC;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 		A67DC173BF6A36AAEDF0E7BB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0012A3D00D9971AD31808E3 /* Pods-SimpleObjC.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILT_PRODUCTS_DIR)",
+					"$(PODS_CONFIGURATION_BUILD_DIR)",
+				);
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SimpleObjC;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -291,6 +355,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.finclip.chatkit.simpleobjc;
 				PRODUCT_NAME = SimpleObjC;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -373,53 +438,6 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.2;
-			};
-		};
-		E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Geeksfino/finclip-neuron.git";
-			requirement = {
-				branch = "main-swift6_0";
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		0C2E21E68569B0134FD4CA00 /* FinClipChatKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 67C2244E02B61A89646C524F /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
-			productName = FinClipChatKit;
-		};
-		74F96B464F123EDB1ABA697E /* NeuronKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
-			productName = NeuronKit;
-		};
-		77030A425EE80BEF3333ABF7 /* SandboxSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
-			productName = SandboxSDK;
-		};
-		BC31D1D072C351808278329D /* convstorelib */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
-			productName = convstorelib;
-		};
-		BF4703720C2C9DF58B64C139 /* ConvoUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1B815A665C12F6DA46DD207 /* XCRemoteSwiftPackageReference "finclip-neuron" */;
-			productName = ConvoUI;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B8B716FC3DFEE45A2437BAE /* Project object */;
 }

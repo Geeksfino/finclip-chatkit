@@ -11,15 +11,7 @@ schemes:
         SimpleObjC: all
     run:
       config: Debug
-
-packages:
-  FinClipChatKit:
-    url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.7.4
-  finclip-neuron:
-    url: https://github.com/Geeksfino/finclip-neuron.git
-    branch: main-swift6_0
-
+  
 targets:
   SimpleObjC:
     type: application
@@ -34,15 +26,10 @@ targets:
       INFOPLIST_KEY_CFBundleDisplayName: SimpleObjC
       INFOPLIST_FILE: App/Info.plist
       ENABLE_BITCODE: NO
-    dependencies:
-      - product: FinClipChatKit
-        package: FinClipChatKit
-      - product: NeuronKit
-        package: finclip-neuron
-      - product: SandboxSDK
-        package: finclip-neuron
-      - product: convstorelib
-        package: finclip-neuron
-      - product: ConvoUI
-        package: finclip-neuron
+      SWIFT_VERSION: "6.0"
+      CLANG_ENABLE_MODULES: YES
+      # Framework search paths for CocoaPods frameworks
+      # CocoaPods will add these automatically, but we include them for header resolution
+      FRAMEWORK_SEARCH_PATHS: $(inherited) $(BUILT_PRODUCTS_DIR) $(PODS_CONFIGURATION_BUILD_DIR)
+    # No dependencies here - CocoaPods will handle all frameworks via Podfile
 
