@@ -556,8 +556,9 @@ class LocalLLMModelManager {
     // MLXRandom.categorical samples from a probability distribution
     let sampled = MLXRandom.categorical(probs, count: 1)
     // Convert MLXArray to Int - get first element
-    // sampled is [1], get the first value
-    let tokenId = Int(sampled[0].asType(DType.float32).item(Float.self))
+    // MLXRandom.categorical returns integer indices, not floats
+    // sampled is [1], get the first value as Int32
+    let tokenId = Int(sampled[0].item(Int32.self))
     return tokenId
   }
   
