@@ -42,7 +42,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
     ],
     targets: [
         .target(
@@ -915,9 +915,9 @@ Both examples demonstrate:
 
 ### "ChatKitCoordinator not found"
 
-**Solution**: Ensure you're using ChatKit v0.6.1 or later:
+**Solution**: Ensure you're using ChatKit v0.7.4 or later:
 ```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
 ```
 
 ### Conversations not persisting

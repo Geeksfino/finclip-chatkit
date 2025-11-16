@@ -94,7 +94,7 @@ schemes:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.6.1
+    from: 0.7.4
 
 targets:
   MyChatApp:
@@ -130,7 +130,7 @@ options:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.6.1
+    from: 0.7.4
 ```
 
 #### 3. 目标配置

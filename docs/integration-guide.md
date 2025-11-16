@@ -36,7 +36,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
     ],
     targets: [
         .target(
@@ -55,7 +55,7 @@ For Xcode projects:
 
 1. **File → Add Package Dependencies...**
 2. Enter repository URL: `https://github.com/Geeksfino/finclip-chatkit.git`
-3. Choose version: `0.6.1` or later
+3. Choose version: `0.7.4` or later
 4. Select `ChatKit` product
 5. Add to your target
 
@@ -73,7 +73,7 @@ options:
 packages:
   ChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.6.1
+    from: 0.7.4
 
 targets:
   YourApp:
@@ -133,7 +133,7 @@ For projects that can't use package managers:
 Download `ChatKit.xcframework.zip` from [GitHub Releases](https://github.com/Geeksfino/finclip-chatkit/releases):
 
 ```bash
-curl -LO https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.6.1/ChatKit.xcframework.zip
+curl -LO https://github.com/Geeksfino/finclip-chatkit/releases/download/v0.7.4/ChatKit.xcframework.zip
 unzip ChatKit.xcframework.zip
 ```
 
@@ -226,7 +226,7 @@ postbuildScripts:
 
 ChatKit is App Store ready. No special steps needed.
 
-**Important**: Ensure you're using **v0.6.1 or later** which includes proper code signing for all nested frameworks.
+**Important**: Ensure you're using **v0.7.4 or later** which includes proper code signing for all nested frameworks.
 
 ### TestFlight Beta
 
@@ -347,7 +347,7 @@ pod install
 
 1. Update dependency version:
    ```swift
-   .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+   .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
    ```
 
 2. Replace direct runtime creation:

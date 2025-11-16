@@ -265,9 +265,9 @@ Customize framework behavior:
 
 ## 📋 Version Information
 
-This documentation is for **ChatKit 0.6.1**.
+This documentation is for **ChatKit 0.7.4**.
 
-All examples and code snippets use APIs available in version 0.6.1 or later.
+All examples and code snippets use APIs available in version 0.7.4 or later.
 
 ---
 

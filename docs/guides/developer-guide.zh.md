@@ -42,7 +42,7 @@ let package = Package(
         .iOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
     ],
     targets: [
         .target(
@@ -915,9 +915,9 @@ make run
 
 ### "找不到 ChatKitCoordinator"
 
-**解决方案**：确保您使用的是 ChatKit v0.6.1 或更高版本：
+**解决方案**：确保您使用的是 ChatKit v0.7.4 或更高版本：
 ```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
+.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.7.4")
 ```
 
 ### 会话未持久化
