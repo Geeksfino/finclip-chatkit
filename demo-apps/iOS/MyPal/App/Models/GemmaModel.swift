@@ -305,6 +305,16 @@ class GemmaTransformerBlock: Module {
     residual = x
     x = postAttentionNorm(x)
     x = mlp(x)
+    
+    // Check if MLP output size matches residual size
+    let mlpOutputSize = x.dim(x.shape.count - 1)
+    if mlpOutputSize != actualHiddenSize {
+      // Project from MLP output size to actualHiddenSize
+      // Take first actualHiddenSize elements along the last dimension
+      x = x[0..<x.dim(0), 0..<x.dim(1), 0..<actualHiddenSize]
+      print("   [GemmaTransformerBlock] Projected MLP output from \(mlpOutputSize) to \(actualHiddenSize)")
+    }
+    
     x = residual + x
     
     return x
@@ -568,11 +578,11 @@ class GemmaAttention: Module {
   }
 }
 
-/// Gemma MLP (feed-forward network)
 class GemmaMLP: Module {
   let gateProj: Linear
   let upProj: Linear
   let downProj: Linear
+  let expectedDownProjInputSize: Int  // What downProj expects as input
   
   init(layerIndex: Int, config: GemmaConfig, actualHiddenSize: Int, weights: [String: MLXArray]) throws {
     // Use actualHiddenSize for MLP calculations
@@ -600,6 +610,10 @@ class GemmaMLP: Module {
     )
     let gateBias = weights["model.layers.\(layerIndex).mlp.gate_proj.bias"] ??
                    weights["layers.\(layerIndex).feed_forward.w1.bias"]
+    
+    // Debug: Log weight shapes
+    print("🔍 [GemmaMLP] Layer \(layerIndex) gateProj weight shape: \(gateWeight.shape)")
+    
     self.gateProj = Linear(weight: gateWeight, bias: gateBias)
     
     let upWeight = try findTensor(
@@ -611,6 +625,9 @@ class GemmaMLP: Module {
     )
     let upBias = weights["model.layers.\(layerIndex).mlp.up_proj.bias"] ??
                  weights["layers.\(layerIndex).feed_forward.w3.bias"]
+    
+    print("🔍 [GemmaMLP] Layer \(layerIndex) upProj weight shape: \(upWeight.shape)")
+    
     self.upProj = Linear(weight: upWeight, bias: upBias)
     
     let downWeight = try findTensor(
@@ -622,6 +639,13 @@ class GemmaMLP: Module {
     )
     let downBias = weights["model.layers.\(layerIndex).mlp.down_proj.bias"] ??
                    weights["layers.\(layerIndex).feed_forward.w2.bias"]
+    
+    // Store expected input size for downProj (second dimension of weight matrix)
+    self.expectedDownProjInputSize = downWeight.shape[1]
+    
+    print("🔍 [GemmaMLP] Layer \(layerIndex) downProj weight shape: \(downWeight.shape)")
+    print("   downProj expects input size: \(expectedDownProjInputSize), outputs: \(downWeight.shape[0])")
+    
     self.downProj = Linear(weight: downWeight, bias: downBias)
     
     super.init()
@@ -631,8 +655,37 @@ class GemmaMLP: Module {
     // SwiGLU activation: gate * silu(up)
     let gate = gateProj(hiddenStates)
     let up = upProj(hiddenStates)
-    let activated = gate * silu(up)
-    return downProj(activated)
+    
+    // Debug: Log shapes
+    print("🔍 [GemmaMLP] Forward pass - input: \(hiddenStates.shape), gate: \(gate.shape), up: \(up.shape)")
+    
+    var activated = gate * silu(up)
+    print("🔍 [GemmaMLP] Activated shape: \(activated.shape)")
+    
+    // Check if activated size matches downProj input expectations
+    // For quantized models, intermediate size might be larger than what downProj expects
+    let actualIntermediateSize = activated.dim(activated.shape.count - 1)
+    if actualIntermediateSize != expectedDownProjInputSize {
+      print("   ⚠️  Dimension mismatch: activated=\(actualIntermediateSize) vs expected=\(expectedDownProjInputSize)")
+      
+      if actualIntermediateSize > expectedDownProjInputSize {
+        // Slice to match expected size
+        // Get batch and seq dimensions
+        let batchSize = activated.dim(0)
+        let seqLen = activated.dim(1)
+        
+        // Slice along last dimension: [..., 0:expectedDownProjInputSize]
+        activated = activated[0..<batchSize, 0..<seqLen, 0..<expectedDownProjInputSize]
+        print("   ✅ Sliced from \(actualIntermediateSize) to \(expectedDownProjInputSize)")
+      } else {
+        fatalError("MLP intermediate size (\(actualIntermediateSize)) is smaller than expected (\(expectedDownProjInputSize)). Model architecture mismatch.")
+      }
+    }
+    
+    let result = downProj(activated)
+    print("🔍 [GemmaMLP] Output shape: \(result.shape)")
+    
+    return result
   }
 }
 
