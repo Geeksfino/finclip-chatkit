@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -61,53 +61,53 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		031B08CB404EC5B5CFB7F9D0 /* tokenizer.model.metadata */ = {isa = PBXFileReference; path = tokenizer.model.metadata; sourceTree = "<group>"; };
+		031B08CB404EC5B5CFB7F9D0 /* tokenizer.model.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.model.metadata; sourceTree = "<group>"; };
 		081855A413FE4B7390D05002 /* ChatContextProviders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContextProviders.swift; sourceTree = "<group>"; };
 		0ACBBAD3E584278BD5C18424 /* ComposerToolsExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerToolsExample.swift; sourceTree = "<group>"; };
-		123247BF4F69B6AEA67A2B10 /* added_tokens.json.lock */ = {isa = PBXFileReference; path = added_tokens.json.lock; sourceTree = "<group>"; };
+		123247BF4F69B6AEA67A2B10 /* added_tokens.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = added_tokens.json.lock; sourceTree = "<group>"; };
 		178FCB62641E48A554C802B5 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		19CEB1159FBC0EB53BB9ECA0 /* generation_config.json.metadata */ = {isa = PBXFileReference; path = generation_config.json.metadata; sourceTree = "<group>"; };
-		19F10316E107DFECE39D95F2 /* special_tokens_map.json.lock */ = {isa = PBXFileReference; path = special_tokens_map.json.lock; sourceTree = "<group>"; };
-		1BD19507ED6FCAD223815582 /* model.safetensors.lock */ = {isa = PBXFileReference; path = model.safetensors.lock; sourceTree = "<group>"; };
-		208A1E33547C283EC32D90A2 /* chat_template.jinja.metadata */ = {isa = PBXFileReference; path = chat_template.jinja.metadata; sourceTree = "<group>"; };
+		19CEB1159FBC0EB53BB9ECA0 /* generation_config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = generation_config.json.metadata; sourceTree = "<group>"; };
+		19F10316E107DFECE39D95F2 /* special_tokens_map.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = special_tokens_map.json.lock; sourceTree = "<group>"; };
+		1BD19507ED6FCAD223815582 /* model.safetensors.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = model.safetensors.lock; sourceTree = "<group>"; };
+		208A1E33547C283EC32D90A2 /* chat_template.jinja.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja.metadata; sourceTree = "<group>"; };
 		231887E4019980C65FCDDA0E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		35149418AE24F0BF4494DEDB /* MyPal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyPal.entitlements; sourceTree = "<group>"; };
-		4497E27DF770A462CF0250C3 /* README.md.lock */ = {isa = PBXFileReference; path = README.md.lock; sourceTree = "<group>"; };
+		4497E27DF770A462CF0250C3 /* README.md.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md.lock; sourceTree = "<group>"; };
 		4DFC30CDF6CD39932F002CD5 /* MainChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainChatViewController.swift; sourceTree = "<group>"; };
-		4E853E1008D6DB843E7AD754 /* tokenizer_config.json.lock */ = {isa = PBXFileReference; path = tokenizer_config.json.lock; sourceTree = "<group>"; };
+		4E853E1008D6DB843E7AD754 /* tokenizer_config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer_config.json.lock; sourceTree = "<group>"; };
 		5491126D473C59274E96AE5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		564160D22025E3345943C372 /* special_tokens_map.json.metadata */ = {isa = PBXFileReference; path = special_tokens_map.json.metadata; sourceTree = "<group>"; };
-		579B4C4680CB88F13ADF806A /* .gitignore */ = {isa = PBXFileReference; path = .gitignore; sourceTree = "<group>"; };
-		63AAE9AD30F9EA5637F40257 /* README.md.metadata */ = {isa = PBXFileReference; path = README.md.metadata; sourceTree = "<group>"; };
-		6BEAE1F9C64CE914CF485635 /* generation_config.json.lock */ = {isa = PBXFileReference; path = generation_config.json.lock; sourceTree = "<group>"; };
-		70ADC27DF3F88FB3660B16ED /* model.safetensors.metadata */ = {isa = PBXFileReference; path = model.safetensors.metadata; sourceTree = "<group>"; };
-		7156CF426701C3DFE229A4FA /* .gitattributes.metadata */ = {isa = PBXFileReference; path = .gitattributes.metadata; sourceTree = "<group>"; };
+		564160D22025E3345943C372 /* special_tokens_map.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = special_tokens_map.json.metadata; sourceTree = "<group>"; };
+		579B4C4680CB88F13ADF806A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		63AAE9AD30F9EA5637F40257 /* README.md.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md.metadata; sourceTree = "<group>"; };
+		6BEAE1F9C64CE914CF485635 /* generation_config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = generation_config.json.lock; sourceTree = "<group>"; };
+		70ADC27DF3F88FB3660B16ED /* model.safetensors.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = model.safetensors.metadata; sourceTree = "<group>"; };
+		7156CF426701C3DFE229A4FA /* .gitattributes.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes.metadata; sourceTree = "<group>"; };
 		7281A16BA6D0DCD2B95ECBF1 /* LocalizationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelper.swift; sourceTree = "<group>"; };
-		7727CE60C77971D70A1794F4 /* added_tokens.json.metadata */ = {isa = PBXFileReference; path = added_tokens.json.metadata; sourceTree = "<group>"; };
+		7727CE60C77971D70A1794F4 /* added_tokens.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = added_tokens.json.metadata; sourceTree = "<group>"; };
 		79F1215A8542536F61E0B0AA /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
-		7B6029F03DD90E423850C7DF /* .gitattributes.lock */ = {isa = PBXFileReference; path = .gitattributes.lock; sourceTree = "<group>"; };
-		7CC5981F73A11B9B6E9E980A /* tokenizer_config.json.metadata */ = {isa = PBXFileReference; path = tokenizer_config.json.metadata; sourceTree = "<group>"; };
+		7B6029F03DD90E423850C7DF /* .gitattributes.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes.lock; sourceTree = "<group>"; };
+		7CC5981F73A11B9B6E9E980A /* tokenizer_config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer_config.json.metadata; sourceTree = "<group>"; };
 		8065D51BC0D335C285E3696A /* LocalLLMAGUIEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLLMAGUIEvents.swift; sourceTree = "<group>"; };
 		8C8C8F32DBF8EE5C12FBF022 /* DrawerContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerContainerViewController.swift; sourceTree = "<group>"; };
-		8ED2773266E98DF38D614B53 /* tokenizer.model.lock */ = {isa = PBXFileReference; path = tokenizer.model.lock; sourceTree = "<group>"; };
-		8F4EE2C7E1E0852BD014E099 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
-		9485C62D11FFF0D8DA129DD1 /* config.json.metadata */ = {isa = PBXFileReference; path = config.json.metadata; sourceTree = "<group>"; };
-		9B8B3EAE068597E0FE7F14E2 /* .gitattributes */ = {isa = PBXFileReference; path = .gitattributes; sourceTree = "<group>"; };
+		8ED2773266E98DF38D614B53 /* tokenizer.model.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.model.lock; sourceTree = "<group>"; };
+		8F4EE2C7E1E0852BD014E099 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		9485C62D11FFF0D8DA129DD1 /* config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = config.json.metadata; sourceTree = "<group>"; };
+		9B8B3EAE068597E0FE7F14E2 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
 		9ECA16068F62E78DF9B9FB4B /* LocalLLMModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLLMModelManager.swift; sourceTree = "<group>"; };
 		A5147A00AE3636576CA4518F /* DeviceDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetection.swift; sourceTree = "<group>"; };
 		AB82D5EC3B8A19E117C9E859 /* GemmaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemmaModel.swift; sourceTree = "<group>"; };
-		AC89DD1A4DAF18DA8367E65C /* tokenizer.json.lock */ = {isa = PBXFileReference; path = tokenizer.json.lock; sourceTree = "<group>"; };
-		AFDEF3AC3CBC2C0018A8AC70 /* chat_template.jinja */ = {isa = PBXFileReference; path = chat_template.jinja; sourceTree = "<group>"; };
+		AC89DD1A4DAF18DA8367E65C /* tokenizer.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.json.lock; sourceTree = "<group>"; };
+		AFDEF3AC3CBC2C0018A8AC70 /* chat_template.jinja */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja; sourceTree = "<group>"; };
 		B1243A03FAE20F93E73C91B9 /* LocationContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationContextProvider.swift; sourceTree = "<group>"; };
 		B1644FC66B348ACBBFE163E7 /* ModelDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloader.swift; sourceTree = "<group>"; };
 		BF3EC4F79EC3E1B7B46E4084 /* CalendarContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContextProvider.swift; sourceTree = "<group>"; };
 		C39A51A0CD2C1FFB5A8DE384 /* LocalLLMURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLLMURLProtocol.swift; sourceTree = "<group>"; };
-		CACCC79E05A0D707C5A29B7A /* MyPal.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MyPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CACCC79E05A0D707C5A29B7A /* MyPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE028ED7DA735602803B00CF /* DrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerViewController.swift; sourceTree = "<group>"; };
 		D51D2609463680B49DFD4967 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F2A673F0771E758F79461847 /* tokenizer.json.metadata */ = {isa = PBXFileReference; path = tokenizer.json.metadata; sourceTree = "<group>"; };
-		F81982D118C107FEC2A8313B /* chat_template.jinja.lock */ = {isa = PBXFileReference; path = chat_template.jinja.lock; sourceTree = "<group>"; };
-		F9BE849381875E03CCCD536D /* config.json.lock */ = {isa = PBXFileReference; path = config.json.lock; sourceTree = "<group>"; };
+		F2A673F0771E758F79461847 /* tokenizer.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.json.metadata; sourceTree = "<group>"; };
+		F81982D118C107FEC2A8313B /* chat_template.jinja.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja.lock; sourceTree = "<group>"; };
+		F9BE849381875E03CCCD536D /* config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = config.json.lock; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,7 +336,6 @@
 				15172524177DB0A4895D192B /* XCRemoteSwiftPackageReference "swift-transformers" */,
 				D581C642B97378FB1B00552F /* XCRemoteSwiftPackageReference "finclip-neuron" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -434,6 +433,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App/MyPal.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 9P92672RT8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyPal;
@@ -573,6 +573,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App/MyPal.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 9P92672RT8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyPal;

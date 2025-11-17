@@ -1,0 +1,50 @@
+🚀 [GemmaTest] Starting Gemma-3-270M test
+   Model path: /Users/cliang/repos/finclip/finclip-chatkit/demo-apps/iOS/MyPal/App/Models/gemma-3-270m-it-4bit
+   Prompt: Hello
+   Max tokens: 2
+   Temperature: 0.7
+
+📦 [GemmaTest] Loading model...
+📋 [WeightLoader] Loading config.json...
+⚖️  [WeightLoader] Loading model.safetensors (this may take 10-30 seconds)...
+⏱️  [WeightLoader] Loaded 490 tensors in 0.0 seconds
+📋 [WeightLoader] Sample tensor names: model.embed_tokens.biases, model.embed_tokens.scales, model.embed_tokens.weight, model.layers.0.input_layernorm.weight, model.layers.0.mlp.down_proj.biases, model.layers.0.mlp.down_proj.scales, model.layers.0.mlp.down_proj.weight, model.layers.0.mlp.gate_proj.biases, model.layers.0.mlp.gate_proj.scales, model.layers.0.mlp.gate_proj.weight
+📋 [GemmaConfig] Loaded config:
+   vocabSize: 262144
+   hiddenSize: 640
+   numLayers: 18
+   numAttentionHeads: 4
+   numKVHeads: 1
+   headDim: 256
+   intermediateSize: 2048
+   layerNormEps: 1e-06
+✅ [GemmaTest] Model weights loaded
+
+🏗️  [GemmaTest] Initializing model architecture...
+⚠️ [Gemma3_270M] Config hiddenSize=640, but embedding suggests 80
+✅ [GemmaTest] Model initialized
+
+📝 [GemmaTest] Loading tokenizer...
+📝 [TokenizerLoader] Found tokenizer files:
+   tokenizer.json: true
+   tokenizer.model: true
+📝 [TokenizerLoader] Loading tokenizer using swift-transformers...
+✅ [TokenizerLoader] Tokenizer loaded successfully
+✅ [GemmaTest] Tokenizer loaded
+
+🔤 [GemmaTest] Encoding prompt...
+   Input tokens: [2, 9259]
+   Token count: 2
+
+🤖 [GemmaTest] Generating response...
+   (This may take a while)
+
+ subsistence mili
+
+✅ [GemmaTest] Generation complete
+   Total tokens generated: 2
+
+📄 [GemmaTest] Full response:
+<bos>Hello subsistence mili
+
+✅ Test completed successfully
