@@ -34,29 +34,31 @@ public struct GemmaTestConfig {
 public class GemmaTestRunner {
     public init() {}
     
+    @MainActor
     public func run(config: GemmaTestConfig) async throws {
-        print("🚀 [GemmaTest] Starting Gemma-3-270M test")
+        print("🚀 [GemmaTest] Starting model test")
         print("   Model path: \(config.modelPath)")
         print("   Prompt: \(config.prompt)")
         print("   Max tokens: \(config.maxTokens)")
         print("   Temperature: \(config.temperature)")
         print("")
         
-        // 1. Load model
+        // 1. Load model using registry
         print("📦 [GemmaTest] Loading model...")
-        let (configDict, weights) = try WeightLoader.loadFromDirectory(config.modelPath)
-        let gemmaConfig = GemmaConfig(from: configDict)
+        let model = try ModelRegistry.shared.loadModel(from: config.modelPath)
+        
+        // Get config from the model's weights
+        let (configDict, _) = try WeightLoader.loadFromDirectory(config.modelPath)
         print("✅ [GemmaTest] Model weights loaded")
         print("")
         
-        // 2. Initialize model
-        print("🏗️  [GemmaTest] Initializing model architecture...")
-        let model = try Gemma3_270M(config: gemmaConfig, weights: weights)
-        print("✅ [GemmaTest] Model initialized")
+        // 2. Initialize model (already done by registry)
+        print("🏗️  [GemmaTest] Model initialized")
         print("")
         
         // 3. Load tokenizer
         print("📝 [GemmaTest] Loading tokenizer...")
+        let gemmaConfig = GemmaConfig(from: configDict)
         let tokenizer = try await TokenizerLoader.load(from: config.modelPath, config: gemmaConfig)
         print("✅ [GemmaTest] Tokenizer loaded")
         print("")

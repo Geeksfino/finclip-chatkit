@@ -5,7 +5,7 @@ SIMULATOR_DEVICE?=iPhone 17
 SIMULATOR_OS?=latest
 SIMULATOR_DESTINATION?=platform=iOS Simulator,name=$(SIMULATOR_DEVICE),OS=$(SIMULATOR_OS)
 
-.PHONY: generate open clean deep-clean run download-model
+.PHONY: generate open clean deep-clean run download-model download-phi3 download-all-models
 
 generate:
 	@if ! command -v xcodegen >/dev/null 2>&1; then \
@@ -67,6 +67,29 @@ download-model:
 	@chmod +x scripts/download-model.sh
 	@./scripts/download-model.sh
 	@echo ""
-	@echo "✅ Model download complete!"
+	@echo "✅ Gemma model download complete!"
 	@echo "💡 Run 'make generate' to update Xcode project with model files"
+
+download-phi3:
+	@echo "📥 Downloading Phi-3 Mini 4k Instruct model files..."
+	@if [ ! -f "scripts/download-phi3-mini.sh" ]; then \
+		echo "❌ Download script not found at scripts/download-phi3-mini.sh"; \
+		exit 1; \
+	fi
+	@chmod +x scripts/download-phi3-mini.sh
+	@./scripts/download-phi3-mini.sh
+	@echo ""
+	@echo "✅ Phi-3 model download complete!"
+	@echo "💡 Run 'make generate' to update Xcode project with model files"
+	@echo "🧪 Test with: cd Test && ./run_gemma_test.sh -d ../App/Models/phi-3-mini-4k-instruct-4bit -p 'Hello' -n 20"
+
+download-all-models:
+	@echo "📥 Downloading all supported models..."
+	@echo ""
+	@$(MAKE) download-model
+	@echo ""
+	@$(MAKE) download-phi3
+	@echo ""
+	@echo "✅ All models downloaded!"
+	@echo "💡 Run 'make generate' to update Xcode project with all model files"
 

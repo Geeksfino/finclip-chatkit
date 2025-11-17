@@ -1,9 +1,9 @@
 //
-//  Gemma3_270M.swift
+//  Gemma3Model.swift
 //  GemmaTest
 //
-//  Corrected Gemma-3-270M implementation based on ChatGPT analysis
-//  Fixes all critical bugs: LayerNorm signature, GQA, RoPE, KV cache, etc.
+//  Corrected Gemma-3-270M implementation with low-dimensional embedding projection
+//  Handles embedding_dim=80 -> hidden_size=640 projection for proper architecture
 //
 
 import Foundation
@@ -11,10 +11,34 @@ import MLX
 import MLXNN
 import MLXFast
 
+// MARK: - Utility Helpers
+
+/// Pretty-print available weight names for diagnostics
+fileprivate func dumpAvailableWeightNames(_ weights: [String: MLXArray], limit: Int = 150) {
+    print("📦 Available weights (showing up to \(limit)):")
+    var i = 0
+    for k in weights.keys.sorted() {
+        let shape = weights[k]!.shape
+        print("   • \(k)   shape=\(shape)")
+        i += 1
+        if i >= limit { break }
+    }
+}
+
+/// Find a tensor from several name variants
+fileprivate func findTensor(_ weights: [String: MLXArray], _ names: [String], description: String) throws -> MLXArray {
+    for n in names {
+        if let t = weights[n] { return t }
+    }
+    print("❌ [GemmaLoader] Could not find \(description). Tried names: \(names.joined(separator: ", "))")
+    dumpAvailableWeightNames(weights, limit: 150)
+    throw NSError(domain: "GemmaLoader", code: -1, userInfo: [NSLocalizedDescriptionKey: "Missing tensor: \(description)"])
+}
+
 // MARK: - Linear Wrapper
 
 /// Linear layer wrapper where weight shape is [out_features, in_features]
-struct Linear {
+struct GemmaLinear {
     let weight: MLXArray  // [out, in]
     let bias: MLXArray?   // [out] or nil
     
@@ -36,10 +60,10 @@ struct Linear {
 
 // MARK: - LayerNorm Wrapper
 
-/// LayerNorm wrapper using MLXFast.layerNorm with correct signature
-struct LayerNorm {
+/// LayerNorm wrapper using MLXFast.layerNorm
+struct GemmaLayerNorm {
     let weight: MLXArray?  // [hidden]
-    let bias: MLXArray?     // [hidden]
+    let bias: MLXArray?    // [hidden]
     let eps: Float
     
     init(weight: MLXArray?, bias: MLXArray?, eps: Float = 1e-6) {
@@ -49,31 +73,27 @@ struct LayerNorm {
     }
     
     func callAsFunction(_ x: MLXArray) -> MLXArray {
-        // Use MLXFast.layerNorm with the API that matches the current MLX version
-        // Note: The API may vary by version - this matches the iOS implementation
         return MLXFast.layerNorm(x, weight: weight, bias: bias, eps: eps)
     }
 }
 
 // MARK: - RoPE (Rotary Positional Embeddings)
 
-/// Full Gemma-3 standard RoPE implementation
-struct RoPE {
-    /// Apply standard RoPE on last two halves
+/// Gemma-3 standard RoPE implementation
+struct GemmaRoPE {
+    /// Apply standard RoPE on even/odd splits
     /// q/k shapes: [batch, heads, seq_len, headDim]
     static func apply(
         q: MLXArray,
         k: MLXArray,
         base: Float = 10000.0
     ) -> (MLXArray, MLXArray) {
-        // headDim must be even to split into pairs
         let headDim = q.shape.last ?? 0
         precondition(headDim % 2 == 0, "RoPE requires even head dimension")
         
         let dim = headDim / 2
         
         // Build frequencies: [dim]
-        // freq[i] = base^(-2*i/headDim)
         var freqVals: [Float] = []
         for i in 0..<dim {
             let exponent = -2.0 * Float(i) / Float(headDim)
@@ -85,7 +105,6 @@ struct RoPE {
         let posVals = (0..<seqLen).map { Float($0) }
         
         // angles: [seq_len, dim] = outer(posVals, freqVals)
-        // Flatten to 1D array for MLXArray initialization
         var anglesFlat: [Float] = []
         for p in posVals {
             for f in freqVals {
@@ -93,16 +112,14 @@ struct RoPE {
             }
         }
         
-        // Convert to MLXArray and reshape to [seq_len, dim]
         let anglesArr = MLXArray(anglesFlat).reshaped([seqLen, dim])
-        let cos = MLX.cos(anglesArr)      // [seq_len, dim]
-        let sin = MLX.sin(anglesArr)       // [seq_len, dim]
+        let cos = MLX.cos(anglesArr)
+        let sin = MLX.sin(anglesArr)
         
-        // Reshape cos/sin to [1, 1, seq_len, dim] for broadcasting
         let cosB = cos.reshaped([1, 1, seqLen, dim])
         let sinB = sin.reshaped([1, 1, seqLen, dim])
         
-        // Split q and k last dimension into even/odd halves
+        // Split q and k into even/odd halves
         let qEven = q[0..<q.dim(0), 0..<q.dim(1), 0..<q.dim(2), 0..<dim]
         let qOdd = q[0..<q.dim(0), 0..<q.dim(1), 0..<q.dim(2), dim..<headDim]
         let kEven = k[0..<k.dim(0), 0..<k.dim(1), 0..<k.dim(2), 0..<dim]
@@ -114,7 +131,7 @@ struct RoPE {
         let kRotEven = kEven * cosB - kOdd * sinB
         let kRotOdd = kEven * sinB + kOdd * cosB
         
-        // Re-interleave even/odd into last dim
+        // Re-interleave
         let qRot = concatenated([qRotEven, qRotOdd], axis: -1)
         let kRot = concatenated([kRotEven, kRotOdd], axis: -1)
         
@@ -122,88 +139,82 @@ struct RoPE {
     }
 }
 
+// MARK: - Causal Mask Helper
+
+fileprivate func createAdditiveCausalMask(s: Int, seqTotal: Int) -> MLXArray {
+    var mask: [Float] = Array(repeating: 0.0, count: s * seqTotal)
+    for i in 0..<s {
+        for j in 0..<seqTotal {
+            if j > i { mask[i * seqTotal + j] = -1e9 }
+        }
+    }
+    let arr = MLXArray(mask)
+    return arr.reshaped([1, 1, s, seqTotal])
+}
+
 // MARK: - Gemma Attention with GQA
 
 final class GemmaAttention {
-    let qProj: Linear
-    let kProj: Linear
-    let vProj: Linear
-    let oProj: Linear
+    let qProj: GemmaLinear
+    let kProj: GemmaLinear
+    let vProj: GemmaLinear
+    let oProj: GemmaLinear
     let numQHeads: Int
     let numKVHeads: Int
     let headDim: Int
     let expectedOProjIn: Int
     
     init(layerIndex: Int, config: GemmaConfig, weights: [String: MLXArray]) throws {
-        // Helper to fetch tensor
-        func find(_ names: [String]) throws -> MLXArray {
-            for n in names {
-                if let t = weights[n] {
-                    return t
-                }
-            }
-            throw NSError(
-                domain: "GemmaAttention",
-                code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Missing attention tensor for layer \(layerIndex). Tried: \(names.joined(separator: ","))"]
-            )
-        }
-        
-        // Load weights (MLX layout uses these names typically)
-        let qW = try find([
+        // Load weights with multiple name variants
+        let qW = try findTensor(weights, [
             "model.layers.\(layerIndex).attention.query.weight",
             "model.layers.\(layerIndex).self_attn.q_proj.weight",
             "layers.\(layerIndex).attention.wq.weight"
-        ])
+        ], description: "q_proj weight for layer \(layerIndex)")
+        
         let qB = weights["model.layers.\(layerIndex).attention.query.bias"] ??
                  weights["model.layers.\(layerIndex).self_attn.q_proj.bias"]
-        self.qProj = Linear(weight: qW, bias: qB)
+        self.qProj = GemmaLinear(weight: qW, bias: qB)
         
-        let kW = try find([
+        let kW = try findTensor(weights, [
             "model.layers.\(layerIndex).attention.key.weight",
             "model.layers.\(layerIndex).self_attn.k_proj.weight",
             "layers.\(layerIndex).attention.wk.weight"
-        ])
+        ], description: "k_proj weight")
+        
         let kB = weights["model.layers.\(layerIndex).attention.key.bias"] ??
                  weights["model.layers.\(layerIndex).self_attn.k_proj.bias"]
-        self.kProj = Linear(weight: kW, bias: kB)
+        self.kProj = GemmaLinear(weight: kW, bias: kB)
         
-        let vW = try find([
+        let vW = try findTensor(weights, [
             "model.layers.\(layerIndex).attention.value.weight",
             "model.layers.\(layerIndex).self_attn.v_proj.weight",
             "layers.\(layerIndex).attention.wv.weight"
-        ])
+        ], description: "v_proj weight")
+        
         let vB = weights["model.layers.\(layerIndex).attention.value.bias"] ??
                  weights["model.layers.\(layerIndex).self_attn.v_proj.bias"]
-        self.vProj = Linear(weight: vW, bias: vB)
+        self.vProj = GemmaLinear(weight: vW, bias: vB)
         
-        let oW = try find([
+        let oW = try findTensor(weights, [
             "model.layers.\(layerIndex).attention.output.weight",
             "model.layers.\(layerIndex).self_attn.o_proj.weight",
             "layers.\(layerIndex).attention.wo.weight"
-        ])
+        ], description: "o_proj weight")
+        
         let oB = weights["model.layers.\(layerIndex).attention.output.bias"] ??
                  weights["model.layers.\(layerIndex).self_attn.o_proj.bias"]
-        self.oProj = Linear(weight: oW, bias: oB)
+        self.oProj = GemmaLinear(weight: oW, bias: oB)
         
         // Derive dimensions from weights
-        let outQ = qW.shape[0]  // [out_q, in]
-        _ = kW.shape[0]  // outK not used
-        _ = vW.shape[0]  // outV not used
+        let outQ = qW.shape[0]
         
-        // For Gemma-3-270M: numQHeads=16, numKVHeads=4 (from config)
-        let canonicalQHeads = config.numAttentionHeads
-        let canonicalKVHeads = config.numKVHeads
-        
-        // Compute headDim from q-out
-        let computedHeadDim = outQ / canonicalQHeads
-        
-        self.numQHeads = canonicalQHeads
-        self.numKVHeads = canonicalKVHeads
-        self.headDim = computedHeadDim
-        
-        // oProj input expected is oW.shape[1]
+        self.numQHeads = config.numAttentionHeads
+        self.numKVHeads = config.numKVHeads
+        self.headDim = outQ / config.numAttentionHeads
         self.expectedOProjIn = oW.shape[1]
+        
+        print("🔧 [GemmaAttention] L\(layerIndex) qOut=\(outQ) qHeads=\(numQHeads) kvHeads=\(numKVHeads) headDim=\(headDim) oIn=\(expectedOProjIn)")
     }
     
     /// Forward with KV cache append
@@ -242,7 +253,7 @@ final class GemmaAttention {
         }
         
         // Apply RoPE to q and k
-        let (qRot, kRot) = RoPE.apply(q: q, k: k)
+        let (qRot, kRot) = GemmaRoPE.apply(q: q, k: k)
         
         // Append kRot/v to cache if provided
         var newCacheK: MLXArray? = cacheK
@@ -307,9 +318,9 @@ final class GemmaAttention {
 // MARK: - Gemma MLP (SwiGLU)
 
 final class GemmaMLP {
-    let gate: Linear
-    let up: Linear
-    let down: Linear
+    let gate: GemmaLinear
+    let up: GemmaLinear
+    let down: GemmaLinear
     let expectedDownInput: Int
     
     init(layerIndex: Int, config: GemmaConfig, weights: [String: MLXArray]) throws {
@@ -332,7 +343,7 @@ final class GemmaMLP {
         ])
         let gateB = weights["model.layers.\(layerIndex).mlp.gate_proj.bias"] ??
                     weights["layers.\(layerIndex).feed_forward.w1.bias"]
-        self.gate = Linear(weight: gateW, bias: gateB)
+        self.gate = GemmaLinear(weight: gateW, bias: gateB)
         
         let upW = try f([
             "model.layers.\(layerIndex).mlp.up_proj.weight",
@@ -340,7 +351,7 @@ final class GemmaMLP {
         ])
         let upB = weights["model.layers.\(layerIndex).mlp.up_proj.bias"] ??
                   weights["layers.\(layerIndex).feed_forward.w3.bias"]
-        self.up = Linear(weight: upW, bias: upB)
+        self.up = GemmaLinear(weight: upW, bias: upB)
         
         let downW = try f([
             "model.layers.\(layerIndex).mlp.down_proj.weight",
@@ -348,7 +359,7 @@ final class GemmaMLP {
         ])
         let downB = weights["model.layers.\(layerIndex).mlp.down_proj.bias"] ??
                     weights["layers.\(layerIndex).feed_forward.w2.bias"]
-        self.down = Linear(weight: downW, bias: downB)
+        self.down = GemmaLinear(weight: downW, bias: downB)
         
         self.expectedDownInput = downW.shape[1]
     }
@@ -374,9 +385,9 @@ final class GemmaMLP {
 // MARK: - Transformer Block
 
 final class GemmaTransformerBlock {
-    let ln1: LayerNorm
+    let ln1: GemmaLayerNorm
     let attn: GemmaAttention
-    let ln2: LayerNorm
+    let ln2: GemmaLayerNorm
     let mlp: GemmaMLP
     let actualHiddenSize: Int
     
@@ -400,7 +411,7 @@ final class GemmaTransformerBlock {
         ])
         let ln1B = weights["model.layers.\(layerIndex).input_layernorm.bias"] ??
                    weights["layers.\(layerIndex).attention_norm.bias"]
-        self.ln1 = LayerNorm(weight: ln1W, bias: ln1B, eps: config.layerNormEps)
+        self.ln1 = GemmaLayerNorm(weight: ln1W, bias: ln1B, eps: config.layerNormEps)
         
         self.attn = try GemmaAttention(layerIndex: layerIndex, config: config, weights: weights)
         
@@ -410,7 +421,7 @@ final class GemmaTransformerBlock {
         ])
         let ln2B = weights["model.layers.\(layerIndex).post_attention_layernorm.bias"] ??
                    weights["layers.\(layerIndex).ffn_norm.bias"]
-        self.ln2 = LayerNorm(weight: ln2W, bias: ln2B, eps: config.layerNormEps)
+        self.ln2 = GemmaLayerNorm(weight: ln2W, bias: ln2B, eps: config.layerNormEps)
         
         self.mlp = try GemmaMLP(layerIndex: layerIndex, config: config, weights: weights)
         self.actualHiddenSize = actualHiddenSize
@@ -445,11 +456,12 @@ final class GemmaTransformerBlock {
 
 // MARK: - Full Gemma-3-270M Model
 
-final class Gemma3_270M {
+final class Gemma3_270M: LLMModel {
+    let modelType: ModelType = .gemma3_270m
     let embedding: Embedding
-    let ln: LayerNorm
+    let ln: GemmaLayerNorm
     let blocks: [GemmaTransformerBlock]
-    let lmHead: Linear  // weight = embed (tied)
+    let lmHead: GemmaLinear  // weight = embed (tied)
     let config: GemmaConfig
     let actualHiddenSize: Int
     
@@ -477,7 +489,7 @@ final class Gemma3_270M {
             "embed_tokens.weight",
             "tok_embeddings.weight"
         ], description: "embedding weight")
-        self.embedding = Embedding(weight: embedW)  // [vocab, hidden]
+        self.embedding = Embedding(weight: embedW)
         
         let inferredHidden = embedW.shape.count >= 2 ? Int(embedW.shape.last ?? 0) : config.hiddenSize
         if inferredHidden != config.hiddenSize {
@@ -492,7 +504,7 @@ final class Gemma3_270M {
             "output_norm.weight"
         ], description: "layer norm weight")
         let normB = weights["model.norm.bias"] ?? weights["norm.bias"] ?? weights["output_norm.bias"]
-        self.ln = LayerNorm(weight: normW, bias: normB, eps: config.layerNormEps)
+        self.ln = GemmaLayerNorm(weight: normW, bias: normB, eps: config.layerNormEps)
         
         // Load transformer blocks
         var blocks: [GemmaTransformerBlock] = []
@@ -504,33 +516,34 @@ final class Gemma3_270M {
         // Load lm_head (or use embedding weight if tied)
         if let lmHeadW = weights["lm_head.weight"] ?? weights["model.lm_head.weight"] {
             let lmHeadB = weights["lm_head.bias"] ?? weights["model.lm_head.bias"]
-            self.lmHead = Linear(weight: lmHeadW, bias: lmHeadB)
+            self.lmHead = GemmaLinear(weight: lmHeadW, bias: lmHeadB)
         } else {
             // Weight tying: use embedding weight directly (already [vocab, hidden])
             // Note: Embedding weight is [vocab, hidden], Linear expects [out, in]
             // For weight tying, we use the same weight without transpose
-            self.lmHead = Linear(weight: embedW, bias: nil)
+            self.lmHead = GemmaLinear(weight: embedW, bias: nil)
         }
     }
     
     /// Forward pass
-    func forward(_ tokens: MLXArray) -> MLXArray {
+    func forward(
+        _ inputTokens: MLXArray,
+        cacheK: [[MLXArray?]]?,
+        cacheV: [[MLXArray?]]?
+    ) throws -> (MLXArray, [[MLXArray?]]?, [[MLXArray?]]?) {
         // tokens: [batch, seq] -> [batch, seq, hidden]
-        var x = embedding(tokens)  // Embedding lookup
+        var x = embedding(inputTokens)  // Embedding lookup
         
         // Pass through transformer blocks
         for block in blocks {
-            var cacheK: MLXArray? = nil
-            var cacheV: MLXArray? = nil
-            do {
-                x = try block.forward(x, cacheK: &cacheK, cacheV: &cacheV)
-            } catch {
-                fatalError("Block forward failed: \(error)")
-            }
+            var layerCacheK: MLXArray? = nil
+            var layerCacheV: MLXArray? = nil
+            x = try block.forward(x, cacheK: &layerCacheK, cacheV: &layerCacheV)
         }
         
         x = ln(x)
-        return lmHead(x)  // logits: [batch, seq, vocab]
+        let logits = lmHead(x)  // logits: [batch, seq, vocab]
+        return (logits, cacheK, cacheV)
     }
     
     /// Generate next token with KV cache
@@ -564,6 +577,29 @@ final class Gemma3_270M {
         let lastTokenLogits = logits[0, 0, 0..<config.vocabSize]
         
         return (lastTokenLogits, cacheK, cacheV)
+    }
+}
+
+/// Gemma model loader
+public class GemmaLoader: ModelLoader {
+    public static func load(from directory: String) throws -> LLMModel {
+        print("📦 [GemmaLoader] Loading Gemma model from: \(directory)")
+        
+        // Use WeightLoader to load both config and weights
+        let (configDict, weights) = try WeightLoader.loadFromDirectory(directory)
+        
+        let config = GemmaConfig(from: configDict)
+        print("⏱️  [GemmaLoader] Loaded \(weights.count) tensors")
+        
+        return try Gemma3_270M(config: config, weights: weights)
+    }
+}
+
+// Register Gemma loader
+public extension GemmaLoader {
+    @MainActor
+    static func register() {
+        ModelRegistry.shared.register(GemmaLoader.self, for: .gemma3_270m)
     }
 }
 

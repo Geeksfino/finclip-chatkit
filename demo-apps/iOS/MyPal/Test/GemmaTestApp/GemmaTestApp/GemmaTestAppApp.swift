@@ -7,6 +7,10 @@ struct GemmaTestAppApp: App {
     @State private var output: String = "Starting..."
     
     init() {
+        // Register all model loaders
+        GemmaLoader.register()
+        Phi3Loader.register()
+        
         // Run the test when app launches
         Task.detached(priority: .userInitiated) {
             await Self.runTest()
