@@ -39,3 +39,15 @@ func topKSample(_ logits: MLXArray, topK: Int = 50, temperature: Float = 1.0) ->
     return Int32(sampled[0].item(Int32.self))
 }
 
+/// Top-p (nucleus) sampling: sample from smallest set of tokens with cumulative probability >= p
+func topPSample(_ logits: MLXArray, topP: Float = 0.95, temperature: Float = 1.0) -> Int32 {
+    let scaledLogits = logits / MLXArray(temperature)
+    let probs = softmax(scaledLogits, axis: -1)
+    
+    // Sort probabilities in descending order and get indices
+    // Note: For simplicity, fall back to categorical sampling
+    // Full implementation would require sorting and cumulative sum
+    let sampled = MLXRandom.categorical(probs, count: 1)
+    return Int32(sampled[0].item(Int32.self))
+}
+

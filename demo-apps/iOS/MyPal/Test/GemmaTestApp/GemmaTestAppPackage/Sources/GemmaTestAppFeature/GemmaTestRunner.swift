@@ -63,14 +63,33 @@ public class GemmaTestRunner {
         print("✅ [GemmaTest] Tokenizer loaded")
         print("")
         
-        // 4. Encode prompt
+        // 4. Apply prompt template based on model type
+        print("🔤 [GemmaTest] Preparing prompt...")
+        var promptToEncode = config.prompt
+        
+        if model.modelType == .phi3_mini {
+            // Phi-3 requires chat template format
+            let promptBuilder = Phi3PromptBuilder(systemPrompt: "You are a helpful AI assistant.")
+            promptToEncode = promptBuilder.buildPrompt(userMessage: config.prompt)
+            print("   Phi-3 format applied:")
+            print("   \(promptToEncode.replacingOccurrences(of: "\n", with: "\\n"))")
+        } else {
+            print("   Using raw prompt: \(config.prompt)")
+        }
+        print("")
+        
+        // 5. Encode prompt
         print("🔤 [GemmaTest] Encoding prompt...")
-        let inputTokens = try tokenizer.encode(config.prompt)
+        var inputTokens = try tokenizer.encode(promptToEncode)
+        
+        // Phi-3 tokenizer config says add_bos_token: false, so don't add BOS manually
+        // The tokenizer should handle special tokens automatically
+        
         print("   Input tokens: \(inputTokens)")
         print("   Token count: \(inputTokens.count)")
         print("")
         
-        // 5. Prime the model with the prompt tokens to build KV cache
+        // 5. Prime the model with the FULL prompt sequence (not token-by-token!)
         print("🤖 [GemmaTest] Generating response...")
         print("   (This may take a while)")
         print("")
@@ -79,24 +98,26 @@ public class GemmaTestRunner {
         let eosTokenId = Int32(gemmaConfig.eosTokenId)
         var cacheK: [[MLXArray?]] = []
         var cacheV: [[MLXArray?]] = []
-        var logitsForNext: MLXArray? = nil
         
-        for token in inputTokens {
-            let tokenArray = MLXArray([token]).reshaped([1, 1])
-            let (logits, newCacheK, newCacheV) = try model.generateNextToken(
-                tokenArray,
-                cacheK: &cacheK,
-                cacheV: &cacheV
-            )
-            cacheK = newCacheK
-            cacheV = newCacheV
-            logitsForNext = logits
-        }
+        // Process FULL prompt sequence at once (critical for attention to work!)
+        let promptInts = inputTokens.map { Int($0) }
+        let promptTokenArray = MLXArray(promptInts).reshaped([1, inputTokens.count])
+        print("   Processing prompt sequence: \(inputTokens.count) tokens")
         
-        guard var nextLogits = logitsForNext else {
-            print("❌ [GemmaTest] Failed to prime model with prompt tokens")
-            return
-        }
+        let (allLogits, newCacheK, newCacheV) = try model.forward(
+            promptTokenArray,
+            cacheK: nil,  // No cache initially
+            cacheV: nil
+        )
+        cacheK = newCacheK ?? []
+        cacheV = newCacheV ?? []
+        
+        // Extract logits for the last token: [batch, seq, vocab] -> [batch, vocab] for last position
+        let seqLen = allLogits.dim(1)
+        let lastLogits = allLogits[0..., (seqLen - 1)..., 0...]
+            .squeezed(axes: [1])
+        
+        var nextLogits = lastLogits
         
         for step in 0..<config.maxTokens {
             let nextToken: Int32
@@ -119,15 +140,21 @@ public class GemmaTestRunner {
                 fflush(stdout)
             }
             
-            let tokenArray = MLXArray([nextToken]).reshaped([1, 1])
-            let (logits, newCacheK, newCacheV) = try model.generateNextToken(
+            // Generate next token using KV cache (single token, but with full context from cache)
+            let tokenArray = MLXArray([Int(nextToken)]).reshaped([1, 1])
+            let (logits, newCacheK, newCacheV) = try model.forward(
                 tokenArray,
-                cacheK: &cacheK,
-                cacheV: &cacheV
+                cacheK: cacheK,
+                cacheV: cacheV
             )
-            cacheK = newCacheK
-            cacheV = newCacheV
-            nextLogits = logits
+            
+            // Update cache
+            cacheK = newCacheK ?? []
+            cacheV = newCacheV ?? []
+            
+            // Extract logits for the last (and only) token
+            let seqLen = logits.dim(1)
+            nextLogits = logits[0..., (seqLen - 1)..., 0...].squeezed(axes: [1])
         }
         
         print("")

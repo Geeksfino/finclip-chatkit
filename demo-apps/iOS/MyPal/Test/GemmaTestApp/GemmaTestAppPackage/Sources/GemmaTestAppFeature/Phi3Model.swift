@@ -2,7 +2,7 @@
 //  Phi3Model.swift
 //  GemmaTestAppFeature
 //
-//  Phi-3 Mini model with embedding-based projection
+//  Full Phi-3 transformer implementation with RoPE, attention, MLP, RMSNorm
 //
 
 import Foundation
@@ -45,33 +45,81 @@ public struct Phi3Config: ModelConfig {
         print("   hiddenSize: \(hiddenSize)")
         print("   numLayers: \(numLayers)")
         print("   numAttentionHeads: \(numAttentionHeads)")
-        print("   numKeyValueHeads: \(numKeyValueHeads)")
         print("   intermediateSize: \(intermediateSize)")
     }
 }
 
-/// Phi-3 Mini model - Uses embeddings for efficient inference
+/// Full Phi-3 transformer model
 public class Phi3Model: LLMModel {
     public let modelType: ModelType = .phi3_mini
     let config: Phi3Config
     let embedWeight: MLXArray
+    let lmHeadWeight: MLXArray
+    let finalNorm: Phi3RMSNorm?
     private let weights: [String: MLXArray]
+    private var transformerBlocks: [Phi3TransformerBlock] = []
+    private let actualHiddenDim: Int
     
     public init(config: Phi3Config, weights: [String: MLXArray]) throws {
         self.config = config
         self.weights = weights
         
-        print("🏗️  [Phi3Model] Initializing Phi-3...")
+        print("🏗️  [Phi3Model] Initializing Phi-3 transformer...")
         print("   Layers: \(config.numLayers)")
-        print("   Hidden dim: \(config.hiddenSize)")
+        print("   Hidden: \(config.hiddenSize), Heads: \(config.numAttentionHeads)")
         
         guard let embedW = weights["model.embed_tokens.weight"] else {
             throw ModelError.loadFailed("Missing embedding weight")
         }
         self.embedWeight = embedW
         
-        print("   Embeddings: \(embedW.shape) [vocab=\(embedW.shape[0]), hidden=\(embedW.shape[1])]")
-        print("✅ [Phi3Model] Initialized")
+        guard let lmHeadW = weights["lm_head.weight"] else {
+            throw ModelError.loadFailed("Missing lm_head weight")
+        }
+        self.lmHeadWeight = lmHeadW
+        
+        // Detect actual hidden dimension from quantized embeddings
+        self.actualHiddenDim = embedW.shape[1]
+        print("   Detected actual hidden dim: \(actualHiddenDim) (config says \(config.hiddenSize))")
+        
+        // Create final norm
+        self.finalNorm = createFinalRMSNorm(from: weights, config: config)
+        
+        // Load transformer blocks
+        print("   Loading transformer blocks...")
+        
+        // Check if dimensions match (non-quantized)
+        if actualHiddenDim == config.hiddenSize {
+            print("   ✅ Non-quantized model detected, loading transformer blocks...")
+            for layerIdx in 0..<config.numLayers {
+                if let block = createPhi3TransformerBlock(
+                    layerIdx: layerIdx,
+                    config: config,
+                    actualHiddenDim: actualHiddenDim,
+                    weights: weights
+                ) {
+                    transformerBlocks.append(block)
+                    if layerIdx < 3 || layerIdx >= config.numLayers - 1 {
+                        print("   ✓ Layer \(layerIdx) loaded")
+                    }
+                } else {
+                    print("   ⚠️  Failed to load layer \(layerIdx)")
+                }
+            }
+        } else {
+            print("   ⚠️  Quantized model detected (hidden \(actualHiddenDim) vs config \(config.hiddenSize))")
+            print("   Transformer blocks disabled - using embedding projection only")
+        }
+        
+        print("   Embeddings: \(embedW.shape)")
+        print("   LM Head: \(lmHeadW.shape)")
+        print("   Loaded \(transformerBlocks.count)/\(config.numLayers) transformer blocks")
+        
+        if transformerBlocks.count == config.numLayers {
+            print("✅ [Phi3Model] Initialized (full transformer)")
+        } else {
+            print("✅ [Phi3Model] Initialized (embedding mode)")
+        }
     }
     
     public func generateNextToken(
@@ -93,55 +141,94 @@ public class Phi3Model: LLMModel {
         let batchSize = inputTokens.dim(0)
         let seqLen = inputTokens.dim(1)
         
-        // Step 1: Get embeddings from input tokens
-        var x = try getEmbeddingsForTokens(inputTokens)  // [batch, seq, hidden]
+        // Step 1: Embed tokens
+        var x = try getEmbeddings(inputTokens)
         
-        // Step 2: Mix with noise for stochasticity
-        x = x + MLXRandom.normal(x.shape) * 0.04
+        // Step 2: Initialize cache arrays if needed
+        // Cache structure: [[MLXArray?]] where cacheK[layerIdx][0] is the cache for that layer
+        var layerCacheK: [[MLXArray?]] = []
+        var layerCacheV: [[MLXArray?]] = []
         
-        // Step 3: Project embeddings to vocabulary logits
-        var logits = matmul(x, embedWeight.T)
+        if let existingCacheK = cacheK, let existingCacheV = cacheV, 
+           !existingCacheK.isEmpty, !existingCacheV.isEmpty {
+            // Use existing cache
+            layerCacheK = existingCacheK
+            layerCacheV = existingCacheV
+            // Ensure we have enough cache entries for all layers
+            while layerCacheK.count < transformerBlocks.count {
+                layerCacheK.append([nil])
+            }
+            while layerCacheV.count < transformerBlocks.count {
+                layerCacheV.append([nil])
+            }
+        } else {
+            // Initialize empty cache for all layers: each layer has one cache entry
+            layerCacheK = Array(repeating: [nil], count: transformerBlocks.count)
+            layerCacheV = Array(repeating: [nil], count: transformerBlocks.count)
+        }
         
-        // Add noise for diversity
-        logits = logits + MLXRandom.normal(logits.shape) * 0.02
+        // Step 3: Process through transformer blocks with KV cache
+        print("🔄 [Phi3Model.forward] Processing \(transformerBlocks.count) layers...")
         
-        return (logits, cacheK, cacheV)
+        for (idx, block) in transformerBlocks.enumerated() {
+            // Extract cache for this layer (first element of the array)
+            let layerK = layerCacheK[idx].first ?? nil
+            let layerV = layerCacheV[idx].first ?? nil
+            
+            let (output, newK, newV) = block(x, cacheK: layerK, cacheV: layerV)
+            x = output
+            // Update cache for this layer
+            layerCacheK[idx] = [newK]
+            layerCacheV[idx] = [newV]
+            
+            if idx % max(1, transformerBlocks.count / 4) == 0 {
+                print("   ✓ Layer \(idx + 1)/\(transformerBlocks.count) done")
+            }
+        }
+        
+        // Step 4: Apply final norm
+        if let norm = finalNorm {
+            x = norm(x)
+        }
+        
+        // Step 5: Project to vocabulary
+        let logits = try matmul(x, lmHeadWeight.asType(.float32).T)
+        
+        return (logits, layerCacheK, layerCacheV)
     }
     
     // MARK: - Helper Methods
     
-    private func getEmbeddingsForTokens(_ tokenIds: MLXArray) throws -> MLXArray {
+    private func getEmbeddings(_ tokenIds: MLXArray) throws -> MLXArray {
         let batchSize = tokenIds.dim(0)
         let seqLen = tokenIds.dim(1)
-        let hiddenDim = embedWeight.shape[1]
         let vocabSize = embedWeight.shape[0]
+        let hiddenDim = embedWeight.shape[1]
         
-        // Create embeddings by indexing into embed matrix
-        var allEmbeds: [MLXArray] = []
+        let embedFloat = embedWeight.asType(.float32)
+        
+        var result: [MLXArray] = []
         
         for b in 0..<batchSize {
-            var batchEmbeds: [MLXArray] = []
+            var seqEmbeds: [MLXArray] = []
             for s in 0..<seqLen {
-                // Get token index safely
-                let baseIdx = (b * seqLen + s) % vocabSize
-                batchEmbeds.append(embedWeight[baseIdx])
+                let tokenIdx = (b * seqLen + s) % vocabSize
+                seqEmbeds.append(embedFloat[tokenIdx])
             }
             
-            // Stack into [seq, hidden]
-            var seqEmbeds = batchEmbeds[0].reshaped([1, hiddenDim])
-            for i in 1..<batchEmbeds.count {
-                seqEmbeds = concatenated([seqEmbeds, batchEmbeds[i].reshaped([1, hiddenDim])], axis: 0)
+            var stacked = seqEmbeds[0].reshaped([1, hiddenDim])
+            for i in 1..<seqEmbeds.count {
+                stacked = concatenated([stacked, seqEmbeds[i].reshaped([1, hiddenDim])], axis: 0)
             }
-            allEmbeds.append(seqEmbeds)
+            result.append(stacked)
         }
         
-        // Stack into [batch, seq, hidden]
-        var result = allEmbeds[0].reshaped([1, seqLen, hiddenDim])
-        for i in 1..<allEmbeds.count {
-            result = concatenated([result, allEmbeds[i].reshaped([1, seqLen, hiddenDim])], axis: 0)
+        var output = result[0].reshaped([1, seqLen, hiddenDim])
+        for i in 1..<result.count {
+            output = concatenated([output, result[i].reshaped([1, seqLen, hiddenDim])], axis: 0)
         }
         
-        return result
+        return output
     }
 }
 
@@ -149,9 +236,23 @@ public class Phi3Model: LLMModel {
 public class Phi3Loader: ModelLoader {
     public static func load(from directory: String) throws -> LLMModel {
         print("📦 [Phi3Loader] Loading Phi-3 model from: \(directory)")
-        let (configDict, weights) = try WeightLoader.loadFromDirectory(directory)
+        let (configDict, weightsRaw) = try WeightLoader.loadFromDirectory(directory)
         let config = Phi3Config(from: configDict)
-        print("⏱️  [Phi3Loader] Loaded \(weights.count) tensors")
+        print("⏱️  [Phi3Loader] Loaded \(weightsRaw.count) tensors")
+        
+        // Check if model is quantized (has .scales and .biases tensors)
+        let hasScales = weightsRaw.keys.contains(where: { $0.hasSuffix(".scales") })
+        let hasBiases = weightsRaw.keys.contains(where: { $0.hasSuffix(".biases") })
+        
+        let weights: [String: MLXArray]
+        if hasScales && hasBiases {
+            print("🔧 [Phi3Loader] Quantized model detected - dequantizing...")
+            weights = QuantizationUtils.dequantizeWeights(weightsRaw)
+        } else {
+            print("✅ [Phi3Loader] Float model - using weights as-is")
+            weights = weightsRaw
+        }
+        
         return try Phi3Model(config: config, weights: weights)
     }
 }

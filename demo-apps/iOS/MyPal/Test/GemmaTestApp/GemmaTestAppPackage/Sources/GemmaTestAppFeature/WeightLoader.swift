@@ -34,30 +34,50 @@ struct WeightLoader {
             )
         }
         
-        // 2) Load model.safetensors (single-file layout)
+        // 2) Load model.safetensors (single-file or split layout)
         let safetensorsPath = dirURL.appendingPathComponent("model.safetensors")
-        guard FileManager.default.fileExists(atPath: safetensorsPath.path) else {
+        let hasSingleFile = FileManager.default.fileExists(atPath: safetensorsPath.path)
+        
+        // Check for split files (model-00001-of-XXXXX.safetensors pattern)
+        let contents = try FileManager.default.contentsOfDirectory(atPath: dir)
+        let splitFiles = contents.filter { $0.hasPrefix("model-") && $0.hasSuffix(".safetensors") }.sorted()
+        
+        print("⚖️  [WeightLoader] Loading model weights...")
+        let startTime = Date()
+        
+        var weights: [String: MLXArray] = [:]
+        
+        if hasSingleFile {
+            // Single file
+            print("   Found single model.safetensors file")
+            do {
+                weights = try MLX.loadArrays(url: safetensorsPath)
+            } catch {
+                print("❌ [WeightLoader] MLX.loadArrays(url:) failed: \(error)")
+                print("   Trying loadArrays(data:) as fallback...")
+                let fileData = try Data(contentsOf: safetensorsPath)
+                weights = try MLX.loadArrays(data: fileData)
+            }
+        } else if !splitFiles.isEmpty {
+            // Split files
+            print("   Found \(splitFiles.count) split files: \(splitFiles.joined(separator: ", "))")
+            for splitFile in splitFiles {
+                let splitPath = dirURL.appendingPathComponent(splitFile)
+                print("   Loading \(splitFile)...")
+                do {
+                    let splitWeights = try MLX.loadArrays(url: splitPath)
+                    weights.merge(splitWeights) { (_, new) in new }
+                } catch {
+                    print("❌ [WeightLoader] Failed to load \(splitFile): \(error)")
+                    throw error
+                }
+            }
+        } else {
             throw NSError(
                 domain: "WeightLoader",
                 code: -3,
-                userInfo: [NSLocalizedDescriptionKey: "Missing model.safetensors at \(safetensorsPath.path)"]
+                userInfo: [NSLocalizedDescriptionKey: "No model.safetensors or split files found at \(dir)"]
             )
-        }
-        
-        print("⚖️  [WeightLoader] Loading model.safetensors (this may take 10-30 seconds)...")
-        let startTime = Date()
-        
-        // Use MLX.loadArrays(url:) to load safetensors
-        let weights: [String: MLXArray]
-        do {
-            weights = try MLX.loadArrays(url: safetensorsPath)
-        } catch {
-            print("❌ [WeightLoader] MLX.loadArrays(url:) failed: \(error)")
-            print("   Trying loadArrays(data:) as fallback...")
-            
-            // Fallback to Data version
-            let fileData = try Data(contentsOf: safetensorsPath)
-            weights = try MLX.loadArrays(data: fileData)
         }
         
         let loadTime = Date().timeIntervalSince(startTime)
