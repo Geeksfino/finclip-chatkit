@@ -534,16 +534,46 @@ final class Gemma3_270M: LLMModel {
         // tokens: [batch, seq] -> [batch, seq, hidden]
         var x = embedding(inputTokens)  // Embedding lookup
         
-        // Pass through transformer blocks
-        for block in blocks {
-            var layerCacheK: MLXArray? = nil
-            var layerCacheV: MLXArray? = nil
-            x = try block.forward(x, cacheK: &layerCacheK, cacheV: &layerCacheV)
+        // Initialize cache arrays per layer
+        var layerCacheK: [MLXArray?] = []
+        var layerCacheV: [MLXArray?] = []
+        
+        if let existingCacheK = cacheK, let existingCacheV = cacheV,
+           !existingCacheK.isEmpty, !existingCacheV.isEmpty {
+            // Use existing cache, ensure we have enough entries
+            layerCacheK = existingCacheK.map { $0.first ?? nil }
+            layerCacheV = existingCacheV.map { $0.first ?? nil }
+            // Pad if needed
+            while layerCacheK.count < blocks.count {
+                layerCacheK.append(nil)
+            }
+            while layerCacheV.count < blocks.count {
+                layerCacheV.append(nil)
+            }
+        } else {
+            // Initialize empty cache for all layers
+            layerCacheK = Array(repeating: nil, count: blocks.count)
+            layerCacheV = Array(repeating: nil, count: blocks.count)
+        }
+        
+        // Pass through transformer blocks, accumulating cache
+        for (idx, block) in blocks.enumerated() {
+            var blockCacheK = layerCacheK[idx]
+            var blockCacheV = layerCacheV[idx]
+            x = try block.forward(x, cacheK: &blockCacheK, cacheV: &blockCacheV)
+            // Update cache for this layer
+            layerCacheK[idx] = blockCacheK
+            layerCacheV[idx] = blockCacheV
         }
         
         x = ln(x)
         let logits = lmHead(x)  // logits: [batch, seq, vocab]
-        return (logits, cacheK, cacheV)
+        
+        // Convert to nested array format: [[MLXArray?]] where each inner array has one element
+        let nestedCacheK = layerCacheK.map { [$0] }
+        let nestedCacheV = layerCacheV.map { [$0] }
+        
+        return (logits, nestedCacheK, nestedCacheV)
     }
     
     /// Generate next token with KV cache

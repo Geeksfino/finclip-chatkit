@@ -32,3 +32,5 @@ App/Models/**/tokenizer_config.json
 !App/Models/**/chat_template.jinja
 !App/Models/**/README.md
 
+*.profraw
+*.profdata

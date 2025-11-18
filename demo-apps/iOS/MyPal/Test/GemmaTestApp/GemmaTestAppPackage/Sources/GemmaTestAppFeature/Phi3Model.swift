@@ -54,6 +54,7 @@ public class Phi3Model: LLMModel {
     public let modelType: ModelType = .phi3_mini
     let config: Phi3Config
     let embedWeight: MLXArray
+    let embedding: Embedding  // Use MLXNN Embedding for efficient lookup
     let lmHeadWeight: MLXArray
     let finalNorm: Phi3RMSNorm?
     private let weights: [String: MLXArray]
@@ -72,15 +73,22 @@ public class Phi3Model: LLMModel {
             throw ModelError.loadFailed("Missing embedding weight")
         }
         self.embedWeight = embedW
+        self.embedding = Embedding(weight: embedW)  // Create MLXNN Embedding for efficient lookup
         
         guard let lmHeadW = weights["lm_head.weight"] else {
             throw ModelError.loadFailed("Missing lm_head weight")
         }
         self.lmHeadWeight = lmHeadW
         
-        // Detect actual hidden dimension from quantized embeddings
-        self.actualHiddenDim = embedW.shape[1]
-        print("   Detected actual hidden dim: \(actualHiddenDim) (config says \(config.hiddenSize))")
+        // Detect actual hidden dimension from embeddings
+        // Note: Embeddings might not be quantized, so their dimension might differ
+        // After dequantization of other weights, we should use config.hiddenSize
+        let embedDim = embedW.shape[1]
+        print("   Embedding dim: \(embedDim), Config hidden size: \(config.hiddenSize)")
+        
+        // For actualHiddenDim, use config.hiddenSize after dequantization
+        // (dequantized weights will have config.hiddenSize dimensions)
+        self.actualHiddenDim = config.hiddenSize
         
         // Create final norm
         self.finalNorm = createFinalRMSNorm(from: weights, config: config)
@@ -88,9 +96,33 @@ public class Phi3Model: LLMModel {
         // Load transformer blocks
         print("   Loading transformer blocks...")
         
-        // Check if dimensions match (non-quantized)
-        if actualHiddenDim == config.hiddenSize {
-            print("   ✅ Non-quantized model detected, loading transformer blocks...")
+        // Try to load transformer blocks - they should work if dequantization was successful
+        // Check by verifying a key weight (like qkv_proj or q_proj) has correct dimensions
+        let testLayerKey = "model.layers.0.self_attn.qkv_proj.weight"
+        let testLayerKeyAlt = "model.layers.0.self_attn.q_proj.weight"
+        
+        var canLoadLayers = false
+        if let testWeight = weights[testLayerKey] ?? weights[testLayerKeyAlt] {
+            // Check if the weight's input dimension matches config.hiddenSize
+            let weightInputDim = testWeight.shape[1]
+            if weightInputDim == config.hiddenSize {
+                canLoadLayers = true
+                print("   ✅ Weight dimensions match config - loading transformer blocks...")
+            } else {
+                print("   ⚠️  Weight input dim (\(weightInputDim)) doesn't match config (\(config.hiddenSize))")
+                print("   ⚠️  This may indicate incomplete dequantization")
+            }
+        } else {
+            // If we can't find test weight, try loading anyway (might be different naming)
+            canLoadLayers = true
+            print("   ⚠️  Could not verify weight dimensions, attempting to load blocks...")
+        }
+        
+        if canLoadLayers {
+            // After dequantization, all weights should have config.hiddenSize dimensions
+            // Use actualHiddenDim which is set to config.hiddenSize
+            print("   Using hidden dim: \(actualHiddenDim) for transformer blocks")
+            
             for layerIdx in 0..<config.numLayers {
                 if let block = createPhi3TransformerBlock(
                     layerIdx: layerIdx,
@@ -107,8 +139,8 @@ public class Phi3Model: LLMModel {
                 }
             }
         } else {
-            print("   ⚠️  Quantized model detected (hidden \(actualHiddenDim) vs config \(config.hiddenSize))")
-            print("   Transformer blocks disabled - using embedding projection only")
+            print("   ⚠️  Transformer blocks disabled - dimension mismatch")
+            print("   ⚠️  This may indicate the model needs different dequantization logic")
         }
         
         print("   Embeddings: \(embedW.shape)")
@@ -200,35 +232,10 @@ public class Phi3Model: LLMModel {
     // MARK: - Helper Methods
     
     private func getEmbeddings(_ tokenIds: MLXArray) throws -> MLXArray {
-        let batchSize = tokenIds.dim(0)
-        let seqLen = tokenIds.dim(1)
-        let vocabSize = embedWeight.shape[0]
-        let hiddenDim = embedWeight.shape[1]
-        
-        let embedFloat = embedWeight.asType(.float32)
-        
-        var result: [MLXArray] = []
-        
-        for b in 0..<batchSize {
-            var seqEmbeds: [MLXArray] = []
-            for s in 0..<seqLen {
-                let tokenIdx = (b * seqLen + s) % vocabSize
-                seqEmbeds.append(embedFloat[tokenIdx])
-            }
-            
-            var stacked = seqEmbeds[0].reshaped([1, hiddenDim])
-            for i in 1..<seqEmbeds.count {
-                stacked = concatenated([stacked, seqEmbeds[i].reshaped([1, hiddenDim])], axis: 0)
-            }
-            result.append(stacked)
-        }
-        
-        var output = result[0].reshaped([1, seqLen, hiddenDim])
-        for i in 1..<result.count {
-            output = concatenated([output, result[i].reshaped([1, seqLen, hiddenDim])], axis: 0)
-        }
-        
-        return output
+        // Use MLXNN Embedding for efficient token ID to embedding lookup
+        // This correctly extracts actual token IDs from the input array
+        // tokenIds shape: [batch, seq] with actual token ID values
+        return embedding(tokenIds)
     }
 }
 
@@ -247,7 +254,8 @@ public class Phi3Loader: ModelLoader {
         let weights: [String: MLXArray]
         if hasScales && hasBiases {
             print("🔧 [Phi3Loader] Quantized model detected - dequantizing...")
-            weights = QuantizationUtils.dequantizeWeights(weightsRaw)
+            // Pass target hidden dimension for proper expansion
+            weights = QuantizationUtils.dequantizeWeights(weightsRaw, targetHiddenDim: config.hiddenSize)
         } else {
             print("✅ [Phi3Loader] Float model - using weights as-is")
             weights = weightsRaw
