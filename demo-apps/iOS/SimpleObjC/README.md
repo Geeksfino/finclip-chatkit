@@ -129,9 +129,19 @@ make pod-run
 
 The app uses Swift Package Manager to fetch ChatKit from GitHub:
 - **Package**: `https://github.com/Geeksfino/finclip-chatkit.git`
-- **Version**: `0.6.1`
+- **Version**: `0.9.0`
 
 The framework is automatically resolved as a remote binary dependency when you build the project.
+
+### Context Providers
+
+This demo includes a **Note Context Provider** (`App/ContextProviders/NoteContextProvider`) that demonstrates:
+- Custom collector view (text input)
+- Custom preview chip (styled note preview)
+- Custom detail view (full note display)
+- Context item encoding for transport
+
+See the provider implementation for a complete Objective-C example of implementing context providers.
 
 ## 📱 Using the App
 
@@ -162,6 +172,8 @@ SimpleObjC/
 ├── App/
 │   ├── AppDelegate.h/m          # App delegate
 │   ├── SceneDelegate.h/m        # Scene delegate (initializes coordinator directly)
+│   ├── ContextProviders/       # Context provider examples
+│   │   └── NoteContextProvider.h/m  # Note context provider (Objective-C example)
 │   └── ViewControllers/         # Just 2 files - thin wrappers!
 │       ├── ConversationListViewController.h/m  # Embeds ChatKitConversationListViewController
 │       └── ChatViewController.h/m              # Uses ChatKitConversationViewController directly

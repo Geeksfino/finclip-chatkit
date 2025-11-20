@@ -103,7 +103,7 @@ make run
 
 The app uses Swift Package Manager to fetch ChatKit from GitHub:
 - **Package**: `https://github.com/Geeksfino/finclip-chatkit.git`
-- **Version**: `0.6.1`
+- **Version**: `0.9.0`
 
 ## 📱 Using the App
 

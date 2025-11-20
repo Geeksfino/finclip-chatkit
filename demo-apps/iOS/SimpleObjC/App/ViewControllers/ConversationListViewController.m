@@ -1,12 +1,14 @@
 //
 //  ConversationListViewController.m
-//  SimpleChatObjC
+//  SimpleObjC
 //
 //  Thin wrapper that embeds ChatKitConversationListViewController
 //
 
 #import "ConversationListViewController.h"
+#import "NoteContextProvider.h"
 #import <FinClipChatKit/FinClipChatKit-Swift.h>
+#import <ConvoUI/FinConvoMessageInputView.h>
 
 @interface ConversationListViewController () <CKTConversationListViewControllerDelegate>
 @property (nonatomic, strong) CKTChatKitCoordinator *coordinator;
@@ -88,7 +90,18 @@
                                                                                              objcConfiguration:chatConfig];
     chatVC.title = record.title.length > 0 ? record.title : @"Untitled";
     
+    // Register context providers directly on the chat view
+    // Note: We need to ensure the view is loaded before accessing chatView
     dispatch_async(dispatch_get_main_queue(), ^{
+        // Load the view if needed to ensure chatView is available
+        [chatVC loadViewIfNeeded];
+        
+        if (@available(iOS 15.0, *)) {
+            NoteContextProvider *noteProvider = [[NoteContextProvider alloc] init];
+            chatVC.chatView.inputView.contextProviders = @[noteProvider];
+            chatVC.chatView.inputView.contextPickerEnabled = YES;
+            chatVC.chatView.inputView.contextPickerMaxItems = 3;
+        }
         [self.navigationController pushViewController:chatVC animated:YES];
     });
 }
