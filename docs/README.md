@@ -39,6 +39,7 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 #### Shared Concepts
 - **[API Levels Guide](./api-levels.md)** - Understanding high-level vs low-level APIs
 - **[Component Embedding Guide](./component-embedding.md)** - Embedding components in various scenarios (Swift & Objective-C examples)
+- **[Context Providers Guide](./guides/context-providers.md)** - Implementing custom context providers (Swift & Objective-C)
 - **[Provider Customization](./api-levels.md#provider-mechanism)** - Context, ASR, and title generation providers
 
 ### Integration & Setup
@@ -129,7 +130,8 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 - **Swift**: [API Levels - Title Providers](./api-levels.md#title-generation-providers)
 - **Objective-C**: [Objective-C Guide - Title Providers](./guides/objective-c-guide.md#title-generation-providers)
 
-#### Add location context
+#### Add location context or custom context providers
+- **Swift & Objective-C**: [Context Providers Guide](./guides/context-providers.md) - Complete guide with examples
 - **Swift**: [API Levels - Context Providers](./api-levels.md#context-providers)
 - **Objective-C**: [Objective-C Guide - Context Providers](./guides/objective-c-guide.md#context-providers)
 
@@ -190,7 +192,9 @@ docs/
 │
 ├── guides/
 │   ├── developer-guide.md          # Swift comprehensive guide
-│   └── objective-c-guide.md         # Objective-C comprehensive guide
+│   ├── objective-c-guide.md         # Objective-C comprehensive guide
+│   ├── context-providers.md         # Context providers guide (Swift & Objective-C)
+│   └── context-providers.zh.md      # Context providers guide (Chinese)
 │
 ├── Core Concepts
 │   ├── api-levels.md               # High-level vs low-level APIs
@@ -235,11 +239,11 @@ Direct access for maximum flexibility:
 
 ### Provider Mechanism
 Customize framework behavior:
-- Context providers - Attach location, calendar, etc.
+- Context providers - Attach location, calendar, notes, etc.
 - ASR providers - Custom speech recognition
 - Title generation providers - Custom conversation titles
 
-**See**: [API Levels Guide](./api-levels.md#provider-mechanism)
+**See**: [Context Providers Guide](./guides/context-providers.md) | [API Levels Guide](./api-levels.md#provider-mechanism)
 
 ---
 

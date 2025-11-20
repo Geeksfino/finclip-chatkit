@@ -39,6 +39,7 @@
 #### 共享概念
 - **[API 层级指南](./api-levels.zh.md)** - 理解高级 API 与低级 API
 - **[组件嵌入指南](./component-embedding.zh.md)** - 在各种场景中嵌入组件（Swift 和 Objective-C 示例）
+- **[上下文提供器指南](./guides/context-providers.zh.md)** - 实现自定义上下文提供器（Swift 和 Objective-C）
 - **[提供者自定义](./api-levels.zh.md#provider-mechanism)** - 上下文、ASR 和标题生成提供者
 
 ### 集成与设置
@@ -129,7 +130,8 @@
 - **Swift**: [API 层级 - 标题提供者](./api-levels.zh.md#title-generation-providers)
 - **Objective-C**: [Objective-C 指南 - 标题提供者](./guides/objective-c-guide.zh.md#title-generation-providers)
 
-#### 添加位置上下文
+#### 添加位置上下文或自定义上下文提供器
+- **Swift 和 Objective-C**: [上下文提供器指南](./guides/context-providers.zh.md) - 包含示例的完整指南
 - **Swift**: [API 层级 - 上下文提供者](./api-levels.zh.md#context-providers)
 - **Objective-C**: [Objective-C 指南 - 上下文提供者](./guides/objective-c-guide.zh.md#context-providers)
 
