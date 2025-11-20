@@ -40,6 +40,7 @@
 - **[API 层级指南](./api-levels.zh.md)** - 理解高级 API 与低级 API
 - **[组件嵌入指南](./component-embedding.zh.md)** - 在各种场景中嵌入组件（Swift 和 Objective-C 示例）
 - **[上下文提供器指南](./guides/context-providers.zh.md)** - 实现自定义上下文提供器（Swift 和 Objective-C）
+- **[提示启动器指南](./guides/prompt-starters.zh.md)** - 创建和配置提示启动器（Swift 和 Objective-C）
 - **[提供者自定义](./api-levels.zh.md#provider-mechanism)** - 上下文、ASR 和标题生成提供者
 
 ### 集成与设置

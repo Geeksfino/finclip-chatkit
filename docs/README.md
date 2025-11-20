@@ -40,6 +40,7 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 - **[API Levels Guide](./api-levels.md)** - Understanding high-level vs low-level APIs
 - **[Component Embedding Guide](./component-embedding.md)** - Embedding components in various scenarios (Swift & Objective-C examples)
 - **[Context Providers Guide](./guides/context-providers.md)** - Implementing custom context providers (Swift & Objective-C)
+- **[Prompt Starters Guide](./guides/prompt-starters.md)** - Creating and configuring prompt starters (Swift & Objective-C)
 - **[Provider Customization](./api-levels.md#provider-mechanism)** - Context, ASR, and title generation providers
 
 ### Integration & Setup
@@ -194,7 +195,9 @@ docs/
 │   ├── developer-guide.md          # Swift comprehensive guide
 │   ├── objective-c-guide.md         # Objective-C comprehensive guide
 │   ├── context-providers.md         # Context providers guide (Swift & Objective-C)
-│   └── context-providers.zh.md      # Context providers guide (Chinese)
+│   ├── context-providers.zh.md      # Context providers guide (Chinese)
+│   ├── prompt-starters.md          # Prompt starters guide (Swift & Objective-C)
+│   └── prompt-starters.zh.md       # Prompt starters guide (Chinese)
 │
 ├── Core Concepts
 │   ├── api-levels.md               # High-level vs low-level APIs
