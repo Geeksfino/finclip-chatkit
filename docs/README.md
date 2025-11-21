@@ -37,6 +37,7 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
   - API reference
 
 #### Shared Concepts
+- **[Configuration Guide](./guides/configuration.md)** - Complete configuration reference for all ChatKit options
 - **[API Levels Guide](./api-levels.md)** - Understanding high-level vs low-level APIs
 - **[Component Embedding Guide](./component-embedding.md)** - Embedding components in various scenarios (Swift & Objective-C examples)
 - **[Context Providers Guide](./guides/context-providers.md)** - Implementing custom context providers (Swift & Objective-C)
@@ -136,6 +137,11 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 - **Swift**: [API Levels - Context Providers](./api-levels.md#context-providers)
 - **Objective-C**: [Objective-C Guide - Context Providers](./guides/objective-c-guide.md#context-providers)
 
+#### Configure chat UI behavior and appearance
+- **Swift & Objective-C**: [Configuration Guide](./guides/configuration.md) - Complete configuration reference
+- Status banner, welcome messages, prompt starters, tools, context providers
+- Theme customization, performance tuning, debug settings
+
 #### Set up automated builds
 - [Build Tooling Guide](./build-tooling.md)
 
@@ -194,6 +200,8 @@ docs/
 ├── guides/
 │   ├── developer-guide.md          # Swift comprehensive guide
 │   ├── objective-c-guide.md         # Objective-C comprehensive guide
+│   ├── configuration.md            # Configuration guide (Swift & Objective-C)
+│   ├── configuration.zh.md         # Configuration guide (Chinese)
 │   ├── context-providers.md         # Context providers guide (Swift & Objective-C)
 │   ├── context-providers.zh.md      # Context providers guide (Chinese)
 │   ├── prompt-starters.md          # Prompt starters guide (Swift & Objective-C)

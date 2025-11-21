@@ -28,7 +28,7 @@ Prompt starters are horizontal scrolling chips displayed at the top of the messa
 - The conversation has 0 user messages
 - They are configured via the SDK
 
-Once a user sends their first message or taps a starter, the starters automatically hide and won't reappear for the current session.
+**Key Behavior**: Starters always hide after user interaction (tap or send message) because they become irrelevant once the user has engaged. The difference between modes is in **re-showing capability** for context-aware scenarios.
 
 ### Key Benefits
 
@@ -157,7 +157,48 @@ style.backgroundColor = .systemBlue
 style.textColor = .white
 style.cornerRadius = 25.0
 config.promptStarterStyle = style
+
+// Optional: Configure behavior mode (default: .autoHide)
+// Use .manual to allow programmatic re-showing of starters when context changes
+config.promptStarterBehaviorMode = .manual
+
+// Optional: Insert to composer instead of auto-sending (default: false)
+// When true, tapping a starter inserts text into composer for review/edit
+config.promptStarterInsertToComposerOnTap = true
 ```
+
+### Behavior Modes
+
+ChatKit supports two behavior modes for prompt starters:
+
+**Auto-Hide Mode (Default):**
+- Starters appear when chat is empty
+- Hide after first user message or tap
+- Once dismissed, cannot be shown again
+- Traditional "one-time" behavior
+- Best for: Simple chat apps, standard use cases
+
+**Manual Mode:**
+- Starters appear when chat is empty
+- Hide after user interaction (same as auto-hide)
+- **Can be programmatically re-shown** even when messages exist
+- Perfect for context-aware apps
+- Best for: Apps that change starters based on context/selection
+
+### Tap Actions
+
+Control what happens when a starter is tapped:
+
+**Auto-Send (Default):**
+- Starter title is automatically sent as a message
+- Immediate action, no review step
+- Set `promptStarterInsertToComposerOnTap = false` (default)
+
+**Insert to Composer:**
+- Starter title is inserted into the composer text field
+- User can review, edit, and add context before sending
+- Recommended for context-aware apps
+- Set `promptStarterInsertToComposerOnTap = true`
 
 ---
 
@@ -279,6 +320,55 @@ If no custom style is provided, the framework uses a default ChatGPT-like style:
 ---
 
 ## Advanced Usage
+
+### Context-Aware Starters (Manual Mode)
+
+Use manual mode to show different starters based on context:
+
+```swift
+var config = ChatKitConversationConfiguration.default
+
+// Enable manual mode for programmatic control
+config.promptStarterBehaviorMode = .manual
+config.promptStarterInsertToComposerOnTap = true
+
+// Initial starters
+config.promptStartersProvider = {
+    ChatKitPromptStarterFactory.createDefaultStarters()
+}
+
+let chatVC = ChatKitConversationViewController(
+    record: record,
+    conversation: conversation,
+    coordinator: coordinator,
+    configuration: config
+)
+
+// Later, when user selects a document context
+func onDocumentSelected(_ document: Document) {
+    // Update starters based on document type
+    let newStarters = [
+        FinConvoPromptStarter(
+            starterId: "summarize",
+            title: "Summarize this document",
+            subtitle: nil,
+            icon: UIImage(systemName: "doc.text"),
+            payload: ["documentId": document.id]
+        ),
+        FinConvoPromptStarter(
+            starterId: "analyze",
+            title: "Analyze key points",
+            subtitle: nil,
+            icon: UIImage(systemName: "magnifyingglass"),
+            payload: ["documentId": document.id]
+        )
+    ]
+    
+    // Update and show new starters (works in manual mode even with messages)
+    chatVC.chatView.updatePromptStarters(newStarters)
+    chatVC.chatView.showPromptStarters()
+}
+```
 
 ### Custom Selection Handling
 
@@ -485,6 +575,8 @@ config.promptStartersProvider = {
 - ✅ This should happen automatically - check framework logs
 - ✅ Verify message was actually sent (check conversation state)
 - ✅ Ensure you're not manually showing starters after message send
+- ✅ In auto-hide mode, starters should hide and cannot be re-shown
+- ✅ In manual mode, you can programmatically re-show, but they still hide after user interaction
 
 ### Custom Callback Not Called
 
@@ -519,6 +611,8 @@ config.promptStartersProvider = {
 
 ### Complete Swift Example
 
+**Example 1: Traditional Auto-Hide Mode (Default)**
+
 ```swift
 import UIKit
 import FinClipChatKit
@@ -531,7 +625,7 @@ final class ChatViewController: ChatKitConversationViewController {
         config.showWelcomeMessage = true
         config.welcomeMessageProvider = { "Hello! How can I help you today?" }
         
-        // Configure prompt starters
+        // Configure prompt starters (default: auto-hide mode, auto-send)
         config.promptStartersProvider = {
             ChatKitPromptStarterFactory.createExampleStarters()
         }
@@ -559,7 +653,46 @@ final class ChatViewController: ChatKitConversationViewController {
 }
 ```
 
+**Example 2: Context-Aware Manual Mode**
+
+```swift
+final class DocumentChatViewController: ChatKitConversationViewController {
+    init(record: ConversationRecord, conversation: Conversation, coordinator: ChatKitCoordinator) {
+        var config = ChatKitConversationConfiguration.default
+        
+        // Enable manual mode for context-aware starters
+        config.promptStarterBehaviorMode = .manual
+        config.promptStarterInsertToComposerOnTap = true
+        
+        // Initial starters
+        config.promptStartersProvider = {
+            ChatKitPromptStarterFactory.createDefaultStarters()
+        }
+        
+        super.init(record: record, conversation: conversation, coordinator: coordinator, configuration: config)
+    }
+    
+    func updateStartersForDocument(_ document: Document) {
+        let documentStarters = [
+            FinConvoPromptStarter(
+                starterId: "summarize",
+                title: "Summarize this document",
+                subtitle: nil,
+                icon: UIImage(systemName: "doc.text"),
+                payload: ["documentId": document.id]
+            )
+        ]
+        
+        // Update and show new starters (works in manual mode)
+        chatView.updatePromptStarters(documentStarters)
+        chatView.showPromptStarters()
+    }
+}
+```
+
 ### Complete Objective-C Example
+
+**Example 1: Traditional Auto-Hide Mode (Default)**
 
 ```objc
 #import <UIKit/UIKit.h>
@@ -580,7 +713,7 @@ final class ChatViewController: ChatKitConversationViewController {
         return @"Hello! How can I help you today?";
     };
     
-    // Configure prompt starters
+    // Configure prompt starters (default: auto-hide mode, auto-send)
     config.promptStartersProvider = ^NSArray * _Nonnull {
         return [ChatKitPromptStarterFactory createExampleStarters];
     };
@@ -608,6 +741,51 @@ final class ChatViewController: ChatKitConversationViewController {
 @end
 ```
 
+**Example 2: Context-Aware Manual Mode**
+
+```objc
+@interface DocumentChatViewController : ChatKitConversationViewController
+@end
+
+@implementation DocumentChatViewController
+
+- (instancetype)initWithRecord:(CKTConversationRecord *)record 
+                  conversation:(id)conversation 
+                   coordinator:(CKTChatKitCoordinator *)coordinator {
+    CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+    
+    // Enable manual mode for context-aware starters
+    config.promptStarterBehaviorMode = FinConvoPromptStarterBehaviorModeManual;
+    config.promptStarterInsertToComposerOnTap = YES;
+    
+    // Initial starters
+    config.promptStartersProvider = ^NSArray * _Nonnull {
+        return [ChatKitPromptStarterFactory createDefaultStarters];
+    };
+    
+    self = [super initWithObjCRecord:record
+                         conversation:conversation
+                      objcCoordinator:coordinator
+                    objcConfiguration:config];
+    return self;
+}
+
+- (void)updateStartersForDocument:(Document *)document {
+    FinConvoPromptStarter *starter = [[FinConvoPromptStarter alloc]
+        initWithStarterId:@"summarize"
+        title:@"Summarize this document"
+        subtitle:nil
+        icon:[UIImage systemImageNamed:@"doc.text"]
+        payload:@{@"documentId": document.id}];
+    
+    // Update and show new starters (works in manual mode)
+    [self.chatView updatePromptStarters:@[starter]];
+    [self.chatView showPromptStarters];
+}
+
+@end
+```
+
 ---
 
 ## Related Documentation
@@ -625,6 +803,31 @@ Working examples are available in the demo apps:
 
 - **Simple (Swift):** See `demo-apps/iOS/Simple/App/ViewControllers/ChatViewController.swift`
 - **MyChatGPT:** See `chatkit/Examples/MyChatGPT/` for a complete prompt starters implementation
+
+---
+
+---
+
+## Configuration Reference
+
+### ChatKitConversationConfiguration Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `promptStartersProvider` | `() -> [FinConvoPromptStarter]?` | `nil` | Provider function that returns array of starters |
+| `onPromptStarterSelected` | `(FinConvoPromptStarter) -> Bool?` | `nil` | Callback when starter is tapped. Return `true` to prevent auto-send |
+| `promptStarterStyle` | `FinConvoPromptStarterStyle?` | `nil` | Custom styling configuration |
+| `promptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorMode` | `.autoHide` | Behavior mode: `.autoHide` or `.manual` |
+| `promptStarterInsertToComposerOnTap` | `Bool` | `false` | When `true`, inserts text into composer instead of auto-sending |
+
+### CKTConversationConfiguration Properties (Objective-C)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `promptStartersEnabled` | `BOOL` | `NO` | Whether prompt starters are enabled |
+| `promptStarters` | `NSArray<FinConvoPromptStarter *>?` | `nil` | Array of prompt starters |
+| `promptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorModeAutoHide` | Behavior mode |
+| `promptStarterInsertToComposerOnTap` | `BOOL` | `NO` | Insert to composer instead of auto-sending |
 
 ---
 

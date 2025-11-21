@@ -37,6 +37,7 @@
   - API 参考
 
 #### 共享概念
+- **[配置指南](./guides/configuration.zh.md)** - 所有 ChatKit 选项的完整配置参考
 - **[API 层级指南](./api-levels.zh.md)** - 理解高级 API 与低级 API
 - **[组件嵌入指南](./component-embedding.zh.md)** - 在各种场景中嵌入组件（Swift 和 Objective-C 示例）
 - **[上下文提供器指南](./guides/context-providers.zh.md)** - 实现自定义上下文提供器（Swift 和 Objective-C）
@@ -136,6 +137,11 @@
 - **Swift**: [API 层级 - 上下文提供者](./api-levels.zh.md#context-providers)
 - **Objective-C**: [Objective-C 指南 - 上下文提供者](./guides/objective-c-guide.zh.md#context-providers)
 
+#### 配置聊天 UI 行为和外观
+- **Swift 和 Objective-C**: [配置指南](./guides/configuration.zh.md) - 完整的配置参考
+- 状态横幅、欢迎消息、提示启动器、工具、上下文提供器
+- 主题自定义、性能调优、调试设置
+
 #### 设置自动化构建
 - [构建工具指南](./build-tooling.zh.md)
 
@@ -193,7 +199,13 @@ docs/
 │
 ├── guides/
 │   ├── developer-guide.md          # Swift 全面指南
-│   └── objective-c-guide.md         # Objective-C 全面指南
+│   ├── objective-c-guide.md         # Objective-C 全面指南
+│   ├── configuration.md            # 配置指南（Swift 和 Objective-C）
+│   ├── configuration.zh.md         # 配置指南（中文）
+│   ├── context-providers.md         # 上下文提供器指南（Swift 和 Objective-C）
+│   ├── context-providers.zh.md      # 上下文提供器指南（中文）
+│   ├── prompt-starters.md          # 提示启动器指南（Swift 和 Objective-C）
+│   └── prompt-starters.zh.md       # 提示启动器指南（中文）
 │
 ├── 核心概念
 │   ├── api-levels.md               # 高级 API 与低级 API

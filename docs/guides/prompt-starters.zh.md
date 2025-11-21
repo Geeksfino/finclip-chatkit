@@ -28,7 +28,7 @@
 - 对话中有 0 条用户消息
 - 通过 SDK 配置
 
-一旦用户发送第一条消息或点击启动器，启动器会自动隐藏，并且在当前会话中不会再次出现。
+**核心行为**：启动器在用户交互（点击或发送消息）后总是隐藏，因为一旦用户参与，它们就变得无关紧要。模式之间的区别在于**重新显示能力**，适用于上下文感知场景。
 
 ### 主要优势
 
@@ -157,7 +157,48 @@ style.backgroundColor = .systemBlue
 style.textColor = .white
 style.cornerRadius = 25.0
 config.promptStarterStyle = style
+
+// 可选：配置行为模式（默认：.autoHide）
+// 使用 .manual 允许在上下文更改时程序化重新显示启动器
+config.promptStarterBehaviorMode = .manual
+
+// 可选：插入到输入框而不是自动发送（默认：false）
+// 当为 true 时，点击启动器会将文本插入到输入框中供用户查看/编辑
+config.promptStarterInsertToComposerOnTap = true
 ```
+
+### 行为模式
+
+ChatKit 支持两种提示启动器行为模式：
+
+**自动隐藏模式（默认）：**
+- 当聊天为空时显示启动器
+- 在第一条用户消息或点击后隐藏
+- 一旦被关闭，无法再次显示
+- 传统的"一次性"行为
+- 适用于：简单聊天应用，标准用例
+
+**手动模式：**
+- 当聊天为空时显示启动器
+- 在用户交互后隐藏（与自动隐藏相同）
+- **可以程序化重新显示**，即使存在消息
+- 非常适合上下文感知应用
+- 适用于：根据上下文/选择更改启动器的应用
+
+### 点击操作
+
+控制点击启动器时发生的情况：
+
+**自动发送（默认）：**
+- 启动器标题自动作为消息发送
+- 立即操作，无需审查步骤
+- 设置 `promptStarterInsertToComposerOnTap = false`（默认）
+
+**插入到输入框：**
+- 启动器标题插入到输入框文本字段
+- 用户可以在发送前查看、编辑和添加上下文
+- 推荐用于上下文感知应用
+- 设置 `promptStarterInsertToComposerOnTap = true`
 
 ---
 
@@ -279,6 +320,55 @@ config.promptStarterStyle = style;
 ---
 
 ## 高级用法
+
+### 上下文感知启动器（手动模式）
+
+使用手动模式根据上下文显示不同的启动器：
+
+```swift
+var config = ChatKitConversationConfiguration.default
+
+// 启用手动模式以进行程序化控制
+config.promptStarterBehaviorMode = .manual
+config.promptStarterInsertToComposerOnTap = true
+
+// 初始启动器
+config.promptStartersProvider = {
+    ChatKitPromptStarterFactory.createDefaultStarters()
+}
+
+let chatVC = ChatKitConversationViewController(
+    record: record,
+    conversation: conversation,
+    coordinator: coordinator,
+    configuration: config
+)
+
+// 稍后，当用户选择文档上下文时
+func onDocumentSelected(_ document: Document) {
+    // 根据文档类型更新启动器
+    let newStarters = [
+        FinConvoPromptStarter(
+            starterId: "summarize",
+            title: "总结此文档",
+            subtitle: nil,
+            icon: UIImage(systemName: "doc.text"),
+            payload: ["documentId": document.id]
+        ),
+        FinConvoPromptStarter(
+            starterId: "analyze",
+            title: "分析关键点",
+            subtitle: nil,
+            icon: UIImage(systemName: "magnifyingglass"),
+            payload: ["documentId": document.id]
+        )
+    ]
+    
+    // 更新并显示新启动器（在手动模式下即使有消息也能工作）
+    chatVC.chatView.updatePromptStarters(newStarters)
+    chatVC.chatView.showPromptStarters()
+}
+```
 
 ### 自定义选择处理
 
@@ -485,6 +575,8 @@ config.promptStartersProvider = {
 - ✅ 这应该自动发生 - 检查框架日志
 - ✅ 验证消息是否实际发送（检查对话状态）
 - ✅ 确保在消息发送后没有手动显示启动器
+- ✅ 在自动隐藏模式下，启动器应该隐藏且无法重新显示
+- ✅ 在手动模式下，您可以程序化重新显示，但它们仍然在用户交互后隐藏
 
 ### 自定义回调未调用
 
@@ -519,6 +611,8 @@ config.promptStartersProvider = {
 
 ### 完整的 Swift 示例
 
+**示例 1：传统自动隐藏模式（默认）**
+
 ```swift
 import UIKit
 import FinClipChatKit
@@ -531,7 +625,7 @@ final class ChatViewController: ChatKitConversationViewController {
         config.showWelcomeMessage = true
         config.welcomeMessageProvider = { "你好！今天我能为您做些什么？" }
         
-        // 配置提示启动器
+        // 配置提示启动器（默认：自动隐藏模式，自动发送）
         config.promptStartersProvider = {
             ChatKitPromptStarterFactory.createExampleStarters()
         }
@@ -559,7 +653,46 @@ final class ChatViewController: ChatKitConversationViewController {
 }
 ```
 
+**示例 2：上下文感知手动模式**
+
+```swift
+final class DocumentChatViewController: ChatKitConversationViewController {
+    init(record: ConversationRecord, conversation: Conversation, coordinator: ChatKitCoordinator) {
+        var config = ChatKitConversationConfiguration.default
+        
+        // 启用手动模式以进行上下文感知启动器
+        config.promptStarterBehaviorMode = .manual
+        config.promptStarterInsertToComposerOnTap = true
+        
+        // 初始启动器
+        config.promptStartersProvider = {
+            ChatKitPromptStarterFactory.createDefaultStarters()
+        }
+        
+        super.init(record: record, conversation: conversation, coordinator: coordinator, configuration: config)
+    }
+    
+    func updateStartersForDocument(_ document: Document) {
+        let documentStarters = [
+            FinConvoPromptStarter(
+                starterId: "summarize",
+                title: "总结此文档",
+                subtitle: nil,
+                icon: UIImage(systemName: "doc.text"),
+                payload: ["documentId": document.id]
+            )
+        ]
+        
+        // 更新并显示新启动器（在手动模式下有效）
+        chatView.updatePromptStarters(documentStarters)
+        chatView.showPromptStarters()
+    }
+}
+```
+
 ### 完整的 Objective-C 示例
+
+**示例 1：传统自动隐藏模式（默认）**
 
 ```objc
 #import <UIKit/UIKit.h>
@@ -580,7 +713,7 @@ final class ChatViewController: ChatKitConversationViewController {
         return @"你好！今天我能为您做些什么？";
     };
     
-    // 配置提示启动器
+    // 配置提示启动器（默认：自动隐藏模式，自动发送）
     config.promptStartersProvider = ^NSArray * _Nonnull {
         return [ChatKitPromptStarterFactory createExampleStarters];
     };
@@ -608,6 +741,51 @@ final class ChatViewController: ChatKitConversationViewController {
 @end
 ```
 
+**示例 2：上下文感知手动模式**
+
+```objc
+@interface DocumentChatViewController : ChatKitConversationViewController
+@end
+
+@implementation DocumentChatViewController
+
+- (instancetype)initWithRecord:(CKTConversationRecord *)record 
+                  conversation:(id)conversation 
+                   coordinator:(CKTChatKitCoordinator *)coordinator {
+    CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+    
+    // 启用手动模式以进行上下文感知启动器
+    config.promptStarterBehaviorMode = FinConvoPromptStarterBehaviorModeManual;
+    config.promptStarterInsertToComposerOnTap = YES;
+    
+    // 初始启动器
+    config.promptStartersProvider = ^NSArray * _Nonnull {
+        return [ChatKitPromptStarterFactory createDefaultStarters];
+    };
+    
+    self = [super initWithObjCRecord:record
+                         conversation:conversation
+                      objcCoordinator:coordinator
+                    objcConfiguration:config];
+    return self;
+}
+
+- (void)updateStartersForDocument:(Document *)document {
+    FinConvoPromptStarter *starter = [[FinConvoPromptStarter alloc]
+        initWithStarterId:@"summarize"
+        title:@"总结此文档"
+        subtitle:nil
+        icon:[UIImage systemImageNamed:@"doc.text"]
+        payload:@{@"documentId": document.id}];
+    
+    // 更新并显示新启动器（在手动模式下有效）
+    [self.chatView updatePromptStarters:@[starter]];
+    [self.chatView showPromptStarters];
+}
+
+@end
+```
+
 ---
 
 ## 相关文档
@@ -625,6 +803,31 @@ final class ChatViewController: ChatKitConversationViewController {
 
 - **Simple (Swift)：** 参见 `demo-apps/iOS/Simple/App/ViewControllers/ChatViewController.swift`
 - **MyChatGPT：** 参见 `chatkit/Examples/MyChatGPT/` 获取完整的提示启动器实现
+
+---
+
+---
+
+## 配置参考
+
+### ChatKitConversationConfiguration 属性
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `promptStartersProvider` | `() -> [FinConvoPromptStarter]?` | `nil` | 返回启动器数组的提供器函数 |
+| `onPromptStarterSelected` | `(FinConvoPromptStarter) -> Bool?` | `nil` | 点击启动器时的回调。返回 `true` 以阻止自动发送 |
+| `promptStarterStyle` | `FinConvoPromptStarterStyle?` | `nil` | 自定义样式配置 |
+| `promptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorMode` | `.autoHide` | 行为模式：`.autoHide` 或 `.manual` |
+| `promptStarterInsertToComposerOnTap` | `Bool` | `false` | 当为 `true` 时，将文本插入到输入框而不是自动发送 |
+
+### CKTConversationConfiguration 属性（Objective-C）
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `promptStartersEnabled` | `BOOL` | `NO` | 是否启用提示启动器 |
+| `promptStarters` | `NSArray<FinConvoPromptStarter *>?` | `nil` | 提示启动器数组 |
+| `promptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorMode` | `FinConvoPromptStarterBehaviorModeAutoHide` | 行为模式 |
+| `promptStarterInsertToComposerOnTap` | `BOOL` | `NO` | 插入到输入框而不是自动发送 |
 
 ---
 
