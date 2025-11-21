@@ -15,7 +15,7 @@ schemes:
 packages:
   FinClipChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
-    from: 0.7.4
+    from: 0.9.1
   finclip-neuron:
     url: https://github.com/Geeksfino/finclip-neuron.git
     branch: main-swift6_0

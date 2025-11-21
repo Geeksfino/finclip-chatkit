@@ -1,5 +1,5 @@
 PODS:
-  - FinClipChatKit (0.9.0)
+  - FinClipChatKit (0.9.1)
 
 DEPENDENCIES:
   - FinClipChatKit (from `FinClipChatKit-remote.podspec`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :podspec: FinClipChatKit-remote.podspec
 
 SPEC CHECKSUMS:
-  FinClipChatKit: bf9d3cde4a573ee2eba332fe144771fb913f0851
+  FinClipChatKit: 77690b26d4370b8678b34c71fdfc32b0e8ce64e7
 
 PODFILE CHECKSUM: 091983cbafff7931622199e8a0987059abcc5762
 

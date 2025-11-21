@@ -10,7 +10,7 @@
 		3BAB9ACE51B7FCD443CE7B22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */; };
 		5A3D1EDE2CA8BD0FF5B7BA6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2888DCB4D8E9C972AA7455A /* LaunchScreen.storyboard */; };
 		5A3D23AA6290595C1A5D3165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A750D14341E9AEE7F203FF5 /* AppDelegate.m */; };
-		A496B52F8C4B6D58C191BE3B /* Pods_SimpleObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 206A044A7B65129DD001ED59 /* Pods_SimpleObjC.framework */; };
+		9197ADB0C86414ABBD89DBA2 /* Pods_SimpleObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3713C572C35B6371F12193F0 /* Pods_SimpleObjC.framework */; };
 		B376455D8FDEC2E17AA836B8 /* ConversationListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF1610C8E696E0196497E49B /* ConversationListViewController.m */; };
 		B517C9F8B4346BC094B06BD7 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */; };
 		D1EF153366733E699AD850FE /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E33F624593CE528F406222 /* SceneDelegate.m */; };
@@ -21,15 +21,15 @@
 /* Begin PBXFileReference section */
 		16D56F8C6FFDC5A96EC5DCED /* ChatViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		19FC6DB87C94C3A6954DC2E1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		206A044A7B65129DD001ED59 /* Pods_SimpleObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		241C2A9E45026BDEF95F1B79 /* Pods-SimpleObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.release.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.release.xcconfig"; sourceTree = "<group>"; };
+		3713C572C35B6371F12193F0 /* Pods_SimpleObjC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleObjC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3EBDBBF00F1CC3B87DEBEB35 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		606532D85361CBD6014858C8 /* ConversationListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConversationListViewController.h; sourceTree = "<group>"; };
 		60FEA79275FC6B48F6017B1C /* SimpleObjC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SimpleObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF903F67674B6A543D9F5C /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		663743D6FC14F82517DBBBFE /* Pods-SimpleObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.release.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.release.xcconfig"; sourceTree = "<group>"; };
+		75B8412EEC3B9566F9F6CB82 /* Pods-SimpleObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.debug.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		799671B1E6F4F885E5105A19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79E36A951C326EC6DFD7D2BA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		80E7AE07787EC223D56BD1D0 /* Pods-SimpleObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleObjC.debug.xcconfig"; path = "Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC.debug.xcconfig"; sourceTree = "<group>"; };
 		82E33F624593CE528F406222 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		9A750D14341E9AEE7F203FF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		AD0A97D77528EE614C1B2BBC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -40,11 +40,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E165D53059FE8B3A0703F212 /* Frameworks */ = {
+		BC42C0F6173C14467F3D1129 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A496B52F8C4B6D58C191BE3B /* Pods_SimpleObjC.framework in Frameworks */,
+				9197ADB0C86414ABBD89DBA2 /* Pods_SimpleObjC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,20 +59,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		14B96C2FBFBD97E5B62BCA72 /* Pods */ = {
+		360EFEE17D7CF24EEEB736F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				80E7AE07787EC223D56BD1D0 /* Pods-SimpleObjC.debug.xcconfig */,
-				663743D6FC14F82517DBBBFE /* Pods-SimpleObjC.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		4B40C5AF6E6C35DA3A82842F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				206A044A7B65129DD001ED59 /* Pods_SimpleObjC.framework */,
+				3713C572C35B6371F12193F0 /* Pods_SimpleObjC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,9 +72,19 @@
 			children = (
 				BBAC4E774CE4E355751851C4 /* App */,
 				05F053391A243C1F26E4A6FC /* Products */,
-				14B96C2FBFBD97E5B62BCA72 /* Pods */,
-				4B40C5AF6E6C35DA3A82842F /* Frameworks */,
+				A148EDC1BC19FDDD457DD72E /* Pods */,
+				360EFEE17D7CF24EEEB736F7 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		A148EDC1BC19FDDD457DD72E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				75B8412EEC3B9566F9F6CB82 /* Pods-SimpleObjC.debug.xcconfig */,
+				241C2A9E45026BDEF95F1B79 /* Pods-SimpleObjC.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		BBAC4E774CE4E355751851C4 /* App */ = {
@@ -131,11 +131,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D6656E65CA4F91C6E5EE8B3 /* Build configuration list for PBXNativeTarget "SimpleObjC" */;
 			buildPhases = (
-				91337B11A3B1021F4B0B708B /* [CP] Check Pods Manifest.lock */,
+				B4AC7CC57640C940C47D5F1F /* [CP] Check Pods Manifest.lock */,
 				0FC5B0223D31A3BE755C243C /* Sources */,
 				624342ED76518ED11C6E1245 /* Resources */,
-				E165D53059FE8B3A0703F212 /* Frameworks */,
-				2418E0E044F215F20D3094B6 /* [CP] Embed Pods Frameworks */,
+				BC42C0F6173C14467F3D1129 /* Frameworks */,
+				14BB164D146B8633AFAB887E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -188,7 +188,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2418E0E044F215F20D3094B6 /* [CP] Embed Pods Frameworks */ = {
+		14BB164D146B8633AFAB887E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -205,7 +205,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SimpleObjC/Pods-SimpleObjC-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		91337B11A3B1021F4B0B708B /* [CP] Check Pods Manifest.lock */ = {
+		B4AC7CC57640C940C47D5F1F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -322,7 +322,7 @@
 		};
 		5F4B2EBE3366BD6EABDC1604 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 663743D6FC14F82517DBBBFE /* Pods-SimpleObjC.release.xcconfig */;
+			baseConfigurationReference = 241C2A9E45026BDEF95F1B79 /* Pods-SimpleObjC.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -349,7 +349,7 @@
 		};
 		A67DC173BF6A36AAEDF0E7BB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 80E7AE07787EC223D56BD1D0 /* Pods-SimpleObjC.debug.xcconfig */;
+			baseConfigurationReference = 75B8412EEC3B9566F9F6CB82 /* Pods-SimpleObjC.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

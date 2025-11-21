@@ -381,7 +381,7 @@
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.4;
+				minimumVersion = 0.9.1;
 			};
 		};
 		DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */ = {
