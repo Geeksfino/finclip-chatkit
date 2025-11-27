@@ -127,6 +127,75 @@ That's it! You now have a working AI chat app with persistent storage and full-f
 
 **📖 For detailed examples**: See [Quick Start Guide](docs/quick-start.md) for Swift and Objective-C skeleton code.
 
+### Sending Messages with Context
+
+ChatKit provides a unified way to attach context to messages using `ChatKitContextItemFactory`. This factory creates `ConversationContextItem` instances from simple metadata dictionaries, making it easy to send programmatic context.
+
+**Swift Example:**
+
+```swift
+import FinClipChatKit
+
+// Create context metadata
+let context: [String: Any] = [
+  "type": "strategy",
+  "strategyId": "123",
+  "strategyTitle": "Growth Strategy"
+]
+
+// Create context item using factory
+let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+
+// Send message with context
+try await conversation.sendMessage(
+  "Tell me about this strategy",
+  contextItems: [contextItem]
+)
+```
+
+**Multiple Context Items:**
+
+```swift
+// Create multiple context items
+let strategyContext = ChatKitContextItemFactory.metadata(
+  ["strategyId": "123", "strategyTitle": "Growth"],
+  type: "strategy"
+)
+let userContext = ChatKitContextItemFactory.metadata(
+  ["userId": "456", "userRole": "premium"],
+  type: "user"
+)
+
+try await conversation.sendMessage(
+  "Analyze this strategy for my account",
+  contextItems: [strategyContext, userContext]
+)
+```
+
+**Objective-C Example:**
+
+```objc
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+// Create metadata dictionary
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123",
+    @"strategyTitle": @"Growth Strategy"
+};
+
+// Create context dictionary using factory
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata
+                             type:@"strategy"
+                      displayName:nil];
+
+// Use with runtime's sendMessage method
+// Note: You'll need to access the runtime and sessionId from your conversation
+```
+
+For more details, see the [Developer Guide](docs/guides/developer-guide.md#send-messages-with-context) and [Objective-C Guide](docs/guides/objective-c-guide.md#sending-messages-with-context-programmatically).
+
 ---
 
 ## 📚 Documentation

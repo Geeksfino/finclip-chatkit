@@ -911,6 +911,134 @@ make run
 
 ---
 
+## 发送带上下文的消息
+
+ChatKit 提供了使用 `ChatKitContextItemFactory` 以编程方式将上下文附加到消息的统一方法。该工厂从简单的元数据字典创建 `ConversationContextItem` 实例，确保所有上下文都经过正确格式化并发送给代理。
+
+### 使用 ChatKitContextItemFactory (Swift)
+
+**基本示例:**
+
+```swift
+import FinClipChatKit
+
+// 创建上下文元数据
+let context: [String: Any] = [
+    "type": "strategy",
+    "strategyId": "123",
+    "strategyTitle": "增长策略"
+]
+
+// 使用工厂创建上下文项
+let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+
+// 发送带上下文的消息
+try await conversation.sendMessage(
+    "告诉我这个策略的情况",
+    contextItems: [contextItem]
+)
+```
+
+**带显示名称:**
+
+```swift
+let contextItem = ChatKitContextItemFactory.metadata(
+    ["strategyId": "123", "strategyTitle": "增长"],
+    type: "strategy",
+    displayName: "增长策略"
+)
+
+try await conversation.sendMessage(
+    "分析这个策略",
+    contextItems: [contextItem]
+)
+```
+
+**多个上下文项:**
+
+```swift
+// 创建多个上下文项
+let strategyContext = ChatKitContextItemFactory.metadata(
+    ["strategyId": "123", "strategyTitle": "增长"],
+    type: "strategy"
+)
+let userContext = ChatKitContextItemFactory.metadata(
+    ["userId": "456", "userRole": "premium"],
+    type: "user"
+)
+
+try await conversation.sendMessage(
+    "为我的账户分析这个策略",
+    contextItems: [strategyContext, userContext]
+)
+```
+
+**使用多个项的便利方法:**
+
+```swift
+let contexts: [[String: Any]] = [
+    ["strategyId": "123", "strategyTitle": "增长"],
+    ["userId": "456", "userRole": "premium"]
+]
+
+let contextItems = ChatKitContextItemFactory.metadataItems(contexts, type: "metadata")
+try await conversation.sendMessage("分析这些", contextItems: contextItems)
+```
+
+### 何时使用程序化上下文 vs. UI 上下文提供器
+
+- **使用 `ChatKitContextItemFactory`** 当:
+  - 您需要以编程方式发送上下文（例如，从按钮点击、导航事件）
+  - 上下文来自您的应用数据模型（例如，选定的策略、用户配置文件）
+  - 您想在没有用户交互的情况下附加上下文
+
+- **使用上下文提供器** 当:
+  - 上下文需要用户输入（例如，位置选择器、日期选择）
+  - 上下文应通过 UI 动态收集
+  - 上下文需要由用户刷新或更新
+
+### 实际示例
+
+以下是在用户点击策略卡片时如何使用程序化上下文的示例:
+
+```swift
+func strategyCardDidTap(_ strategy: Strategy) {
+    let message = "告诉我这个策略的情况"
+    let context: [String: Any] = [
+        "type": "strategy",
+        "strategyId": strategy.id,
+        "strategyTitle": strategy.title
+    ]
+    
+    Task { @MainActor in
+        do {
+            let (record, conversation) = try await coordinator.startConversation(
+                agentId: agentId,
+                title: nil,
+                agentName: "我的代理"
+            )
+            
+            // 创建上下文项并发送初始消息
+            let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+            try await conversation.sendMessage(message, contextItems: [contextItem])
+            
+            // 显示聊天 UI
+            let chatVC = ChatKitConversationViewController(
+                record: record,
+                conversation: conversation,
+                coordinator: coordinator,
+                configuration: .default
+            )
+            navigationController?.pushViewController(chatVC, animated: true)
+        } catch {
+            print("启动对话失败: \(error)")
+        }
+    }
+}
+```
+
+---
+
 ## 故障排除
 
 ### "找不到 ChatKitCoordinator"

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,7 +32,7 @@
 		5B55CE32D188C3D3ACA8848A /* CalendarContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContextProvider.swift; sourceTree = "<group>"; };
 		62D8E7F8E7B87E199583C0AF /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		6890E4CE4AEDA796E7773FC0 /* DrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerViewController.swift; sourceTree = "<group>"; };
-		90B5AA543F70FE00E1D0FAAC /* Simple.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Simple.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		90B5AA543F70FE00E1D0FAAC /* Simple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B085964268F6233FFAB68DA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B0FADFCDA2DCEA1441996423 /* LocationContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationContextProvider.swift; sourceTree = "<group>"; };
 		B3AE09628904B945EFC17DBD /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -163,7 +163,6 @@
 				5CFE8088C58BF7576778A9BB /* XCRemoteSwiftPackageReference "finclip-chatkit" */,
 				DA61A0BF97F56E4FB05009A4 /* XCRemoteSwiftPackageReference "finclip-neuron" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -263,6 +262,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 9P92672RT8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Simple;
@@ -282,6 +282,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 9P92672RT8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Simple;

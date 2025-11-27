@@ -127,6 +127,75 @@ Task { @MainActor in
 
 **📖 详细示例**: 参见 [快速开始指南](docs/quick-start.md) 获取 Swift 和 Objective-C 示例代码。
 
+### 发送带上下文的消息
+
+ChatKit 提供了使用 `ChatKitContextItemFactory` 将上下文附加到消息的统一方法。该工厂从简单的元数据字典创建 `ConversationContextItem` 实例，使发送程序化上下文变得容易。
+
+**Swift 示例:**
+
+```swift
+import FinClipChatKit
+
+// 创建上下文元数据
+let context: [String: Any] = [
+  "type": "strategy",
+  "strategyId": "123",
+  "strategyTitle": "增长策略"
+]
+
+// 使用工厂创建上下文项
+let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+
+// 发送带上下文的消息
+try await conversation.sendMessage(
+  "告诉我这个策略的情况",
+  contextItems: [contextItem]
+)
+```
+
+**多个上下文项:**
+
+```swift
+// 创建多个上下文项
+let strategyContext = ChatKitContextItemFactory.metadata(
+  ["strategyId": "123", "strategyTitle": "增长"],
+  type: "strategy"
+)
+let userContext = ChatKitContextItemFactory.metadata(
+  ["userId": "456", "userRole": "premium"],
+  type: "user"
+)
+
+try await conversation.sendMessage(
+  "为我的账户分析这个策略",
+  contextItems: [strategyContext, userContext]
+)
+```
+
+**Objective-C 示例:**
+
+```objc
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+// 创建元数据字典
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123",
+    @"strategyTitle": @"增长策略"
+};
+
+// 使用工厂创建上下文字典
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata
+                             type:@"strategy"
+                      displayName:nil];
+
+// 与 runtime 的 sendMessage 方法一起使用
+// 注意：您需要从对话中访问 runtime 和 sessionId
+```
+
+更多详细信息，请参见[开发者指南](docs/guides/developer-guide.zh.md#发送带上下文的消息)和[Objective-C 指南](docs/guides/objective-c-guide.zh.md#以编程方式发送带上下文的消息)。
+
 ---
 
 ## 📚 文档

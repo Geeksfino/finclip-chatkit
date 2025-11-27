@@ -829,6 +829,137 @@ CKTConversationManager *manager = [[CKTConversationManager alloc] initWithTitleP
 
 ---
 
+## 以编程方式发送带上下文的消息
+
+ChatKit 提供了使用 `ChatKitContextItemFactory` 发送带上下文的消息的 Objective-C 兼容方法。该工厂创建可与 runtime 的 `sendMessage` 方法一起使用的上下文字典。
+
+### 基本示例
+
+```objc
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+// 创建元数据字典
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123",
+    @"strategyTitle": @"增长策略"
+};
+
+// 使用工厂创建上下文字典
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata
+                             type:@"strategy"
+                      displayName:nil];
+
+// 从对话中获取 runtime 和 sessionId
+// 然后与 runtime 的 sendMessage 方法一起使用
+id runtime = [self.coordinator runtime];
+NSUUID *sessionId = [conversation sessionId];
+
+// 注意：您需要直接使用 runtime 的 sendMessage 方法
+// 因为带 contextItems 的 Conversation.sendMessage 仅适用于 Swift
+```
+
+### 便利方法
+
+```objc
+// 使用不带 type 和 displayName 的便利方法
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123"
+};
+
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata];
+```
+
+### 多个上下文项
+
+```objc
+// 创建元数据字典数组
+NSArray<NSDictionary *> *metadataArray = @[
+    @{@"strategyId": @"123", @"strategyTitle": @"增长"},
+    @{@"userId": @"456", @"userRole": @"premium"}
+];
+
+// 创建包含多个项的上下文字典
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadataArray:metadataArray
+                                    type:@"metadata"];
+```
+
+### 完整的按钮点击示例
+
+以下是在点击按钮时发送带上下文消息的完整示例:
+
+```objc
+- (void)strategyButtonTapped:(UIButton *)sender {
+    // 创建上下文元数据
+    NSDictionary *metadata = @{
+        @"type": @"strategy",
+        @"strategyId": @"123",
+        @"strategyTitle": @"增长策略"
+    };
+    
+    // 创建上下文字典
+    NSDictionary *contextDict = [ChatKitContextItemFactory 
+        contextDictionaryFromMetadata:metadata
+                                 type:@"strategy"
+                          displayName:nil];
+    
+    // 启动对话
+    NSUUID *agentId = [[NSUUID alloc] initWithUUIDString:@"E1E72B3D-845D-4F5D-B6CA-5550F2643E6B"];
+    [self.coordinator startConversationWithAgentId:agentId
+                                               title:nil
+                                           agentName:@"我的代理"
+                                          completion:^(CKTConversationRecord *record, id conversation, NSError *error) {
+        if (error) {
+            NSLog(@"创建对话失败: %@", error);
+            return;
+        }
+        
+        // 获取 runtime 和 sessionId
+        id runtime = [self.coordinator runtime];
+        NSUUID *sessionId = [record id];
+        
+        // 使用 runtime 发送带上下文的消息
+        // 注意：您需要调用 runtime 的 sendMessage 方法
+        // 该方法接受上下文字典参数
+        NSString *message = @"告诉我这个策略的情况";
+        
+        // 使用 runtime 的 sendMessage 方法发送带上下文的消息
+        // 确切的方法签名取决于您的 runtime 包装器
+        // 这是一个概念性示例
+        [self sendMessageWithRuntime:runtime
+                           sessionId:sessionId
+                              text:message
+                            context:contextDict];
+        
+        // 显示聊天 UI
+        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+        ChatKitConversationViewController *chatVC = 
+            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                             conversation:conversation
+                                                          objcCoordinator:self.coordinator
+                                                        objcConfiguration:config];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:chatVC animated:YES];
+        });
+    }];
+}
+```
+
+### 重要说明
+
+- **Swift vs Objective-C**: 接受 `contextItems` 的 `Conversation.sendMessage(_:contextItems:)` 方法仅适用于 Swift。在 Objective-C 中，您需要直接使用 runtime 的 `sendMessage` 方法和上下文字典。
+
+- **上下文字典格式**: 工厂方法返回一个字典，其中键 `"contextItems"` 包含上下文项字典数组。这与 `NeuronRuntime.sendMessage(sessionId:content:context:)` 期望的格式匹配。
+
+- **类型安全**: 虽然 Objective-C 没有 Swift 相同的类型安全，但工厂方法确保在将上下文项发送给代理之前正确格式化。
+
+---
+
 ## 常见模式
 
 ### 委托模式（Combine 的替代方案）

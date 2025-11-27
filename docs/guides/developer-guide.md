@@ -911,6 +911,134 @@ Both examples demonstrate:
 
 ---
 
+## Send Messages with Context
+
+ChatKit provides a unified way to programmatically attach context to messages using `ChatKitContextItemFactory`. This factory creates `ConversationContextItem` instances from simple metadata dictionaries, ensuring all context is properly formatted and sent to the agent.
+
+### Using ChatKitContextItemFactory (Swift)
+
+**Basic Example:**
+
+```swift
+import FinClipChatKit
+
+// Create context metadata
+let context: [String: Any] = [
+    "type": "strategy",
+    "strategyId": "123",
+    "strategyTitle": "Growth Strategy"
+]
+
+// Create context item using factory
+let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+
+// Send message with context
+try await conversation.sendMessage(
+    "Tell me about this strategy",
+    contextItems: [contextItem]
+)
+```
+
+**With Display Name:**
+
+```swift
+let contextItem = ChatKitContextItemFactory.metadata(
+    ["strategyId": "123", "strategyTitle": "Growth"],
+    type: "strategy",
+    displayName: "Growth Strategy"
+)
+
+try await conversation.sendMessage(
+    "Analyze this strategy",
+    contextItems: [contextItem]
+)
+```
+
+**Multiple Context Items:**
+
+```swift
+// Create multiple context items
+let strategyContext = ChatKitContextItemFactory.metadata(
+    ["strategyId": "123", "strategyTitle": "Growth"],
+    type: "strategy"
+)
+let userContext = ChatKitContextItemFactory.metadata(
+    ["userId": "456", "userRole": "premium"],
+    type: "user"
+)
+
+try await conversation.sendMessage(
+    "Analyze this strategy for my account",
+    contextItems: [strategyContext, userContext]
+)
+```
+
+**Using Convenience Method for Multiple Items:**
+
+```swift
+let contexts: [[String: Any]] = [
+    ["strategyId": "123", "strategyTitle": "Growth"],
+    ["userId": "456", "userRole": "premium"]
+]
+
+let contextItems = ChatKitContextItemFactory.metadataItems(contexts, type: "metadata")
+try await conversation.sendMessage("Analyze these", contextItems: contextItems)
+```
+
+### When to Use Programmatic Context vs. UI Context Providers
+
+- **Use `ChatKitContextItemFactory`** when:
+  - You need to send context programmatically (e.g., from button taps, navigation events)
+  - Context comes from your app's data models (e.g., selected strategy, user profile)
+  - You want to attach context without user interaction
+
+- **Use Context Providers** when:
+  - Context requires user input (e.g., location picker, date selection)
+  - Context should be collected dynamically through UI
+  - Context needs to be refreshed or updated by the user
+
+### Real-World Example
+
+Here's how you might use programmatic context when a user taps a strategy card:
+
+```swift
+func strategyCardDidTap(_ strategy: Strategy) {
+    let message = "Tell me about this strategy"
+    let context: [String: Any] = [
+        "type": "strategy",
+        "strategyId": strategy.id,
+        "strategyTitle": strategy.title
+    ]
+    
+    Task { @MainActor in
+        do {
+            let (record, conversation) = try await coordinator.startConversation(
+                agentId: agentId,
+                title: nil,
+                agentName: "My Agent"
+            )
+            
+            // Create context item and send initial message
+            let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
+            try await conversation.sendMessage(message, contextItems: [contextItem])
+            
+            // Show chat UI
+            let chatVC = ChatKitConversationViewController(
+                record: record,
+                conversation: conversation,
+                coordinator: coordinator,
+                configuration: .default
+            )
+            navigationController?.pushViewController(chatVC, animated: true)
+        } catch {
+            print("Failed to start conversation: \(error)")
+        }
+    }
+}
+```
+
+---
+
 ## Troubleshooting
 
 ### "ChatKitCoordinator not found"

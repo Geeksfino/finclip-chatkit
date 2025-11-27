@@ -829,6 +829,137 @@ Ready-made conversation list component.
 
 ---
 
+## Sending Messages with Context Programmatically
+
+ChatKit provides Objective-C-compatible methods for sending messages with context using `ChatKitContextItemFactory`. This factory creates context dictionaries that can be used with the runtime's `sendMessage` method.
+
+### Basic Example
+
+```objc
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+// Create metadata dictionary
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123",
+    @"strategyTitle": @"Growth Strategy"
+};
+
+// Create context dictionary using factory
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata
+                             type:@"strategy"
+                      displayName:nil];
+
+// Get runtime and sessionId from your conversation
+// Then use with runtime's sendMessage method
+id runtime = [self.coordinator runtime];
+NSUUID *sessionId = [conversation sessionId];
+
+// Note: You'll need to use the runtime's sendMessage method directly
+// as Conversation.sendMessage with contextItems is Swift-only
+```
+
+### Convenience Method
+
+```objc
+// Use convenience method without type and displayName
+NSDictionary *metadata = @{
+    @"type": @"strategy",
+    @"strategyId": @"123"
+};
+
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadata:metadata];
+```
+
+### Multiple Context Items
+
+```objc
+// Create array of metadata dictionaries
+NSArray<NSDictionary *> *metadataArray = @[
+    @{@"strategyId": @"123", @"strategyTitle": @"Growth"},
+    @{@"userId": @"456", @"userRole": @"premium"}
+];
+
+// Create context dictionary with multiple items
+NSDictionary *contextDict = [ChatKitContextItemFactory 
+    contextDictionaryFromMetadataArray:metadataArray
+                                    type:@"metadata"];
+```
+
+### Complete Button Tap Example
+
+Here's a complete example of sending a message with context when a button is tapped:
+
+```objc
+- (void)strategyButtonTapped:(UIButton *)sender {
+    // Create context metadata
+    NSDictionary *metadata = @{
+        @"type": @"strategy",
+        @"strategyId": @"123",
+        @"strategyTitle": @"Growth Strategy"
+    };
+    
+    // Create context dictionary
+    NSDictionary *contextDict = [ChatKitContextItemFactory 
+        contextDictionaryFromMetadata:metadata
+                                 type:@"strategy"
+                          displayName:nil];
+    
+    // Start conversation
+    NSUUID *agentId = [[NSUUID alloc] initWithUUIDString:@"E1E72B3D-845D-4F5D-B6CA-5550F2643E6B"];
+    [self.coordinator startConversationWithAgentId:agentId
+                                               title:nil
+                                           agentName:@"My Agent"
+                                          completion:^(CKTConversationRecord *record, id conversation, NSError *error) {
+        if (error) {
+            NSLog(@"Failed to create conversation: %@", error);
+            return;
+        }
+        
+        // Get runtime and sessionId
+        id runtime = [self.coordinator runtime];
+        NSUUID *sessionId = [record id];
+        
+        // Send message with context using runtime
+        // Note: You'll need to call the runtime's sendMessage method
+        // which accepts a context dictionary parameter
+        NSString *message = @"Tell me about this strategy";
+        
+        // Use runtime's sendMessage method with context
+        // The exact method signature depends on your runtime wrapper
+        // This is a conceptual example
+        [self sendMessageWithRuntime:runtime
+                           sessionId:sessionId
+                              text:message
+                            context:contextDict];
+        
+        // Show chat UI
+        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+        ChatKitConversationViewController *chatVC = 
+            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                             conversation:conversation
+                                                          objcCoordinator:self.coordinator
+                                                        objcConfiguration:config];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:chatVC animated:YES];
+        });
+    }];
+}
+```
+
+### Important Notes
+
+- **Swift vs Objective-C**: The `Conversation.sendMessage(_:contextItems:)` method that accepts `contextItems` is Swift-only. In Objective-C, you need to use the runtime's `sendMessage` method directly with a context dictionary.
+
+- **Context Dictionary Format**: The factory methods return a dictionary with the key `"contextItems"` containing an array of context item dictionaries. This matches the format expected by `NeuronRuntime.sendMessage(sessionId:content:context:)`.
+
+- **Type Safety**: While Objective-C doesn't have the same type safety as Swift, the factory methods ensure that context items are properly formatted before being sent to the agent.
+
+---
+
 ## Common Patterns
 
 ### Delegate Pattern (Alternative to Combine)
