@@ -997,6 +997,172 @@ try await conversation.sendMessage("Analyze these", contextItems: contextItems)
   - Context should be collected dynamically through UI
   - Context needs to be refreshed or updated by the user
 
+### Passing Screen Context
+
+When opening a chat from a specific screen (e.g., product detail, strategy view), you can pass screen context to help the agent understand what the user is currently viewing. This is especially useful for floating chat windows or embedded chat entries.
+
+#### Scenario 1: Opening Chat from a Product Detail Screen
+
+```swift
+import UIKit
+import FinClipChatKit
+
+class ProductDetailViewController: UIViewController {
+    var coordinator: ChatKitCoordinator!
+    var product: Product! // Your product model
+    
+    @IBAction func openChatButtonTapped() {
+        // Collect screen context
+        let screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": "ProductDetail",
+            "screenTitle": "Product Details",
+            "productId": product.id,
+            "productName": product.name,
+            "productPrice": product.price,
+            "productDescription": product.description,
+            "currentView": "product_detail",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        // Create conversation with initial message and context
+        let message = "I'm looking at this product. Can you help me?"
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: message,
+            context: screenContext
+        )
+    }
+}
+```
+
+#### Scenario 2: Opening Chat with Rich Screen Context
+
+```swift
+class StrategyViewController: UIViewController {
+    var coordinator: ChatKitCoordinator!
+    var strategy: Strategy!
+    
+    @IBAction func discussStrategyButtonTapped() {
+        // Collect comprehensive screen context
+        let screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": "StrategyDetail",
+            "screenTitle": strategy.title,
+            "strategyId": strategy.id,
+            "strategyDescription": strategy.description,
+            "strategyPerformance": [
+                "return": strategy.returnPercentage,
+                "risk": strategy.riskLevel,
+                "category": strategy.category
+            ],
+            "userContext": [
+                "userId": User.current.id,
+                "accountType": User.current.accountType,
+                "investmentGoal": User.current.investmentGoal
+            ],
+            "screenState": [
+                "selectedTab": currentTabIndex,
+                "viewMode": viewMode,
+                "filters": activeFilters
+            ]
+        ]
+        
+        let message = "Tell me about this strategy"
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: message,
+            context: screenContext
+        )
+    }
+}
+```
+
+#### Scenario 3: Generic Helper for Any Screen
+
+```swift
+extension UIViewController {
+    func openChatWithScreenContext(
+        coordinator: ChatKitCoordinator,
+        message: String? = nil,
+        additionalContext: [String: Any]? = nil
+    ) {
+        // Automatically collect screen information
+        var screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": String(describing: type(of: self)),
+            "screenTitle": title ?? navigationItem.title ?? "Unknown",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        // Add any additional context provided
+        if let additional = additionalContext {
+            screenContext.merge(additional) { (_, new) in new }
+        }
+        
+        // Add screen-specific data if available
+        if let productVC = self as? ProductDetailViewController {
+            screenContext["productId"] = productVC.product?.id
+            screenContext["productName"] = productVC.product?.name
+        }
+        
+        // Default message if none provided
+        let defaultMessage = message ?? "I'm on the \(screenContext["screenTitle"] as? String ?? "current") screen. Can you help?"
+        
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: defaultMessage,
+            context: screenContext
+        )
+    }
+}
+
+// Usage:
+class AnyViewController: UIViewController {
+    @IBAction func helpButtonTapped() {
+        openChatWithScreenContext(
+            coordinator: coordinator,
+            message: "I need help with this screen",
+            additionalContext: [
+                "userAction": "help_requested",
+                "feature": "product_browsing"
+            ]
+        )
+    }
+}
+```
+
+#### Best Practices for Screen Context
+
+1. **Include Screen Identification:**
+   ```swift
+   "screenName": String(describing: type(of: self)),
+   "screenTitle": title ?? "Unknown"
+   ```
+
+2. **Include Relevant Data:**
+   ```swift
+   "productId": product.id,
+   "productName": product.name,
+   "currentState": currentState
+   ```
+
+3. **Add Metadata for Debugging:**
+   ```swift
+   "timestamp": ISO8601DateFormatter().string(from: Date()),
+   "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+   ```
+
+4. **Use Consistent Type Identifiers:**
+   ```swift
+   "type": "screen_context"  // Consistent across all screen contexts
+   ```
+
+5. **Structure Nested Data Clearly:**
+   ```swift
+   "screenState": [
+       "selectedTab": currentTab,
+       "viewMode": viewMode
+   ]
+   ```
+
 ### Real-World Example
 
 Here's how you might use programmatic context when a user taps a strategy card:

@@ -958,6 +958,122 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
 
 - **类型安全**: 虽然 Objective-C 没有 Swift 相同的类型安全，但工厂方法确保在将上下文项发送给代理之前正确格式化。
 
+### 传递屏幕上下文
+
+当从特定屏幕打开聊天时，您可以传递屏幕上下文以帮助代理理解用户当前正在查看的内容。
+
+#### 示例：从产品详情屏幕打开聊天
+
+```objc
+#import "ProductDetailViewController.h"
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+@implementation ProductDetailViewController
+
+- (IBAction)openChatButtonTapped:(UIButton *)sender {
+    // 收集屏幕上下文
+    NSDictionary *screenContext = @{
+        @"type": @"screen_context",
+        @"screenName": @"ProductDetail",
+        @"screenTitle": @"产品详情",
+        @"productId": self.product.productId,
+        @"productName": self.product.name,
+        @"productPrice": @(self.product.price),
+        @"productDescription": self.product.productDescription ?: @"",
+        @"currentView": @"product_detail",
+        @"timestamp": [NSISO8601DateFormatter stringFromDate:[NSDate date]]
+    };
+    
+    // 使用工厂创建上下文字典
+    NSDictionary *contextDict = [ChatKitContextItemFactory 
+        contextDictionaryFromMetadata:screenContext
+                                 type:@"screen_context"
+                          displayName:@"产品详情屏幕"];
+    
+    // 创建对话
+    NSUUID *agentId = [[NSUUID alloc] initWithUUIDString:@"E1E72B3D-845D-4F5D-B6CA-5550F2643E6B"];
+    [self.coordinator startConversationWithAgentId:agentId
+                                               title:nil
+                                           agentName:@"我的代理"
+                                          completion:^(CKTConversationRecord *record, id conversation, NSError *error) {
+        if (error) {
+            NSLog(@"创建对话失败: %@", error);
+            return;
+        }
+        
+        // 获取 runtime 和 sessionId 以发送带上下文的消息
+        id runtime = [self.coordinator runtime];
+        NSUUID *sessionId = [record id];
+        NSString *message = @"我正在查看这个产品。你能帮助我吗？";
+        
+        // 发送带屏幕上下文的初始消息
+        // 注意：您需要使用 runtime 的 sendMessage 方法
+        // 确切的实现取决于您的 runtime 包装器
+        [self sendMessageWithContext:runtime
+                           sessionId:sessionId
+                                text:message
+                              context:contextDict];
+        
+        // 显示聊天 UI
+        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+        ChatKitConversationViewController *chatVC = 
+            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                             conversation:conversation
+                                                          objcCoordinator:self.coordinator
+                                                        objcConfiguration:config];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:chatVC animated:YES];
+        });
+    }];
+}
+
+- (void)sendMessageWithContext:(id)runtime
+                      sessionId:(NSUUID *)sessionId
+                           text:(NSString *)text
+                        context:(NSDictionary *)contextDict {
+    // 实现取决于您的 runtime 包装器
+    // 这是一个概念性示例 - 您需要根据实际 API 进行调整
+    // contextDict 应该传递给 runtime.sendMessage(sessionId:content:context:)
+}
+
+@end
+```
+
+#### 屏幕上下文最佳实践
+
+1. **包含屏幕标识:**
+   ```objc
+   @"screenName": @"ProductDetail",
+   @"screenTitle": self.title ?: @"未知"
+   ```
+
+2. **包含相关数据:**
+   ```objc
+   @"productId": self.product.productId,
+   @"productName": self.product.name,
+   @"currentState": self.currentState
+   ```
+
+3. **添加用于调试的元数据:**
+   ```objc
+   @"timestamp": [NSISO8601DateFormatter stringFromDate:[NSDate date]],
+   @"appVersion": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+   ```
+
+4. **使用一致的类型标识符:**
+   ```objc
+   @"type": @"screen_context"  // 在所有屏幕上下文中保持一致
+   ```
+
+5. **清晰地构建嵌套数据:**
+   ```objc
+   @"screenState": @{
+       @"selectedTab": @(self.currentTabIndex),
+       @"viewMode": self.viewMode
+   }
+   ```
+
 ---
 
 ## 常见模式

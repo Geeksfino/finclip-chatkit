@@ -997,6 +997,172 @@ try await conversation.sendMessage("分析这些", contextItems: contextItems)
   - 上下文应通过 UI 动态收集
   - 上下文需要由用户刷新或更新
 
+### 传递屏幕上下文
+
+当从特定屏幕（例如，产品详情、策略视图）打开聊天时，您可以传递屏幕上下文以帮助代理理解用户当前正在查看的内容。这对于浮动聊天窗口或嵌入式聊天入口特别有用。
+
+#### 场景 1：从产品详情屏幕打开聊天
+
+```swift
+import UIKit
+import FinClipChatKit
+
+class ProductDetailViewController: UIViewController {
+    var coordinator: ChatKitCoordinator!
+    var product: Product! // 您的产品模型
+    
+    @IBAction func openChatButtonTapped() {
+        // 收集屏幕上下文
+        let screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": "ProductDetail",
+            "screenTitle": "产品详情",
+            "productId": product.id,
+            "productName": product.name,
+            "productPrice": product.price,
+            "productDescription": product.description,
+            "currentView": "product_detail",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        // 使用初始消息和上下文创建对话
+        let message = "我正在查看这个产品。你能帮助我吗？"
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: message,
+            context: screenContext
+        )
+    }
+}
+```
+
+#### 场景 2：使用丰富的屏幕上下文打开聊天
+
+```swift
+class StrategyViewController: UIViewController {
+    var coordinator: ChatKitCoordinator!
+    var strategy: Strategy!
+    
+    @IBAction func discussStrategyButtonTapped() {
+        // 收集全面的屏幕上下文
+        let screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": "StrategyDetail",
+            "screenTitle": strategy.title,
+            "strategyId": strategy.id,
+            "strategyDescription": strategy.description,
+            "strategyPerformance": [
+                "return": strategy.returnPercentage,
+                "risk": strategy.riskLevel,
+                "category": strategy.category
+            ],
+            "userContext": [
+                "userId": User.current.id,
+                "accountType": User.current.accountType,
+                "investmentGoal": User.current.investmentGoal
+            ],
+            "screenState": [
+                "selectedTab": currentTabIndex,
+                "viewMode": viewMode,
+                "filters": activeFilters
+            ]
+        ]
+        
+        let message = "告诉我这个策略的情况"
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: message,
+            context: screenContext
+        )
+    }
+}
+```
+
+#### 场景 3：适用于任何屏幕的通用辅助方法
+
+```swift
+extension UIViewController {
+    func openChatWithScreenContext(
+        coordinator: ChatKitCoordinator,
+        message: String? = nil,
+        additionalContext: [String: Any]? = nil
+    ) {
+        // 自动收集屏幕信息
+        var screenContext: [String: Any] = [
+            "type": "screen_context",
+            "screenName": String(describing: type(of: self)),
+            "screenTitle": title ?? navigationItem.title ?? "未知",
+            "timestamp": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        // 添加任何提供的额外上下文
+        if let additional = additionalContext {
+            screenContext.merge(additional) { (_, new) in new }
+        }
+        
+        // 如果可用，添加屏幕特定数据
+        if let productVC = self as? ProductDetailViewController {
+            screenContext["productId"] = productVC.product?.id
+            screenContext["productName"] = productVC.product?.name
+        }
+        
+        // 如果未提供，则使用默认消息
+        let defaultMessage = message ?? "我在 \(screenContext["screenTitle"] as? String ?? "当前") 屏幕上。你能帮助我吗？"
+        
+        coordinator.mainChatVC?.createNewConversation(
+            withMessage: defaultMessage,
+            context: screenContext
+        )
+    }
+}
+
+// 使用方式:
+class AnyViewController: UIViewController {
+    @IBAction func helpButtonTapped() {
+        openChatWithScreenContext(
+            coordinator: coordinator,
+            message: "我需要这个屏幕的帮助",
+            additionalContext: [
+                "userAction": "help_requested",
+                "feature": "product_browsing"
+            ]
+        )
+    }
+}
+```
+
+#### 屏幕上下文最佳实践
+
+1. **包含屏幕标识:**
+   ```swift
+   "screenName": String(describing: type(of: self)),
+   "screenTitle": title ?? "未知"
+   ```
+
+2. **包含相关数据:**
+   ```swift
+   "productId": product.id,
+   "productName": product.name,
+   "currentState": currentState
+   ```
+
+3. **添加用于调试的元数据:**
+   ```swift
+   "timestamp": ISO8601DateFormatter().string(from: Date()),
+   "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+   ```
+
+4. **使用一致的类型标识符:**
+   ```swift
+   "type": "screen_context"  // 在所有屏幕上下文中保持一致
+   ```
+
+5. **清晰地构建嵌套数据:**
+   ```swift
+   "screenState": [
+       "selectedTab": currentTab,
+       "viewMode": viewMode
+   ]
+   ```
+
 ### 实际示例
 
 以下是在用户点击策略卡片时如何使用程序化上下文的示例:

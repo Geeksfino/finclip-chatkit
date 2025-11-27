@@ -958,6 +958,122 @@ Here's a complete example of sending a message with context when a button is tap
 
 - **Type Safety**: While Objective-C doesn't have the same type safety as Swift, the factory methods ensure that context items are properly formatted before being sent to the agent.
 
+### Passing Screen Context
+
+When opening a chat from a specific screen, you can pass screen context to help the agent understand what the user is currently viewing.
+
+#### Example: Opening Chat from a Product Detail Screen
+
+```objc
+#import "ProductDetailViewController.h"
+#import <FinClipChatKit/FinClipChatKit-Swift.h>
+
+@implementation ProductDetailViewController
+
+- (IBAction)openChatButtonTapped:(UIButton *)sender {
+    // Collect screen context
+    NSDictionary *screenContext = @{
+        @"type": @"screen_context",
+        @"screenName": @"ProductDetail",
+        @"screenTitle": @"Product Details",
+        @"productId": self.product.productId,
+        @"productName": self.product.name,
+        @"productPrice": @(self.product.price),
+        @"productDescription": self.product.productDescription ?: @"",
+        @"currentView": @"product_detail",
+        @"timestamp": [NSISO8601DateFormatter stringFromDate:[NSDate date]]
+    };
+    
+    // Create context dictionary using factory
+    NSDictionary *contextDict = [ChatKitContextItemFactory 
+        contextDictionaryFromMetadata:screenContext
+                                 type:@"screen_context"
+                          displayName:@"Product Detail Screen"];
+    
+    // Create conversation
+    NSUUID *agentId = [[NSUUID alloc] initWithUUIDString:@"E1E72B3D-845D-4F5D-B6CA-5550F2643E6B"];
+    [self.coordinator startConversationWithAgentId:agentId
+                                               title:nil
+                                           agentName:@"My Agent"
+                                          completion:^(CKTConversationRecord *record, id conversation, NSError *error) {
+        if (error) {
+            NSLog(@"Failed to create conversation: %@", error);
+            return;
+        }
+        
+        // Get runtime and sessionId for sending message with context
+        id runtime = [self.coordinator runtime];
+        NSUUID *sessionId = [record id];
+        NSString *message = @"I'm looking at this product. Can you help me?";
+        
+        // Send initial message with screen context
+        // Note: You'll need to use the runtime's sendMessage method
+        // The exact implementation depends on your runtime wrapper
+        [self sendMessageWithContext:runtime
+                           sessionId:sessionId
+                                text:message
+                              context:contextDict];
+        
+        // Show chat UI
+        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+        ChatKitConversationViewController *chatVC = 
+            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                             conversation:conversation
+                                                          objcCoordinator:self.coordinator
+                                                        objcConfiguration:config];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:chatVC animated:YES];
+        });
+    }];
+}
+
+- (void)sendMessageWithContext:(id)runtime
+                      sessionId:(NSUUID *)sessionId
+                           text:(NSString *)text
+                        context:(NSDictionary *)contextDict {
+    // Implementation depends on your runtime wrapper
+    // This is a conceptual example - you'll need to adapt based on your actual API
+    // The contextDict should be passed to runtime.sendMessage(sessionId:content:context:)
+}
+
+@end
+```
+
+#### Best Practices for Screen Context
+
+1. **Include Screen Identification:**
+   ```objc
+   @"screenName": @"ProductDetail",
+   @"screenTitle": self.title ?: @"Unknown"
+   ```
+
+2. **Include Relevant Data:**
+   ```objc
+   @"productId": self.product.productId,
+   @"productName": self.product.name,
+   @"currentState": self.currentState
+   ```
+
+3. **Add Metadata for Debugging:**
+   ```objc
+   @"timestamp": [NSISO8601DateFormatter stringFromDate:[NSDate date]],
+   @"appVersion": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]
+   ```
+
+4. **Use Consistent Type Identifiers:**
+   ```objc
+   @"type": @"screen_context"  // Consistent across all screen contexts
+   ```
+
+5. **Structure Nested Data Clearly:**
+   ```objc
+   @"screenState": @{
+       @"selectedTab": @(self.currentTabIndex),
+       @"viewMode": self.viewMode
+   }
+   ```
+
 ---
 
 ## Common Patterns
