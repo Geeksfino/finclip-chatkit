@@ -8,6 +8,7 @@ xcuserdata/
 .build/
 
 # CocoaPods
+Podfile.lock
 Pods/
 
 # Archives

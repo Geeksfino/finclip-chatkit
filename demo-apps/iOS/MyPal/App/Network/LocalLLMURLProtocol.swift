@@ -2,7 +2,7 @@
 //  LocalLLMURLProtocol.swift
 //  MyPal
 //
-//  URLProtocol that intercepts network requests and routes them to local LLM (Gemma 270M via MLX)
+//  URLProtocol that intercepts network requests and routes them to local LLM (Gemma 270M via MediaPipe)
 //  Based on MockSSEURLProtocol pattern from MyChatGPT example
 //
 

@@ -33,13 +33,8 @@ struct AppConfig {
   /// Model name for local LLM
   static let localModelName = "gemma-270m"
   
-  /// Hugging Face repository for Gemma 270M MLX model
-  /// Using mlx-community version (pre-converted for MLX, should work with MLX.loadArrays)
-  /// Options: gemma-3-270m-it-4bit (smaller, ~200MB), gemma-3-270m-it-8bit (better quality, ~400MB), gemma-3-270m-it-bf16 (full precision, ~500MB)
-  static let localModelRepository = "mlx-community/gemma-3-270m-it-4bit"
-  
   /// Model file name (without extension)
-  static let localModelFileName = "gemma-3-270m-it-4bit"
+  static let localModelFileName = "gemma-3-270m-it-int8"
   
   /// Context window size for local LLM
   static let localModelContextSize = 2048

@@ -26,11 +26,5 @@ struct DeviceDetection {
   static var deviceType: DeviceType {
     isSimulator ? .simulator : .physicalDevice
   }
-  
-  /// Check if MLX can be safely used
-  /// MLX requires Metal GPU which is not available on simulator
-  static var canUseMLX: Bool {
-    !isSimulator
-  }
 }
 

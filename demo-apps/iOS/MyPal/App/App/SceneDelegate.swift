@@ -33,19 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     switch mode {
     case .local:
       print("📱 [SceneDelegate] Configuring LOCAL mode...")
-      // Check if running on simulator - MLX doesn't work on simulator
-      guard DeviceDetection.canUseMLX else {
-        print("❌ [SceneDelegate] Local LLM mode not available on iOS Simulator")
-        print("   MLX requires Metal GPU which is not available on simulator")
-        print("   Please test on a physical device")
-        // Fallback to remote mode
-        DispatchQueue.main.async {
-          AppConfig.currentMode = .remote
-          self.configureNetworkAdapter(runtime: runtime, mode: .remote)
-        }
-        return
-      }
-      print("✅ [SceneDelegate] Device check passed - MLX available")
+      print("✅ [SceneDelegate] Using MediaPipe LLM Inference API")
       
       // CRITICAL: Register LocalLLMURLProtocol and create adapter FIRST
       // This ensures requests are intercepted even if model isn't loaded yet
@@ -83,7 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("🔍 [SceneDelegate] Checking for model path...")
         guard let modelPath = getModelPath() else {
           print("❌ [SceneDelegate] Could not determine model path")
-          print("   Model directory exists but model.safetensors or weights.safetensors not found")
+          print("   Model directory exists but gemma-3-270m-it-int8.task not found")
           print("   URLProtocol is registered but model manager not available")
           print("   Requests will be intercepted but will fail until model is loaded")
           return
@@ -94,7 +82,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if !isModelDownloaded() {
           print("📥 [SceneDelegate] Model not found, starting download...")
           print("   Model directory: \(modelDir.path)")
-          print("   Expected files: model.safetensors (or weights.safetensors), config.json, tokenizer.json")
+          print("   Expected file: gemma-3-270m-it-int8.task")
           downloadModel(to: modelDir) { [weak self] success in
             guard let self = self, success else {
               print("❌ [SceneDelegate] Model download failed")
@@ -139,8 +127,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Download model to documents directory
         print("📥 [SceneDelegate] Starting model download to: \(documentsModelDir.path)")
-        print("   Repository: \(AppConfig.localModelRepository)")
-        print("   Expected files: model.safetensors (or weights.safetensors), config.json, tokenizer.json")
+        print("   Expected file: gemma-3-270m-it-int8.task")
+        print("   Note: Model file should be placed in Models directory manually")
         downloadModel(to: documentsModelDir) { [weak self] success in
           guard let self = self, success else {
             print("❌ [SceneDelegate] Model download failed")
@@ -332,32 +320,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   private func getModelPath() -> URL? {
     guard let modelDir = getModelDirectory() else { return nil }
     
-    // Try both common file names
-    let weightsPath = modelDir.appendingPathComponent("weights.safetensors")
-    let modelPath = modelDir.appendingPathComponent("model.safetensors")
+    // Look for .task file (MediaPipe model format)
+    let taskPath = modelDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
     
-    if FileManager.default.fileExists(atPath: modelPath.path) {
-      return modelPath
-    } else if FileManager.default.fileExists(atPath: weightsPath.path) {
-      return weightsPath
+    if FileManager.default.fileExists(atPath: taskPath.path) {
+      return taskPath
     }
+    
+    // Also check if .task file is directly in Models directory
+    if let bundlePath = Bundle.main.resourceURL {
+      let bundleTaskPath = bundlePath.appendingPathComponent("Models").appendingPathComponent("\(AppConfig.localModelFileName).task")
+      if FileManager.default.fileExists(atPath: bundleTaskPath.path) {
+        return bundleTaskPath
+      }
+    }
+    
     return nil
   }
   
   /// Check if model is available at given directory
   private func isModelAvailable(at modelDir: URL) -> Bool {
-    // Check for weights file (try both common names)
-    let weightsPath = modelDir.appendingPathComponent("weights.safetensors")
-    let modelPath = modelDir.appendingPathComponent("model.safetensors")
-    let hasWeights = FileManager.default.fileExists(atPath: weightsPath.path) ||
-                     FileManager.default.fileExists(atPath: modelPath.path)
+    // Check for .task file (MediaPipe model format)
+    let taskPath = modelDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
     
-    let configPath = modelDir.appendingPathComponent("config.json")
-    let tokenizerPath = modelDir.appendingPathComponent("tokenizer.json")
+    if FileManager.default.fileExists(atPath: taskPath.path) {
+      return true
+    }
     
-    return hasWeights &&
-           FileManager.default.fileExists(atPath: configPath.path) &&
-           FileManager.default.fileExists(atPath: tokenizerPath.path)
+    // Also check if .task file is directly in Models directory
+    if let bundlePath = Bundle.main.resourceURL {
+      let bundleTaskPath = bundlePath.appendingPathComponent("Models").appendingPathComponent("\(AppConfig.localModelFileName).task")
+      if FileManager.default.fileExists(atPath: bundleTaskPath.path) {
+        return true
+      }
+    }
+    
+    return false
   }
   
   /// Check if model is downloaded (in documents or bundle)
@@ -367,83 +365,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   private func downloadModel(to destinationDir: URL, completion: @escaping (Bool) -> Void) {
-    // Create model directory
-    do {
-      try FileManager.default.createDirectory(at: destinationDir, withIntermediateDirectories: true)
-    } catch {
-      print("❌ [SceneDelegate] Failed to create model directory: \(error)")
-      completion(false)
-      return
-    }
-    
-    // Download model files from Hugging Face
-    // Note: File names may need adjustment based on actual Hugging Face repository structure
-    let downloader = ModelDownloader()
-    self.modelDownloader = downloader
-    
-    print("📥 [SceneDelegate] Starting model download from \(AppConfig.localModelRepository)")
-    print("   Destination: \(destinationDir.path)")
-    
-    // Download weights.safetensors (largest file, download first)
-    let weightsURL = destinationDir.appendingPathComponent("weights.safetensors")
-    downloader.download(
-      repository: AppConfig.localModelRepository,
-      fileName: "weights.safetensors",
-      destinationURL: weightsURL,
-      progress: { progress in
-        let percent = Int(progress * 100)
-        if percent % 10 == 0 { // Log every 10%
-          print("📥 [SceneDelegate] Downloading weights: \(percent)%")
-        }
-      },
-      completion: { [weak self] result in
-        guard let self = self else { return }
-        switch result {
-        case .success:
-          print("✅ [SceneDelegate] Weights downloaded successfully")
-          // Download config.json
-          let configURL = destinationDir.appendingPathComponent("config.json")
-          downloader.download(
-            repository: AppConfig.localModelRepository,
-            fileName: "config.json",
-            destinationURL: configURL,
-            progress: { _ in },
-            completion: { result in
-              switch result {
-              case .success:
-                print("✅ [SceneDelegate] Config downloaded successfully")
-                // Download tokenizer.json
-                let tokenizerURL = destinationDir.appendingPathComponent("tokenizer.json")
-                downloader.download(
-                  repository: AppConfig.localModelRepository,
-                  fileName: "tokenizer.json",
-                  destinationURL: tokenizerURL,
-                  progress: { _ in },
-                  completion: { result in
-                    switch result {
-                    case .success:
-                      print("✅ [SceneDelegate] Tokenizer downloaded successfully")
-                      print("✅ [SceneDelegate] All model files downloaded")
-                      completion(true)
-                    case .failure(let error):
-                      print("❌ [SceneDelegate] Tokenizer download failed: \(error)")
-                      completion(false)
-                    }
-                  }
-                )
-              case .failure(let error):
-                print("❌ [SceneDelegate] Config download failed: \(error)")
-                completion(false)
-              }
-            }
-          )
-        case .failure(let error):
-          print("❌ [SceneDelegate] Weights download failed: \(error)")
-          print("   Note: If file not found, check Hugging Face repository for actual file names")
-          completion(false)
-        }
-      }
-    )
+    // MediaPipe models are .task files that should be manually placed in the Models directory
+    // For now, we'll just check if the file exists
+    print("ℹ️  [SceneDelegate] MediaPipe models (.task files) should be manually placed in the Models directory")
+    print("   Expected location: \(destinationDir.appendingPathComponent("\(AppConfig.localModelFileName).task").path)")
+    print("   Please ensure the model file is present before using local mode")
+    completion(false)
   }
   
   private func initializeAndLoadModel(modelPath: URL, runtime: NeuronRuntime) {
@@ -453,8 +380,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // Show loading indicator (optional - can be improved with actual UI)
-    print("⏳ [SceneDelegate] Starting model load - this may take 10-30 seconds...")
-    print("   Loading model file - please wait...")
+    print("⏳ [SceneDelegate] Starting model load - this may take a few seconds...")
+    print("   Loading MediaPipe model file - please wait...")
     print("   Model path: \(modelPath.path)")
     
     // Load model asynchronously with error handling

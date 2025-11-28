@@ -15,6 +15,10 @@ DerivedData/
 App/Models/gemma-3-270m-it/
 App/Models/gemma-3-270m-it-4bit/
 
+# MediaPipe model files (.task format - large binary files)
+App/Models/**/*.task
+*.task
+
 # Also ignore large model files individually (in case directories are tracked)
 App/Models/**/*.safetensors
 App/Models/**/*.safetensors.index.json

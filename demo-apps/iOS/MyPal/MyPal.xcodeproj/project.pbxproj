@@ -3,57 +3,29 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		04D24DD663CCDAB81537F2E1 /* NeuronKit in Frameworks */ = {isa = PBXBuildFile; productRef = AF674C6E1BD3D63486AC1D63 /* NeuronKit */; };
 		083CAD7FD3BA4DD842CE699E /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F1215A8542536F61E0B0AA /* AppConfig.swift */; };
 		093E8CE526B15715EBC1DDA3 /* MainChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFC30CDF6CD39932F002CD5 /* MainChatViewController.swift */; };
-		0C240EBEFD459E9C1412A84B /* MLXRandom in Frameworks */ = {isa = PBXBuildFile; productRef = 0E353A46C10C5817794AFBA7 /* MLXRandom */; };
-		0D43BFAD558C9413EC730105 /* chat_template.jinja.lock in Resources */ = {isa = PBXBuildFile; fileRef = F81982D118C107FEC2A8313B /* chat_template.jinja.lock */; };
-		1773B71B86B9F8B84CDE2605 /* .gitattributes.lock in Resources */ = {isa = PBXBuildFile; fileRef = 7B6029F03DD90E423850C7DF /* .gitattributes.lock */; };
-		1ADED5E3745E87A3AAB285AE /* model.safetensors.lock in Resources */ = {isa = PBXBuildFile; fileRef = 1BD19507ED6FCAD223815582 /* model.safetensors.lock */; };
 		1F6C088D6A071057F0051E83 /* ConvoUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1E38C3386DA0E4851F403BF6 /* ConvoUI */; };
-		220F073BA9B36BE67C883D8F /* GemmaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB82D5EC3B8A19E117C9E859 /* GemmaModel.swift */; };
-		226A0FC863CDF0F7FD5910DB /* generation_config.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = 6BEAE1F9C64CE914CF485635 /* generation_config.json.lock */; };
 		284CE87209CE4845243A4304 /* LocalLLMModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA16068F62E78DF9B9FB4B /* LocalLLMModelManager.swift */; };
-		2A0754F5534C5BAF922D872A /* tokenizer_config.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 7CC5981F73A11B9B6E9E980A /* tokenizer_config.json.metadata */; };
-		2B33BC550924DC3896744A2C /* README.md.lock in Resources */ = {isa = PBXBuildFile; fileRef = 4497E27DF770A462CF0250C3 /* README.md.lock */; };
 		2CEAEA8C98950CF7E88B53AD /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8C8F32DBF8EE5C12FBF022 /* DrawerContainerViewController.swift */; };
-		2F1E7831005A8B0B0D092BF7 /* added_tokens.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 7727CE60C77971D70A1794F4 /* added_tokens.json.metadata */; };
 		395120B915603C15B5E5DB87 /* LocalLLMURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39A51A0CD2C1FFB5A8DE384 /* LocalLLMURLProtocol.swift */; };
-		4A9B358C1BC2E5621EE8CC23 /* tokenizer.model.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 031B08CB404EC5B5CFB7F9D0 /* tokenizer.model.metadata */; };
-		522CF7213C4CD7D3DB55E01F /* config.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 9485C62D11FFF0D8DA129DD1 /* config.json.metadata */; };
 		55D6176CDEB8F2A7262F911C /* ComposerToolsExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACBBAD3E584278BD5C18424 /* ComposerToolsExample.swift */; };
-		570DBB23A614CAB60213FC1A /* tokenizer.model.lock in Resources */ = {isa = PBXBuildFile; fileRef = 8ED2773266E98DF38D614B53 /* tokenizer.model.lock */; };
 		5897029A66B7F0574AECD8FB /* LocalizationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7281A16BA6D0DCD2B95ECBF1 /* LocalizationHelper.swift */; };
-		5C6DE224C68C4B8C95394C93 /* special_tokens_map.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = 19F10316E107DFECE39D95F2 /* special_tokens_map.json.lock */; };
-		5EBEE4036EC8E94D4C0727BD /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = 985F59FACF7A1F8E26728386 /* Tokenizers */; };
-		669A29C72AF56B797B01F427 /* generation_config.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 19CEB1159FBC0EB53BB9ECA0 /* generation_config.json.metadata */; };
-		68745EB2CD2048E83C94CC59 /* Hub in Frameworks */ = {isa = PBXBuildFile; productRef = AA523E389E68803AF1AF7D33 /* Hub */; };
 		6AECF9F3CA337A09C3310EB9 /* FinClipChatKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1D356B91FC0A5230281016CE /* FinClipChatKit */; };
 		70FC2B4E7E001E04F70E957D /* SandboxSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 32E969BCC67C4DC88C561E1B /* SandboxSDK */; };
 		7766DF3863720E336B070785 /* DeviceDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5147A00AE3636576CA4518F /* DeviceDetection.swift */; };
 		781241F4A1B903D4DE66771E /* convstorelib in Frameworks */ = {isa = PBXBuildFile; productRef = 3B68D7F26B74B803296C07D5 /* convstorelib */; };
-		7EA91BCF188D13DA802B5738 /* MLXNN in Frameworks */ = {isa = PBXBuildFile; productRef = 11E8F1D109BE64C6AC9F0755 /* MLXNN */; };
-		80B54E769469560A29898FA9 /* config.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = F9BE849381875E03CCCD536D /* config.json.lock */; };
-		954A371DDCBD8E1914DC665D /* tokenizer.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = AC89DD1A4DAF18DA8367E65C /* tokenizer.json.lock */; };
-		9B2DAFF12E5EC7A2A8861D8C /* .gitattributes.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 7156CF426701C3DFE229A4FA /* .gitattributes.metadata */; };
-		A04D1A3CA6F90A22E09D040D /* README.md.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 63AAE9AD30F9EA5637F40257 /* README.md.metadata */; };
-		A2608D37ED4201619ED88A29 /* chat_template.jinja in Resources */ = {isa = PBXBuildFile; fileRef = AFDEF3AC3CBC2C0018A8AC70 /* chat_template.jinja */; };
+		905EB1F22CAC87D8221675F1 /* Pods_MyPal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F074C188D454FD99F6591F /* Pods_MyPal.framework */; };
 		A303F924D44DCBB4AFD9E345 /* ChatContextProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081855A413FE4B7390D05002 /* ChatContextProviders.swift */; };
-		AC5105B711A38B15C5A723FE /* chat_template.jinja.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 208A1E33547C283EC32D90A2 /* chat_template.jinja.metadata */; };
 		B03A33CF642698CDC4EE1D1F /* CalendarContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3EC4F79EC3E1B7B46E4084 /* CalendarContextProvider.swift */; };
 		B6ACB1206296BEF4B85950A9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231887E4019980C65FCDDA0E /* SceneDelegate.swift */; };
-		CACA0CD3C0CDB261A76E6381 /* tokenizer.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = F2A673F0771E758F79461847 /* tokenizer.json.metadata */; };
-		CAD4312A3B4E449AFD4F9D5D /* model.safetensors.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 70ADC27DF3F88FB3660B16ED /* model.safetensors.metadata */; };
 		CB1F79D538897B8C13EAE538 /* LocalLLMAGUIEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8065D51BC0D335C285E3696A /* LocalLLMAGUIEvents.swift */; };
-		CBE31DD4614AE6B22B8BA550 /* special_tokens_map.json.metadata in Resources */ = {isa = PBXBuildFile; fileRef = 564160D22025E3345943C372 /* special_tokens_map.json.metadata */; };
 		D09794C586A23C71401FFEA9 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178FCB62641E48A554C802B5 /* ChatViewController.swift */; };
-		D43AF4E7C02857063AE04DBE /* tokenizer_config.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = 4E853E1008D6DB843E7AD754 /* tokenizer_config.json.lock */; };
-		D580E1D0720D2FE18EE0923C /* MLX in Frameworks */ = {isa = PBXBuildFile; productRef = 05728FDC7C86AAD470EFE71D /* MLX */; };
-		DC5E8DDF80206065775732F0 /* added_tokens.json.lock in Resources */ = {isa = PBXBuildFile; fileRef = 123247BF4F69B6AEA67A2B10 /* added_tokens.json.lock */; };
 		F214D44114E0A6FB198D2A4A /* ModelDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1644FC66B348ACBBFE163E7 /* ModelDownloader.swift */; };
 		F251FBF54826588CD8131593 /* LocationContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1243A03FAE20F93E73C91B9 /* LocationContextProvider.swift */; };
 		F49BE6B14EB46077D7BB0962 /* DrawerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE028ED7DA735602803B00CF /* DrawerViewController.swift */; };
@@ -61,43 +33,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		031B08CB404EC5B5CFB7F9D0 /* tokenizer.model.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.model.metadata; sourceTree = "<group>"; };
 		081855A413FE4B7390D05002 /* ChatContextProviders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContextProviders.swift; sourceTree = "<group>"; };
 		0ACBBAD3E584278BD5C18424 /* ComposerToolsExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerToolsExample.swift; sourceTree = "<group>"; };
-		123247BF4F69B6AEA67A2B10 /* added_tokens.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = added_tokens.json.lock; sourceTree = "<group>"; };
+		0DC81390D7A075A4E80BE5F9 /* Pods-MyPal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyPal.debug.xcconfig"; path = "Target Support Files/Pods-MyPal/Pods-MyPal.debug.xcconfig"; sourceTree = "<group>"; };
 		178FCB62641E48A554C802B5 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
-		19CEB1159FBC0EB53BB9ECA0 /* generation_config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = generation_config.json.metadata; sourceTree = "<group>"; };
-		19F10316E107DFECE39D95F2 /* special_tokens_map.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = special_tokens_map.json.lock; sourceTree = "<group>"; };
-		1BD19507ED6FCAD223815582 /* model.safetensors.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = model.safetensors.lock; sourceTree = "<group>"; };
-		208A1E33547C283EC32D90A2 /* chat_template.jinja.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja.metadata; sourceTree = "<group>"; };
 		231887E4019980C65FCDDA0E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		35149418AE24F0BF4494DEDB /* MyPal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyPal.entitlements; sourceTree = "<group>"; };
-		4497E27DF770A462CF0250C3 /* README.md.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md.lock; sourceTree = "<group>"; };
 		4DFC30CDF6CD39932F002CD5 /* MainChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainChatViewController.swift; sourceTree = "<group>"; };
-		4E853E1008D6DB843E7AD754 /* tokenizer_config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer_config.json.lock; sourceTree = "<group>"; };
 		5491126D473C59274E96AE5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		564160D22025E3345943C372 /* special_tokens_map.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = special_tokens_map.json.metadata; sourceTree = "<group>"; };
-		579B4C4680CB88F13ADF806A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		63AAE9AD30F9EA5637F40257 /* README.md.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md.metadata; sourceTree = "<group>"; };
-		6BEAE1F9C64CE914CF485635 /* generation_config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = generation_config.json.lock; sourceTree = "<group>"; };
-		70ADC27DF3F88FB3660B16ED /* model.safetensors.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = model.safetensors.metadata; sourceTree = "<group>"; };
-		7156CF426701C3DFE229A4FA /* .gitattributes.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes.metadata; sourceTree = "<group>"; };
+		55F8993DE320A0B736945575 /* Pods-MyPal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyPal.release.xcconfig"; path = "Target Support Files/Pods-MyPal/Pods-MyPal.release.xcconfig"; sourceTree = "<group>"; };
 		7281A16BA6D0DCD2B95ECBF1 /* LocalizationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationHelper.swift; sourceTree = "<group>"; };
-		7727CE60C77971D70A1794F4 /* added_tokens.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = added_tokens.json.metadata; sourceTree = "<group>"; };
 		79F1215A8542536F61E0B0AA /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
-		7B6029F03DD90E423850C7DF /* .gitattributes.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes.lock; sourceTree = "<group>"; };
-		7CC5981F73A11B9B6E9E980A /* tokenizer_config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer_config.json.metadata; sourceTree = "<group>"; };
 		8065D51BC0D335C285E3696A /* LocalLLMAGUIEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLLMAGUIEvents.swift; sourceTree = "<group>"; };
 		8C8C8F32DBF8EE5C12FBF022 /* DrawerContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerContainerViewController.swift; sourceTree = "<group>"; };
-		8ED2773266E98DF38D614B53 /* tokenizer.model.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.model.lock; sourceTree = "<group>"; };
 		8F4EE2C7E1E0852BD014E099 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
-		9485C62D11FFF0D8DA129DD1 /* config.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = config.json.metadata; sourceTree = "<group>"; };
-		9B8B3EAE068597E0FE7F14E2 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
+		93F074C188D454FD99F6591F /* Pods_MyPal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyPal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ECA16068F62E78DF9B9FB4B /* LocalLLMModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLLMModelManager.swift; sourceTree = "<group>"; };
 		A5147A00AE3636576CA4518F /* DeviceDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDetection.swift; sourceTree = "<group>"; };
-		AB82D5EC3B8A19E117C9E859 /* GemmaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemmaModel.swift; sourceTree = "<group>"; };
-		AC89DD1A4DAF18DA8367E65C /* tokenizer.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.json.lock; sourceTree = "<group>"; };
-		AFDEF3AC3CBC2C0018A8AC70 /* chat_template.jinja */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja; sourceTree = "<group>"; };
 		B1243A03FAE20F93E73C91B9 /* LocationContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationContextProvider.swift; sourceTree = "<group>"; };
 		B1644FC66B348ACBBFE163E7 /* ModelDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloader.swift; sourceTree = "<group>"; };
 		BF3EC4F79EC3E1B7B46E4084 /* CalendarContextProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContextProvider.swift; sourceTree = "<group>"; };
@@ -105,9 +57,6 @@
 		CACCC79E05A0D707C5A29B7A /* MyPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE028ED7DA735602803B00CF /* DrawerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerViewController.swift; sourceTree = "<group>"; };
 		D51D2609463680B49DFD4967 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F2A673F0771E758F79461847 /* tokenizer.json.metadata */ = {isa = PBXFileReference; lastKnownFileType = text; path = tokenizer.json.metadata; sourceTree = "<group>"; };
-		F81982D118C107FEC2A8313B /* chat_template.jinja.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = chat_template.jinja.lock; sourceTree = "<group>"; };
-		F9BE849381875E03CCCD536D /* config.json.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = config.json.lock; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,24 +69,20 @@
 				70FC2B4E7E001E04F70E957D /* SandboxSDK in Frameworks */,
 				781241F4A1B903D4DE66771E /* convstorelib in Frameworks */,
 				1F6C088D6A071057F0051E83 /* ConvoUI in Frameworks */,
-				D580E1D0720D2FE18EE0923C /* MLX in Frameworks */,
-				7EA91BCF188D13DA802B5738 /* MLXNN in Frameworks */,
-				0C240EBEFD459E9C1412A84B /* MLXRandom in Frameworks */,
-				5EBEE4036EC8E94D4C0727BD /* Tokenizers in Frameworks */,
-				68745EB2CD2048E83C94CC59 /* Hub in Frameworks */,
+				905EB1F22CAC87D8221675F1 /* Pods_MyPal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1CC1CE377F5D169DC8AC3BBA /* huggingface */ = {
+		00B9B54E4B6394B206E8ED89 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				579B4C4680CB88F13ADF806A /* .gitignore */,
-				540573D0C66C3FC82B37BC8F /* download */,
+				0DC81390D7A075A4E80BE5F9 /* Pods-MyPal.debug.xcconfig */,
+				55F8993DE320A0B736945575 /* Pods-MyPal.release.xcconfig */,
 			);
-			path = huggingface;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2FD2FCF753602588CC6ECB21 /* Extensions */ = {
@@ -171,40 +116,9 @@
 			isa = PBXGroup;
 			children = (
 				8F4EE2C7E1E0852BD014E099 /* .gitkeep */,
-				AB82D5EC3B8A19E117C9E859 /* GemmaModel.swift */,
-				95A45C99B36F1F0285704F20 /* gemma-3-270m-it */,
 			);
 			name = Models;
 			path = App/Models;
-			sourceTree = "<group>";
-		};
-		540573D0C66C3FC82B37BC8F /* download */ = {
-			isa = PBXGroup;
-			children = (
-				7B6029F03DD90E423850C7DF /* .gitattributes.lock */,
-				7156CF426701C3DFE229A4FA /* .gitattributes.metadata */,
-				123247BF4F69B6AEA67A2B10 /* added_tokens.json.lock */,
-				7727CE60C77971D70A1794F4 /* added_tokens.json.metadata */,
-				F81982D118C107FEC2A8313B /* chat_template.jinja.lock */,
-				208A1E33547C283EC32D90A2 /* chat_template.jinja.metadata */,
-				F9BE849381875E03CCCD536D /* config.json.lock */,
-				9485C62D11FFF0D8DA129DD1 /* config.json.metadata */,
-				6BEAE1F9C64CE914CF485635 /* generation_config.json.lock */,
-				19CEB1159FBC0EB53BB9ECA0 /* generation_config.json.metadata */,
-				1BD19507ED6FCAD223815582 /* model.safetensors.lock */,
-				70ADC27DF3F88FB3660B16ED /* model.safetensors.metadata */,
-				4497E27DF770A462CF0250C3 /* README.md.lock */,
-				63AAE9AD30F9EA5637F40257 /* README.md.metadata */,
-				19F10316E107DFECE39D95F2 /* special_tokens_map.json.lock */,
-				564160D22025E3345943C372 /* special_tokens_map.json.metadata */,
-				4E853E1008D6DB843E7AD754 /* tokenizer_config.json.lock */,
-				7CC5981F73A11B9B6E9E980A /* tokenizer_config.json.metadata */,
-				AC89DD1A4DAF18DA8367E65C /* tokenizer.json.lock */,
-				F2A673F0771E758F79461847 /* tokenizer.json.metadata */,
-				8ED2773266E98DF38D614B53 /* tokenizer.model.lock */,
-				031B08CB404EC5B5CFB7F9D0 /* tokenizer.model.metadata */,
-			);
-			path = download;
 			sourceTree = "<group>";
 		};
 		6770D91BE4EC0862672634BA /* Adapters */ = {
@@ -229,14 +143,12 @@
 			path = App/ViewControllers;
 			sourceTree = "<group>";
 		};
-		95A45C99B36F1F0285704F20 /* gemma-3-270m-it */ = {
+		9A386B44D645C6E995C2F145 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9B8B3EAE068597E0FE7F14E2 /* .gitattributes */,
-				AFDEF3AC3CBC2C0018A8AC70 /* chat_template.jinja */,
-				F5882B5246B0D08B8BE2C6F7 /* .cache */,
+				93F074C188D454FD99F6591F /* Pods_MyPal.framework */,
 			);
-			path = "gemma-3-270m-it";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A51D139E061EB3842D69BE62 /* Network */ = {
@@ -257,14 +169,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F5882B5246B0D08B8BE2C6F7 /* .cache */ = {
-			isa = PBXGroup;
-			children = (
-				1CC1CE377F5D169DC8AC3BBA /* huggingface */,
-			);
-			path = .cache;
-			sourceTree = "<group>";
-		};
 		F8C8CD237C498A5A9FCB4A58 = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +179,8 @@
 				A51D139E061EB3842D69BE62 /* Network */,
 				824C86BBE76A8F013EA9EBC1 /* ViewControllers */,
 				E49D649E3065AE5704D08AFC /* Products */,
+				00B9B54E4B6394B206E8ED89 /* Pods */,
+				9A386B44D645C6E995C2F145 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -285,9 +191,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6CE17E596ED4B480A3204482 /* Build configuration list for PBXNativeTarget "MyPal" */;
 			buildPhases = (
+				76300E033203BEB088BD0176 /* [CP] Check Pods Manifest.lock */,
 				821A5913A66191D27C94BF9F /* Copy Model Files to Bundle */,
 				2958ABD0638FDA198419A29F /* Sources */,
-				D76061A6ECFC49C9D2E71BF3 /* Resources */,
 				793AA95B36643813544F62F3 /* Frameworks */,
 			);
 			buildRules = (
@@ -301,11 +207,6 @@
 				32E969BCC67C4DC88C561E1B /* SandboxSDK */,
 				3B68D7F26B74B803296C07D5 /* convstorelib */,
 				1E38C3386DA0E4851F403BF6 /* ConvoUI */,
-				05728FDC7C86AAD470EFE71D /* MLX */,
-				11E8F1D109BE64C6AC9F0755 /* MLXNN */,
-				0E353A46C10C5817794AFBA7 /* MLXRandom */,
-				985F59FACF7A1F8E26728386 /* Tokenizers */,
-				AA523E389E68803AF1AF7D33 /* Hub */,
 			);
 			productName = MyPal;
 			productReference = CACCC79E05A0D707C5A29B7A /* MyPal.app */;
@@ -332,10 +233,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CA33BBBEA5CAEBBF0D41DE9A /* XCRemoteSwiftPackageReference "finclip-chatkit" */,
-				5ECFC5E11E601D03C3C411BE /* XCRemoteSwiftPackageReference "mlx-swift" */,
-				15172524177DB0A4895D192B /* XCRemoteSwiftPackageReference "swift-transformers" */,
 				D581C642B97378FB1B00552F /* XCRemoteSwiftPackageReference "finclip-neuron" */,
 			);
+			productRefGroup = E49D649E3065AE5704D08AFC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -344,40 +244,29 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		D76061A6ECFC49C9D2E71BF3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
+/* Begin PBXShellScriptBuildPhase section */
+		76300E033203BEB088BD0176 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1773B71B86B9F8B84CDE2605 /* .gitattributes.lock in Resources */,
-				9B2DAFF12E5EC7A2A8861D8C /* .gitattributes.metadata in Resources */,
-				2B33BC550924DC3896744A2C /* README.md.lock in Resources */,
-				A04D1A3CA6F90A22E09D040D /* README.md.metadata in Resources */,
-				DC5E8DDF80206065775732F0 /* added_tokens.json.lock in Resources */,
-				2F1E7831005A8B0B0D092BF7 /* added_tokens.json.metadata in Resources */,
-				A2608D37ED4201619ED88A29 /* chat_template.jinja in Resources */,
-				0D43BFAD558C9413EC730105 /* chat_template.jinja.lock in Resources */,
-				AC5105B711A38B15C5A723FE /* chat_template.jinja.metadata in Resources */,
-				80B54E769469560A29898FA9 /* config.json.lock in Resources */,
-				522CF7213C4CD7D3DB55E01F /* config.json.metadata in Resources */,
-				226A0FC863CDF0F7FD5910DB /* generation_config.json.lock in Resources */,
-				669A29C72AF56B797B01F427 /* generation_config.json.metadata in Resources */,
-				1ADED5E3745E87A3AAB285AE /* model.safetensors.lock in Resources */,
-				CAD4312A3B4E449AFD4F9D5D /* model.safetensors.metadata in Resources */,
-				5C6DE224C68C4B8C95394C93 /* special_tokens_map.json.lock in Resources */,
-				CBE31DD4614AE6B22B8BA550 /* special_tokens_map.json.metadata in Resources */,
-				954A371DDCBD8E1914DC665D /* tokenizer.json.lock in Resources */,
-				CACA0CD3C0CDB261A76E6381 /* tokenizer.json.metadata in Resources */,
-				570DBB23A614CAB60213FC1A /* tokenizer.model.lock in Resources */,
-				4A9B358C1BC2E5621EE8CC23 /* tokenizer.model.metadata in Resources */,
-				D43AF4E7C02857063AE04DBE /* tokenizer_config.json.lock in Resources */,
-				2A0754F5534C5BAF922D872A /* tokenizer_config.json.metadata in Resources */,
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MyPal-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
 		821A5913A66191D27C94BF9F /* Copy Model Files to Bundle */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -394,7 +283,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "MODEL_SRC=\"${SRCROOT}/App/Models/gemma-3-270m-it-4bit\"\nMODEL_DST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models/gemma-3-270m-it-4bit\"\nif [ -d \"${MODEL_SRC}\" ]; then\n  mkdir -p \"${MODEL_DST}\"\n  [ -f \"${MODEL_SRC}/model.safetensors\" ] && cp \"${MODEL_SRC}/model.safetensors\" \"${MODEL_DST}/\" && echo \"✅ Copied model.safetensors\"\n  [ -f \"${MODEL_SRC}/config.json\" ] && cp \"${MODEL_SRC}/config.json\" \"${MODEL_DST}/\" && echo \"✅ Copied config.json\"\n  [ -f \"${MODEL_SRC}/tokenizer.json\" ] && cp \"${MODEL_SRC}/tokenizer.json\" \"${MODEL_DST}/\" && echo \"✅ Copied tokenizer.json\"\n  [ -f \"${MODEL_SRC}/tokenizer.model\" ] && cp \"${MODEL_SRC}/tokenizer.model\" \"${MODEL_DST}/\" && echo \"✅ Copied tokenizer.model\"\nelse\n  echo \"⚠️ Model source directory not found: ${MODEL_SRC}\"\nfi\n";
+			shellScript = "MODEL_SRC=\"${SRCROOT}/App/Models\"\nMODEL_DST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models\"\nif [ -d \"${MODEL_SRC}\" ]; then\n  mkdir -p \"${MODEL_DST}\"\n  [ -f \"${MODEL_SRC}/gemma-3-270m-it-int8.task\" ] && cp \"${MODEL_SRC}/gemma-3-270m-it-int8.task\" \"${MODEL_DST}/\" && echo \"✅ Copied gemma-3-270m-it-int8.task\"\nelse\n  echo \"⚠️ Model source directory not found: ${MODEL_SRC}\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -412,7 +301,6 @@
 				7766DF3863720E336B070785 /* DeviceDetection.swift in Sources */,
 				2CEAEA8C98950CF7E88B53AD /* DrawerContainerViewController.swift in Sources */,
 				F49BE6B14EB46077D7BB0962 /* DrawerViewController.swift in Sources */,
-				220F073BA9B36BE67C883D8F /* GemmaModel.swift in Sources */,
 				CB1F79D538897B8C13EAE538 /* LocalLLMAGUIEvents.swift in Sources */,
 				284CE87209CE4845243A4304 /* LocalLLMModelManager.swift in Sources */,
 				395120B915603C15B5E5DB87 /* LocalLLMURLProtocol.swift in Sources */,
@@ -429,11 +317,12 @@
 /* Begin XCBuildConfiguration section */
 		27ACF160472F2960CDCD7C83 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0DC81390D7A075A4E80BE5F9 /* Pods-MyPal.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App/MyPal.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 9P92672RT8;
+				DEVELOPMENT_TEAM = GD3A4L3FRU;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyPal;
@@ -569,11 +458,12 @@
 		};
 		995038217C0961C6C1BE35A9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 55F8993DE320A0B736945575 /* Pods-MyPal.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App/MyPal.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 9P92672RT8;
+				DEVELOPMENT_TEAM = GD3A4L3FRU;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = App/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyPal;
@@ -612,22 +502,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		15172524177DB0A4895D192B /* XCRemoteSwiftPackageReference "swift-transformers" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/huggingface/swift-transformers";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		5ECFC5E11E601D03C3C411BE /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ml-explore/mlx-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.29.1;
-			};
-		};
 		CA33BBBEA5CAEBBF0D41DE9A /* XCRemoteSwiftPackageReference "finclip-chatkit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Geeksfino/finclip-chatkit.git";
@@ -647,21 +521,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		05728FDC7C86AAD470EFE71D /* MLX */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5ECFC5E11E601D03C3C411BE /* XCRemoteSwiftPackageReference "mlx-swift" */;
-			productName = MLX;
-		};
-		0E353A46C10C5817794AFBA7 /* MLXRandom */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5ECFC5E11E601D03C3C411BE /* XCRemoteSwiftPackageReference "mlx-swift" */;
-			productName = MLXRandom;
-		};
-		11E8F1D109BE64C6AC9F0755 /* MLXNN */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5ECFC5E11E601D03C3C411BE /* XCRemoteSwiftPackageReference "mlx-swift" */;
-			productName = MLXNN;
-		};
 		1D356B91FC0A5230281016CE /* FinClipChatKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CA33BBBEA5CAEBBF0D41DE9A /* XCRemoteSwiftPackageReference "finclip-chatkit" */;
@@ -681,16 +540,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D581C642B97378FB1B00552F /* XCRemoteSwiftPackageReference "finclip-neuron" */;
 			productName = convstorelib;
-		};
-		985F59FACF7A1F8E26728386 /* Tokenizers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 15172524177DB0A4895D192B /* XCRemoteSwiftPackageReference "swift-transformers" */;
-			productName = Tokenizers;
-		};
-		AA523E389E68803AF1AF7D33 /* Hub */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 15172524177DB0A4895D192B /* XCRemoteSwiftPackageReference "swift-transformers" */;
-			productName = Hub;
 		};
 		AF674C6E1BD3D63486AC1D63 /* NeuronKit */ = {
 			isa = XCSwiftPackageProductDependency;

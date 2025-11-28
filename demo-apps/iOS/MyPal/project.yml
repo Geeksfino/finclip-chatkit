@@ -19,12 +19,6 @@ packages:
   finclip-neuron:
     url: https://github.com/Geeksfino/finclip-neuron.git
     branch: main-swift6_0
-  MLX:
-    url: https://github.com/ml-explore/mlx-swift
-    from: 0.29.1
-  Tokenizers:
-    url: https://github.com/huggingface/swift-transformers
-    from: 1.0.0
 
 targets:
   MyPal:
@@ -38,24 +32,20 @@ targets:
       - path: App/Adapters
       - path: App/Models
         excludes:
-          - "**/*.safetensors"
+          - "**/*.task"
           - "**/*.json"
           - "**/*.model"
           - "**/*.md"
           - "**/README.md"
-          - "**/gemma-3-270m-it-4bit/**"
     prebuildScripts:
       - name: Copy Model Files to Bundle
         shell: /bin/sh
         script: |
-          MODEL_SRC="${SRCROOT}/App/Models/gemma-3-270m-it-4bit"
-          MODEL_DST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models/gemma-3-270m-it-4bit"
+          MODEL_SRC="${SRCROOT}/App/Models"
+          MODEL_DST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models"
           if [ -d "${MODEL_SRC}" ]; then
             mkdir -p "${MODEL_DST}"
-            [ -f "${MODEL_SRC}/model.safetensors" ] && cp "${MODEL_SRC}/model.safetensors" "${MODEL_DST}/" && echo "✅ Copied model.safetensors"
-            [ -f "${MODEL_SRC}/config.json" ] && cp "${MODEL_SRC}/config.json" "${MODEL_DST}/" && echo "✅ Copied config.json"
-            [ -f "${MODEL_SRC}/tokenizer.json" ] && cp "${MODEL_SRC}/tokenizer.json" "${MODEL_DST}/" && echo "✅ Copied tokenizer.json"
-            [ -f "${MODEL_SRC}/tokenizer.model" ] && cp "${MODEL_SRC}/tokenizer.model" "${MODEL_DST}/" && echo "✅ Copied tokenizer.model"
+            [ -f "${MODEL_SRC}/gemma-3-270m-it-int8.task" ] && cp "${MODEL_SRC}/gemma-3-270m-it-int8.task" "${MODEL_DST}/" && echo "✅ Copied gemma-3-270m-it-int8.task"
           else
             echo "⚠️ Model source directory not found: ${MODEL_SRC}"
           fi
@@ -77,14 +67,4 @@ targets:
         package: finclip-neuron
       - product: ConvoUI
         package: finclip-neuron
-      - package: MLX
-        product: MLX
-      - package: MLX
-        product: MLXNN
-      - package: MLX
-        product: MLXRandom
-      - package: Tokenizers
-        product: Tokenizers
-      - package: Tokenizers
-        product: Hub
 

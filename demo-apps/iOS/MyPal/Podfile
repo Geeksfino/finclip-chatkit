@@ -1,0 +1,11 @@
+# Podfile
+platform :ios, '16.0'
+use_frameworks!
+
+# 指定 Xcode 项目路径
+project 'MyPal.xcodeproj'
+
+target 'MyPal' do
+  pod 'MediaPipeTasksGenAI'
+end
+
