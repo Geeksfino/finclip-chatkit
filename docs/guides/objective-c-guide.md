@@ -831,7 +831,7 @@ Ready-made conversation list component.
 
 ## Sending Messages with Context Programmatically
 
-ChatKit provides Objective-C-compatible methods for sending messages with context using `ChatKitContextItemFactory`. This factory creates context dictionaries that can be used with the runtime's `sendMessage` method.
+ChatKit provides Objective-C-compatible methods for sending messages with context using `ChatKitContextItemFactory` and `CKTConversationHelper`. This follows the same high-level API pattern as Swift's `conversation.sendMessage(_:contextItems:)`.
 
 ### Basic Example
 
@@ -851,13 +851,17 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
                              type:@"strategy"
                       displayName:nil];
 
-// Get runtime and sessionId from your conversation
-// Then use with runtime's sendMessage method
-id runtime = [self.coordinator runtime];
-NSUUID *sessionId = [conversation sessionId];
-
-// Note: You'll need to use the runtime's sendMessage method directly
-// as Conversation.sendMessage with contextItems is Swift-only
+// Send message with context using helper (consistent with Swift API)
+[CKTConversationHelper sendMessage:@"Tell me about this strategy"
+                         withContext:contextDict
+                         conversation:conversation
+                          completion:^(NSError *error) {
+    if (error) {
+        NSLog(@"Failed to send message: %@", error);
+    } else {
+        NSLog(@"Message sent successfully with context");
+    }
+}];
 ```
 
 ### Convenience Method
@@ -901,7 +905,7 @@ Here's a complete example of sending a message with context when a button is tap
         @"strategyTitle": @"Growth Strategy"
     };
     
-    // Create context dictionary
+    // Create context dictionary using factory
     NSDictionary *contextDict = [ChatKitContextItemFactory 
         contextDictionaryFromMetadata:metadata
                                  type:@"strategy"
@@ -918,45 +922,41 @@ Here's a complete example of sending a message with context when a button is tap
             return;
         }
         
-        // Get runtime and sessionId
-        id runtime = [self.coordinator runtime];
-        NSUUID *sessionId = [record id];
-        
-        // Send message with context using runtime
-        // Note: You'll need to call the runtime's sendMessage method
-        // which accepts a context dictionary parameter
+        // Send message with context using helper (consistent with Swift API)
         NSString *message = @"Tell me about this strategy";
-        
-        // Use runtime's sendMessage method with context
-        // The exact method signature depends on your runtime wrapper
-        // This is a conceptual example
-        [self sendMessageWithRuntime:runtime
-                           sessionId:sessionId
-                              text:message
-                            context:contextDict];
-        
-        // Show chat UI
-        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
-        ChatKitConversationViewController *chatVC = 
-            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
-                                                             conversation:conversation
-                                                          objcCoordinator:self.coordinator
-                                                        objcConfiguration:config];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationController pushViewController:chatVC animated:YES];
-        });
+        [CKTConversationHelper sendMessage:message
+                                 withContext:contextDict
+                                 conversation:conversation
+                                  completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"Failed to send message: %@", error);
+                return;
+            }
+            
+            // Show chat UI after message is sent
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+                ChatKitConversationViewController *chatVC = 
+                    [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                                     conversation:conversation
+                                                                  objcCoordinator:self.coordinator
+                                                                objcConfiguration:config];
+                [self.navigationController pushViewController:chatVC animated:YES];
+            });
+        }];
     }];
 }
 ```
 
 ### Important Notes
 
-- **Swift vs Objective-C**: The `Conversation.sendMessage(_:contextItems:)` method that accepts `contextItems` is Swift-only. In Objective-C, you need to use the runtime's `sendMessage` method directly with a context dictionary.
+- **Consistent API Pattern**: `CKTConversationHelper` provides the same high-level API pattern as Swift's `conversation.sendMessage(_:contextItems:)`. You use the factory to create context, then call the helper method - just like in Swift.
 
-- **Context Dictionary Format**: The factory methods return a dictionary with the key `"contextItems"` containing an array of context item dictionaries. This matches the format expected by `NeuronRuntime.sendMessage(sessionId:content:context:)`.
+- **Context Dictionary Format**: The factory methods return a dictionary with the key `"contextItems"` containing an array of context item dictionaries. The helper automatically converts these back to `ConversationContextItem` instances internally.
 
-- **Type Safety**: While Objective-C doesn't have the same type safety as Swift, the factory methods ensure that context items are properly formatted before being sent to the agent.
+- **Type Safety**: While Objective-C doesn't have the same type safety as Swift, the factory methods and helper ensure that context items are properly formatted before being sent to the agent.
+
+- **No Direct Runtime Access Needed**: Unlike previous approaches, you don't need to access the runtime directly. The helper handles all the internal conversions and calls, maintaining the same abstraction level as Swift.
 
 ### Passing Screen Context
 
@@ -1001,40 +1001,29 @@ When opening a chat from a specific screen, you can pass screen context to help 
             return;
         }
         
-        // Get runtime and sessionId for sending message with context
-        id runtime = [self.coordinator runtime];
-        NSUUID *sessionId = [record id];
+        // Send initial message with screen context using helper
         NSString *message = @"I'm looking at this product. Can you help me?";
-        
-        // Send initial message with screen context
-        // Note: You'll need to use the runtime's sendMessage method
-        // The exact implementation depends on your runtime wrapper
-        [self sendMessageWithContext:runtime
-                           sessionId:sessionId
-                                text:message
-                              context:contextDict];
-        
-        // Show chat UI
-        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
-        ChatKitConversationViewController *chatVC = 
-            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
-                                                             conversation:conversation
-                                                          objcCoordinator:self.coordinator
-                                                        objcConfiguration:config];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationController pushViewController:chatVC animated:YES];
-        });
+        [CKTConversationHelper sendMessage:message
+                                 withContext:contextDict
+                                 conversation:conversation
+                                  completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"Failed to send message: %@", error);
+                return;
+            }
+            
+            // Show chat UI after message is sent
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+                ChatKitConversationViewController *chatVC = 
+                    [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                                     conversation:conversation
+                                                                  objcCoordinator:self.coordinator
+                                                                objcConfiguration:config];
+                [self.navigationController pushViewController:chatVC animated:YES];
+            });
+        }];
     }];
-}
-
-- (void)sendMessageWithContext:(id)runtime
-                      sessionId:(NSUUID *)sessionId
-                           text:(NSString *)text
-                        context:(NSDictionary *)contextDict {
-    // Implementation depends on your runtime wrapper
-    // This is a conceptual example - you'll need to adapt based on your actual API
-    // The contextDict should be passed to runtime.sendMessage(sessionId:content:context:)
 }
 
 @end

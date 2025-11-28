@@ -831,7 +831,7 @@ CKTConversationManager *manager = [[CKTConversationManager alloc] initWithTitleP
 
 ## 以编程方式发送带上下文的消息
 
-ChatKit 提供了使用 `ChatKitContextItemFactory` 发送带上下文的消息的 Objective-C 兼容方法。该工厂创建可与 runtime 的 `sendMessage` 方法一起使用的上下文字典。
+ChatKit 提供了使用 `ChatKitContextItemFactory` 和 `CKTConversationHelper` 发送带上下文的消息的 Objective-C 兼容方法。这遵循与 Swift 的 `conversation.sendMessage(_:contextItems:)` 相同的高级 API 模式。
 
 ### 基本示例
 
@@ -851,13 +851,17 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
                              type:@"strategy"
                       displayName:nil];
 
-// 从对话中获取 runtime 和 sessionId
-// 然后与 runtime 的 sendMessage 方法一起使用
-id runtime = [self.coordinator runtime];
-NSUUID *sessionId = [conversation sessionId];
-
-// 注意：您需要直接使用 runtime 的 sendMessage 方法
-// 因为带 contextItems 的 Conversation.sendMessage 仅适用于 Swift
+// 使用辅助方法发送带上下文的消息（与 Swift API 一致）
+[CKTConversationHelper sendMessage:@"告诉我这个策略的情况"
+                         withContext:contextDict
+                         conversation:conversation
+                          completion:^(NSError *error) {
+    if (error) {
+        NSLog(@"发送消息失败: %@", error);
+    } else {
+        NSLog(@"消息发送成功，包含上下文");
+    }
+}];
 ```
 
 ### 便利方法
@@ -952,11 +956,13 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
 
 ### 重要说明
 
-- **Swift vs Objective-C**: 接受 `contextItems` 的 `Conversation.sendMessage(_:contextItems:)` 方法仅适用于 Swift。在 Objective-C 中，您需要直接使用 runtime 的 `sendMessage` 方法和上下文字典。
+- **一致的 API 模式**: `CKTConversationHelper` 提供与 Swift 的 `conversation.sendMessage(_:contextItems:)` 相同的高级 API 模式。您使用工厂创建上下文，然后调用辅助方法 - 就像在 Swift 中一样。
 
-- **上下文字典格式**: 工厂方法返回一个字典，其中键 `"contextItems"` 包含上下文项字典数组。这与 `NeuronRuntime.sendMessage(sessionId:content:context:)` 期望的格式匹配。
+- **上下文字典格式**: 工厂方法返回一个字典，其中键 `"contextItems"` 包含上下文项字典数组。辅助方法会自动将这些转换回内部的 `ConversationContextItem` 实例。
 
-- **类型安全**: 虽然 Objective-C 没有 Swift 相同的类型安全，但工厂方法确保在将上下文项发送给代理之前正确格式化。
+- **类型安全**: 虽然 Objective-C 没有 Swift 相同的类型安全，但工厂方法和辅助方法确保在将上下文项发送给代理之前正确格式化。
+
+- **无需直接访问 Runtime**: 与以前的方法不同，您不需要直接访问 runtime。辅助方法处理所有内部转换和调用，保持与 Swift 相同的抽象级别。
 
 ### 传递屏幕上下文
 
@@ -1001,40 +1007,29 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
             return;
         }
         
-        // 获取 runtime 和 sessionId 以发送带上下文的消息
-        id runtime = [self.coordinator runtime];
-        NSUUID *sessionId = [record id];
+        // 使用辅助方法发送带屏幕上下文的初始消息
         NSString *message = @"我正在查看这个产品。你能帮助我吗？";
-        
-        // 发送带屏幕上下文的初始消息
-        // 注意：您需要使用 runtime 的 sendMessage 方法
-        // 确切的实现取决于您的 runtime 包装器
-        [self sendMessageWithContext:runtime
-                           sessionId:sessionId
-                                text:message
-                              context:contextDict];
-        
-        // 显示聊天 UI
-        CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
-        ChatKitConversationViewController *chatVC = 
-            [[ChatKitConversationViewController alloc] initWithObjCRecord:record
-                                                             conversation:conversation
-                                                          objcCoordinator:self.coordinator
-                                                        objcConfiguration:config];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationController pushViewController:chatVC animated:YES];
-        });
+        [CKTConversationHelper sendMessage:message
+                                 withContext:contextDict
+                                 conversation:conversation
+                                  completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"发送消息失败: %@", error);
+                return;
+            }
+            
+            // 消息发送后显示聊天 UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CKTConversationConfiguration *config = [CKTConversationConfiguration defaultConfiguration];
+                ChatKitConversationViewController *chatVC = 
+                    [[ChatKitConversationViewController alloc] initWithObjCRecord:record
+                                                                     conversation:conversation
+                                                                  objcCoordinator:self.coordinator
+                                                                objcConfiguration:config];
+                [self.navigationController pushViewController:chatVC animated:YES];
+            });
+        }];
     }];
-}
-
-- (void)sendMessageWithContext:(id)runtime
-                      sessionId:(NSUUID *)sessionId
-                           text:(NSString *)text
-                        context:(NSDictionary *)contextDict {
-    // 实现取决于您的 runtime 包装器
-    // 这是一个概念性示例 - 您需要根据实际 API 进行调整
-    // contextDict 应该传递给 runtime.sendMessage(sessionId:content:context:)
 }
 
 @end
