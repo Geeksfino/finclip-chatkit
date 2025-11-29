@@ -366,9 +366,41 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
   private func downloadModel(to destinationDir: URL, completion: @escaping (Bool) -> Void) {
     // MediaPipe models are .task files that should be manually placed in the Models directory
-    // For now, we'll just check if the file exists
+    // Check if the model file already exists at the destination
+    let modelFilePath = destinationDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
+    
+    print("🔍 [SceneDelegate] Checking for model file at: \(modelFilePath.path)")
+    
+    if FileManager.default.fileExists(atPath: modelFilePath.path) {
+      print("✅ [SceneDelegate] Model file already exists at destination")
+      print("   File path: \(modelFilePath.path)")
+      completion(true)
+      return
+    }
+    
+    // Also check in bundle Models directory as fallback
+    if let bundlePath = Bundle.main.resourceURL {
+      let bundleTaskPath = bundlePath.appendingPathComponent("Models").appendingPathComponent("\(AppConfig.localModelFileName).task")
+      if FileManager.default.fileExists(atPath: bundleTaskPath.path) {
+        print("✅ [SceneDelegate] Model file found in bundle")
+        print("   File path: \(bundleTaskPath.path)")
+        // Copy from bundle to destination if needed
+        do {
+          try FileManager.default.createDirectory(at: destinationDir, withIntermediateDirectories: true, attributes: nil)
+          try FileManager.default.copyItem(at: bundleTaskPath, to: modelFilePath)
+          print("✅ [SceneDelegate] Copied model from bundle to destination")
+          completion(true)
+          return
+        } catch {
+          print("⚠️ [SceneDelegate] Failed to copy model from bundle: \(error)")
+        }
+      }
+    }
+    
+    // Model file not found - provide instructions
+    print("❌ [SceneDelegate] Model file not found")
     print("ℹ️  [SceneDelegate] MediaPipe models (.task files) should be manually placed in the Models directory")
-    print("   Expected location: \(destinationDir.appendingPathComponent("\(AppConfig.localModelFileName).task").path)")
+    print("   Expected location: \(modelFilePath.path)")
     print("   Please ensure the model file is present before using local mode")
     completion(false)
   }
