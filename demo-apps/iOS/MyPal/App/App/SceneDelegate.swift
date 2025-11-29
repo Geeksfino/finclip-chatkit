@@ -240,11 +240,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       }
     }
     
-    // Fallback: Check bundle root (for legacy compatibility)
+    // Fallback: Check bundle root (XcodeGen resources might copy files to root)
     // If file is in bundle root, return bundle root as the directory
     let bundleRootModelPath = bundlePath.appendingPathComponent("\(AppConfig.localModelFileName).task")
     if FileManager.default.fileExists(atPath: bundleRootModelPath.path) {
-      print("✅ [SceneDelegate] Found bundled model in bundle root (legacy location)")
+      print("✅ [SceneDelegate] Found bundled model in bundle root")
       print("   Model file: \(bundleRootModelPath.path)")
       print("   Model directory: \(bundlePath.path)")
       // Return the directory containing the file (bundle root)
@@ -257,10 +257,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     print("     - \(modelsDir.path)/\(AppConfig.localModelFileName).task")
     print("     - \(bundleRootModelPath.path)")
     
+    // List all files in bundle root for debugging
+    if let allFiles = try? FileManager.default.contentsOfDirectory(atPath: bundlePath.path) {
+      print("   All files in bundle root: \(allFiles)")
+      // Check if .task file is in root with different name
+      let taskFiles = allFiles.filter { $0.hasSuffix(".task") }
+      if !taskFiles.isEmpty {
+        print("   Found .task files in bundle root: \(taskFiles)")
+      }
+    }
+    
     // List Models directory contents for debugging
     if FileManager.default.fileExists(atPath: modelsDir.path),
        let files = try? FileManager.default.contentsOfDirectory(atPath: modelsDir.path) {
       print("   Models/ directory contents: \(files)")
+    } else {
+      print("   Models/ directory does not exist")
     }
     
     return nil
@@ -476,9 +488,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Enable local LLM mode in URLProtocol
         // This allows the URLProtocol to actually process requests
         if let modelManager = self.modelManager {
-          LocalLLMURLProtocol.enableLocalLLMMode(modelManager: modelManager, interval: 0.1)
-          print("✅ [SceneDelegate] LocalLLMURLProtocol enabled with model manager")
+          // Pass coordinator to URLProtocol so it can access conversation history via ChatKit API
+          LocalLLMURLProtocol.enableLocalLLMMode(
+            modelManager: modelManager,
+            coordinator: self.coordinator,
+            interval: 0.1
+          )
+          print("✅ [SceneDelegate] LocalLLMURLProtocol enabled with model manager and ChatKitCoordinator")
           print("   Model is ready to process requests")
+          print("   Conversation history will be automatically included in prompts")
           print("   URLProtocol.isEnabled should now be true")
         } else {
           print("❌ [SceneDelegate] Model manager is nil, cannot enable URLProtocol")

@@ -64,7 +64,7 @@ class LocalLLMModelManager {
         // Note: maxTokens in LlmInference.Options sets the context window size (max input tokens)
         // maxTopk sets the sampling parameter for token selection during generation
         // These options are applied during model initialization and used automatically by generateResponse()
-        // Use 'var' instead of 'let' to allow property modification
+        // Create options with initial values, then modify properties
         var options = LlmInference.Options(modelPath: self.modelPath.path)
         options.maxTokens = AppConfig.localModelContextSize
         options.maxTopk = 40
@@ -107,11 +107,13 @@ class LocalLLMModelManager {
   ///   - prompt: User's input message
   ///   - contextItems: Attached context items (for reference)
   ///   - selectedTools: Selected tools (for reference)
+  ///   - conversationHistory: Optional conversation history to include in prompt
   ///   - completion: Completion handler with generated response or error
   func generateResponse(
     prompt: String,
     contextItems: [[String: Any]] = [],
     selectedTools: [[String: Any]] = [],
+    conversationHistory: [ConversationMessage]? = nil,
     completion: @escaping (Result<String, Error>) -> Void
   ) {
     guard isModelLoaded, let llmInference = self.llmInference else {
@@ -121,10 +123,18 @@ class LocalLLMModelManager {
     
     Task {
       do {
-        // Format prompt for Gemma model
-        let formattedPrompt = self.formatPrompt(userMessage: prompt, contextItems: contextItems, selectedTools: selectedTools)
+        // Format prompt for Gemma model, including conversation history
+        let formattedPrompt = self.formatPrompt(
+          userMessage: prompt,
+          contextItems: contextItems,
+          selectedTools: selectedTools,
+          conversationHistory: conversationHistory
+        )
         
         print("🤖 [LocalLLMModelManager] Generating response for prompt: \(formattedPrompt.prefix(100))...")
+        if let history = conversationHistory, !history.isEmpty {
+          print("📚 [LocalLLMModelManager] Including \(history.count) messages from conversation history")
+        }
         
         // Generate response using MediaPipe LLM Inference API
         // Run on background thread to avoid blocking
@@ -147,8 +157,31 @@ class LocalLLMModelManager {
   }
   
   /// Format prompt for Gemma model
-  private func formatPrompt(userMessage: String, contextItems: [[String: Any]], selectedTools: [[String: Any]]) -> String {
-    var prompt = userMessage
+  /// - Parameters:
+  ///   - userMessage: Current user message
+  ///   - contextItems: Attached context items
+  ///   - selectedTools: Selected tools
+  ///   - conversationHistory: Optional conversation history to prepend
+  /// - Returns: Formatted prompt string
+  private func formatPrompt(
+    userMessage: String,
+    contextItems: [[String: Any]],
+    selectedTools: [[String: Any]],
+    conversationHistory: [ConversationMessage]? = nil
+  ) -> String {
+    var prompt = ""
+    
+    // Prepend conversation history if available
+    if let history = conversationHistory, !history.isEmpty {
+      let formattedHistory = formatHistoryForPrompt(messages: history)
+      if !formattedHistory.isEmpty {
+        prompt += formattedHistory
+        prompt += "\n\n"
+      }
+    }
+    
+    // Add current user message
+    prompt += userMessage
     
     // Add context information if available
     if !contextItems.isEmpty {
@@ -162,6 +195,24 @@ class LocalLLMModelManager {
     }
     
     return prompt
+  }
+  
+  /// Format conversation history into a prompt-friendly string
+  /// - Parameter messages: Array of conversation messages
+  /// - Returns: Formatted string with conversation history
+  private func formatHistoryForPrompt(messages: [ConversationMessage]) -> String {
+    guard !messages.isEmpty else {
+      return ""
+    }
+    
+    var formatted = ""
+    for message in messages {
+      // Format as "Role: content" for Gemma chat format
+      let roleLabel = message.role == "user" ? "User" : "Assistant"
+      formatted += "\(roleLabel): \(message.content)\n\n"
+    }
+    
+    return formatted.trimmingCharacters(in: .whitespacesAndNewlines)
   }
   
   /// Unload the model to free memory

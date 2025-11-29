@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FinClipChatKit
 
 extension InputStream {
   func readAll() -> Data? {
@@ -38,15 +39,18 @@ final class LocalLLMURLProtocol: URLProtocol {
   private static var isEnabled: Bool = false
   private static var interval: TimeInterval = 0.1
   private static var modelManager: LocalLLMModelManager?
+  private static var coordinator: ChatKitCoordinator?
   
   static func enableLocalLLMMode(
     modelManager: LocalLLMModelManager,
+    coordinator: ChatKitCoordinator? = nil,
     interval: TimeInterval = 0.1
   ) {
     queue.sync {
       isEnabled = true
       self.interval = interval
       self.modelManager = modelManager
+      self.coordinator = coordinator
     }
   }
   
@@ -54,6 +58,7 @@ final class LocalLLMURLProtocol: URLProtocol {
     queue.sync {
       isEnabled = false
       modelManager = nil
+      coordinator = nil
     }
   }
   
@@ -121,6 +126,10 @@ final class LocalLLMURLProtocol: URLProtocol {
       print("🤖 [LocalLLM] Context items count: \(payload.contextItems.count)")
       print("🤖 [LocalLLM] Selected tools count: \(payload.selectedTools.count)")
       
+      // Retrieve conversation history for this thread
+      let coordinator = LocalLLMURLProtocol.queue.sync { LocalLLMURLProtocol.coordinator }
+      let conversationHistory = self.getConversationHistory(threadId: payload.threadId, coordinator: coordinator)
+      
       // Call local LLM with the user message
       guard let modelManager = modelManager else {
         print("❌ [LocalLLM] Model manager not available")
@@ -157,11 +166,12 @@ final class LocalLLMURLProtocol: URLProtocol {
         return
       }
       
-      // Generate response using local LLM
+      // Generate response using local LLM with conversation history
       modelManager.generateResponse(
         prompt: payload.message,
         contextItems: payload.contextItems,
-        selectedTools: payload.selectedTools
+        selectedTools: payload.selectedTools,
+        conversationHistory: conversationHistory
       ) { result in
         switch result {
         case .success(let response):
@@ -293,6 +303,36 @@ final class LocalLLMURLProtocol: URLProtocol {
   
   override func stopLoading() {
     // no-op: stream ends automatically
+  }
+  
+  /// Retrieve conversation history for a given thread ID
+  /// - Parameters:
+  ///   - threadId: The conversation thread identifier
+  ///   - coordinator: Optional ChatKitCoordinator to access message store via ChatKit API
+  ///   - Note: The coordinator must be the same instance created by SceneDelegate to ensure
+  ///           we're using the app's initialized runtime, not creating a new one
+  /// - Returns: Array of conversation messages, or nil if unavailable
+  private func getConversationHistory(threadId: String, coordinator: ChatKitCoordinator?) -> [ConversationMessage]? {
+    guard let coordinator = coordinator else {
+      print("ℹ️  [LocalLLM] ChatKitCoordinator not available, proceeding without conversation history")
+      return nil
+    }
+    
+    // Pass the coordinator to history manager - it will access coordinator.runtime
+    // This ensures we use the SAME runtime instance initialized by the app
+    let historyManager = LocalLLMConversationHistoryManager(coordinator: coordinator)
+    let maxTokens = AppConfig.localModelContextSize
+    
+    // Retrieve conversation history (will be truncated to fit context window)
+    let history = historyManager.getConversationHistory(threadId: threadId, maxTokens: maxTokens)
+    
+    if let history = history, !history.isEmpty {
+      print("📚 [LocalLLM] Retrieved \(history.count) messages from conversation history")
+    } else {
+      print("ℹ️  [LocalLLM] No conversation history available (first message or history unavailable)")
+    }
+    
+    return history
   }
 }
 
