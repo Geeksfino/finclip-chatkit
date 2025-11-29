@@ -102,7 +102,15 @@ class LocalLLMConversationHistoryManager {
   private func truncateHistory(_ messages: [ConversationMessage], maxTokens: Int) -> [ConversationMessage] {
     // Rough estimate: 1 token ≈ 4 characters
     // Add some buffer for formatting overhead
-    let maxChars = (maxTokens * 4) - 500  // Reserve 500 chars for current message and formatting
+    // Ensure maxChars is never negative by bounding the buffer subtraction
+    let bufferSize = min(500, maxTokens * 4 / 2)  // Use smaller of 500 or half of available chars
+    let maxChars = max(0, (maxTokens * 4) - bufferSize)  // Ensure non-negative
+    
+    // If maxChars is 0 or very small, return empty array
+    guard maxChars > 100 else {
+      print("⚠️ [HistoryManager] Context window too small (\(maxTokens) tokens), skipping history")
+      return []
+    }
     
     var totalChars = 0
     var truncated: [ConversationMessage] = []

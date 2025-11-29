@@ -114,8 +114,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("   Creating documents directory and starting download...")
         
         let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        // Model file is placed directly in models/ directory, not in a subdirectory
-        let documentsModelDir = documentsDir.appendingPathComponent("models")
+        // Model file is placed directly in Models/ directory, not in a subdirectory
+        // Use "Models" (capital M) to match bundle directory naming convention
+        let documentsModelDir = documentsDir.appendingPathComponent("Models")
         
         // Create directory if it doesn't exist
         do {
@@ -193,9 +194,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // Fall back to documents directory (downloaded model)
-    // Model file is placed directly in models/ directory, not in a subdirectory
+    // Model file is placed directly in Models/ directory, not in a subdirectory
+    // Use "Models" (capital M) to match bundle directory naming convention
     let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    let documentsModelDir = documentsDir.appendingPathComponent("models")
+    let documentsModelDir = documentsDir.appendingPathComponent("Models")
     print("🔍 [SceneDelegate] Checking documents model at: \(documentsModelDir.path)")
     if isModelAvailable(at: documentsModelDir) {
       print("📦 [SceneDelegate] Using model from documents directory")
@@ -337,10 +339,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // Check if model file already exists at the destination
     if FileManager.default.fileExists(atPath: modelFilePath.path) {
-      print("✅ [SceneDelegate] Model file already exists at destination")
-      print("   File path: \(modelFilePath.path)")
-      completion(true)
-      return
+      // Validate file integrity: check file size
+      // Gemma 270M model is approximately 290MB, minimum reasonable size is 50MB
+      // This catches zero-byte files, incomplete downloads, or corrupted files
+      do {
+        let attributes = try FileManager.default.attributesOfItem(atPath: modelFilePath.path)
+        if let fileSize = attributes[.size] as? Int64 {
+          let minExpectedSize: Int64 = 50 * 1024 * 1024  // 50MB minimum
+          if fileSize < minExpectedSize {
+            print("⚠️ [SceneDelegate] Model file exists but appears invalid (size: \(fileSize) bytes, expected at least \(minExpectedSize) bytes)")
+            print("   Removing invalid file and attempting re-download...")
+            try FileManager.default.removeItem(at: modelFilePath)
+            // Continue to download path below
+          } else {
+            print("✅ [SceneDelegate] Model file already exists at destination")
+            print("   File path: \(modelFilePath.path)")
+            print("   File size: \(fileSize) bytes (\(fileSize / (1024 * 1024)) MB)")
+            completion(true)
+            return
+          }
+        } else {
+          print("⚠️ [SceneDelegate] Could not determine file size, treating as invalid")
+          try FileManager.default.removeItem(at: modelFilePath)
+          // Continue to download path below
+        }
+      } catch {
+        print("⚠️ [SceneDelegate] Failed to validate existing file: \(error)")
+        print("   Attempting to remove and re-download...")
+        try? FileManager.default.removeItem(at: modelFilePath)
+        // Continue to download path below
+      }
     }
     
     // Also check in bundle Models directory as fallback
@@ -361,9 +389,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
           }
           
           try FileManager.default.copyItem(at: bundleTaskPath, to: modelFilePath)
-          print("✅ [SceneDelegate] Copied model from bundle to destination")
-          completion(true)
-          return
+          
+          // Validate copied file integrity
+          do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: modelFilePath.path)
+            if let fileSize = attributes[.size] as? Int64 {
+              let minExpectedSize: Int64 = 50 * 1024 * 1024  // 50MB minimum
+              if fileSize < minExpectedSize {
+                print("⚠️ [SceneDelegate] Copied file appears invalid (size: \(fileSize) bytes)")
+                try FileManager.default.removeItem(at: modelFilePath)
+                throw NSError(domain: "ModelValidation", code: 1, userInfo: [NSLocalizedDescriptionKey: "Copied model file is too small"])
+              }
+              print("✅ [SceneDelegate] Copied model from bundle to destination")
+              print("   File size: \(fileSize) bytes (\(fileSize / (1024 * 1024)) MB)")
+              completion(true)
+              return
+            } else {
+              throw NSError(domain: "ModelValidation", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not determine file size"])
+            }
+          } catch {
+            print("⚠️ [SceneDelegate] Failed to validate copied file: \(error)")
+            try? FileManager.default.removeItem(at: modelFilePath)
+            throw error  // Re-throw to be caught by outer catch block
+          }
         } catch {
           print("⚠️ [SceneDelegate] Failed to copy model from bundle: \(error)")
         }
@@ -432,11 +480,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Move downloaded file to destination
         try FileManager.default.moveItem(at: tempLocation, to: modelFilePath)
         
+        // Validate downloaded file integrity
+        let attributes = try FileManager.default.attributesOfItem(atPath: modelFilePath.path)
+        guard let fileSize = attributes[.size] as? Int64 else {
+          print("❌ [SceneDelegate] Could not determine downloaded file size")
+          try FileManager.default.removeItem(at: modelFilePath)
+          DispatchQueue.main.async {
+            completion(false)
+          }
+          return
+        }
+        
+        let minExpectedSize: Int64 = 50 * 1024 * 1024  // 50MB minimum
+        if fileSize < minExpectedSize {
+          print("❌ [SceneDelegate] Downloaded file appears invalid (size: \(fileSize) bytes, expected at least \(minExpectedSize) bytes)")
+          try FileManager.default.removeItem(at: modelFilePath)
+          DispatchQueue.main.async {
+            completion(false)
+          }
+          return
+        }
+        
         print("✅ [SceneDelegate] Model downloaded successfully")
         print("   File path: \(modelFilePath.path)")
-        if let fileSize = try? FileManager.default.attributesOfItem(atPath: modelFilePath.path)[.size] as? Int64 {
-          print("   File size: \(fileSize / 1_000_000)MB")
-        }
+        print("   File size: \(fileSize) bytes (\(fileSize / (1024 * 1024)) MB)")
         
         DispatchQueue.main.async {
           completion(true)
