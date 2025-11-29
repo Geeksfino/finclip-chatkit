@@ -63,7 +63,8 @@ class LocalLLMModelManager {
         // Configure LLM Inference options
         // Note: LlmInference.Options is for model initialization
         // Session options (temperature, topk, etc.) are set when creating a session
-        let options = LlmInference.Options(modelPath: self.modelPath.path)
+        // Use 'var' instead of 'let' to allow property modification
+        var options = LlmInference.Options(modelPath: self.modelPath.path)
         options.maxTokens = AppConfig.localModelContextSize
         options.maxTopk = 40
         
