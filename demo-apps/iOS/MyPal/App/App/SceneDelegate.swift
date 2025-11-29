@@ -277,16 +277,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       return taskPath
     }
     
-    // If modelDir is from bundle, also check bundle root as fallback
-    // (for backward compatibility with different bundle structures)
-    // Note: Don't append "Models" again since modelDir might already be bundlePath/Models
-    if modelDir.path.contains("Bundle") || modelDir.path.contains(".app"), let bundlePath = Bundle.main.resourceURL {
-      // Check bundle root directly (legacy location)
+    // Fallback: Only check bundle root if modelDir is the bundle root itself
+    // (not if it's a subdirectory like Bundle/Models, since getBundledModelDirectory()
+    // already checked both locations and returned the correct directory)
+    if let bundlePath = Bundle.main.resourceURL,
+       modelDir.path == bundlePath.path || modelDir.path == bundlePath.path + "/" {
+      // modelDir is bundle root, check if file exists there (legacy location)
       let bundleRootTaskPath = bundlePath.appendingPathComponent("\(AppConfig.localModelFileName).task")
       if FileManager.default.fileExists(atPath: bundleRootTaskPath.path) {
         return bundleRootTaskPath
       }
     }
+    
+    // If modelDir is a subdirectory (e.g., Bundle/Models) and file not found,
+    // don't check bundle root - getBundledModelDirectory() already verified the file location
+    // If file doesn't exist at the expected location, return nil
     
     return nil
   }
