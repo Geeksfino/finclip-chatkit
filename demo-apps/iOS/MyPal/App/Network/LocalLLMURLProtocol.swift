@@ -311,11 +311,16 @@ final class LocalLLMURLProtocol: URLProtocol {
   ///   - coordinator: Optional ChatKitCoordinator to access message store via ChatKit API
   ///   - Note: The coordinator must be the same instance created by SceneDelegate to ensure
   ///           we're using the app's initialized runtime, not creating a new one
-  /// - Returns: Array of conversation messages, or nil if unavailable
+  /// - Returns: 
+  ///   - `nil`: Coordinator unavailable or query failed (temporary - may succeed later)
+  ///   - `[]`: Coordinator available, query succeeded, but no history exists (permanent for this message)
+  ///   - `[ConversationMessage]`: Successfully retrieved conversation history
   private func getConversationHistory(threadId: String, coordinator: ChatKitCoordinator?) -> [ConversationMessage]? {
     guard let coordinator = coordinator else {
-      print("ℹ️  [LocalLLM] ChatKitCoordinator not available, proceeding without conversation history")
-      return nil
+      print("⚠️  [LocalLLM] ChatKitCoordinator not available, cannot retrieve conversation history")
+      print("   This may be temporary - coordinator may become available for subsequent messages")
+      print("   Proceeding without conversation history for this request")
+      return nil  // nil = coordinator unavailable (temporary)
     }
     
     // Pass the coordinator to history manager - it will access coordinator.runtime
@@ -326,10 +331,18 @@ final class LocalLLMURLProtocol: URLProtocol {
     // Retrieve conversation history (will be truncated to fit context window)
     let history = historyManager.getConversationHistory(threadId: threadId, maxTokens: maxTokens)
     
-    if let history = history, !history.isEmpty {
-      print("📚 [LocalLLM] Retrieved \(history.count) messages from conversation history")
-    } else {
-      print("ℹ️  [LocalLLM] No conversation history available (first message or history unavailable)")
+    // Distinguish between different return values for better logging
+    switch history {
+    case .none:
+      // nil = coordinator unavailable or query failed (temporary)
+      print("⚠️  [LocalLLM] Could not retrieve conversation history (coordinator unavailable or query failed)")
+      print("   History may be available for subsequent messages once coordinator is initialized")
+    case .some(let messages) where messages.isEmpty:
+      // [] = successfully queried but no history (permanent for this message)
+      print("ℹ️  [LocalLLM] No conversation history available (first message in thread)")
+    case .some(let messages):
+      // [ConversationMessage] = successfully retrieved history
+      print("📚 [LocalLLM] Retrieved \(messages.count) messages from conversation history")
     }
     
     return history

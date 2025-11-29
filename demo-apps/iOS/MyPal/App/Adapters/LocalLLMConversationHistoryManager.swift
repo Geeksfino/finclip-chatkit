@@ -22,17 +22,21 @@ class LocalLLMConversationHistoryManager {
   /// - Parameters:
   ///   - threadId: The conversation thread identifier (UUID string)
   ///   - maxTokens: Maximum tokens to include (for truncation)
-  /// - Returns: Array of conversation messages in chronological order, or nil if unavailable
+  /// - Returns: 
+  ///   - `nil`: Coordinator unavailable or query failed (temporary - may succeed later)
+  ///   - `[]`: Coordinator available, query succeeded, but no history exists (permanent for this message)
+  ///   - `[ConversationMessage]`: Successfully retrieved conversation history
   func getConversationHistory(threadId: String, maxTokens: Int) -> [ConversationMessage]? {
     guard let coordinator = coordinator else {
       print("⚠️ [HistoryManager] ChatKitCoordinator not available, cannot retrieve history")
-      return nil
+      print("   This may be temporary - coordinator may become available later")
+      return nil  // nil = couldn't query (coordinator unavailable)
     }
     
     // Convert threadId string to UUID
     guard let sessionId = UUID(uuidString: threadId) else {
       print("⚠️ [HistoryManager] Invalid threadId format: \(threadId)")
-      return nil
+      return nil  // nil = couldn't query (invalid input)
     }
     
     do {
@@ -66,12 +70,18 @@ class LocalLLMConversationHistoryManager {
       // Truncate if necessary to fit within token limit
       let truncated = truncateHistory(conversationMessages, maxTokens: maxTokens)
       
-      print("📚 [HistoryManager] Retrieved \(conversationMessages.count) messages, using \(truncated.count) after truncation")
-      return truncated
+      if truncated.isEmpty {
+        print("📚 [HistoryManager] Query succeeded but no conversation history found (first message in thread)")
+        return []  // [] = successfully queried, but no history (permanent for this message)
+      } else {
+        print("📚 [HistoryManager] Retrieved \(conversationMessages.count) messages, using \(truncated.count) after truncation")
+        return truncated  // [ConversationMessage] = successfully retrieved history
+      }
       
     } catch {
       print("⚠️ [HistoryManager] Failed to retrieve conversation history: \(error)")
-      return nil
+      print("   This may be temporary - query may succeed on retry")
+      return nil  // nil = query failed (temporary - may succeed later)
     }
   }
   
