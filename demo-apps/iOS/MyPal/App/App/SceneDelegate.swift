@@ -113,7 +113,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("   Creating documents directory and starting download...")
         
         let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let documentsModelDir = documentsDir.appendingPathComponent("models").appendingPathComponent(AppConfig.localModelFileName)
+        // Model file is placed directly in models/ directory, not in a subdirectory
+        let documentsModelDir = documentsDir.appendingPathComponent("models")
         
         // Create directory if it doesn't exist
         do {
@@ -191,8 +192,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // Fall back to documents directory (downloaded model)
+    // Model file is placed directly in models/ directory, not in a subdirectory
     let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    let documentsModelDir = documentsDir.appendingPathComponent("models").appendingPathComponent(AppConfig.localModelFileName)
+    let documentsModelDir = documentsDir.appendingPathComponent("models")
     print("🔍 [SceneDelegate] Checking documents model at: \(documentsModelDir.path)")
     if isModelAvailable(at: documentsModelDir) {
       print("📦 [SceneDelegate] Using model from documents directory")
@@ -321,14 +323,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let modelDir = getModelDirectory() else { return nil }
     
     // Look for .task file (MediaPipe model format)
+    // Model file is placed directly in the directory, not in a subdirectory
     let taskPath = modelDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
     
     if FileManager.default.fileExists(atPath: taskPath.path) {
       return taskPath
     }
     
-    // Also check if .task file is directly in Models directory
-    if let bundlePath = Bundle.main.resourceURL {
+    // If modelDir is from bundle, also check directly in Models directory as fallback
+    // (for backward compatibility with different bundle structures)
+    if modelDir.path.contains("Bundle") || modelDir.path.contains(".app"), let bundlePath = Bundle.main.resourceURL {
       let bundleTaskPath = bundlePath.appendingPathComponent("Models").appendingPathComponent("\(AppConfig.localModelFileName).task")
       if FileManager.default.fileExists(atPath: bundleTaskPath.path) {
         return bundleTaskPath
@@ -339,22 +343,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   /// Check if model is available at given directory
+  /// Only checks the specified directory, not the bundle (to avoid false positives)
   private func isModelAvailable(at modelDir: URL) -> Bool {
     // Check for .task file (MediaPipe model format)
+    // Model file is placed directly in the directory, not in a subdirectory
     let taskPath = modelDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
     
     if FileManager.default.fileExists(atPath: taskPath.path) {
       return true
     }
     
-    // Also check if .task file is directly in Models directory
-    if let bundlePath = Bundle.main.resourceURL {
-      let bundleTaskPath = bundlePath.appendingPathComponent("Models").appendingPathComponent("\(AppConfig.localModelFileName).task")
-      if FileManager.default.fileExists(atPath: bundleTaskPath.path) {
-        return true
-      }
-    }
-    
+    // Don't check bundle here - only check the specified location
+    // This prevents false positives when checking documents directory
     return false
   }
   
