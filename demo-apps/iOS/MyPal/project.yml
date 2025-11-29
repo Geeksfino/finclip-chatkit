@@ -12,6 +12,9 @@ schemes:
     run:
       config: Debug
 
+# Swift Package Manager dependencies
+# Note: CocoaPods dependencies (MediaPipeTasksGenAI) are managed separately via Podfile
+# The build workflow: 1) xcodegen generate 2) pod install (creates .xcworkspace)
 packages:
   FinClipChatKit:
     url: https://github.com/Geeksfino/finclip-chatkit.git
@@ -67,6 +70,7 @@ targets:
       CODE_SIGN_ENTITLEMENTS: App/App/MyPal.entitlements
       ENABLE_BITCODE: NO
     dependencies:
+      # Swift Package Manager dependencies
       - product: FinClipChatKit
         package: FinClipChatKit
       - product: NeuronKit
@@ -77,4 +81,6 @@ targets:
         package: finclip-neuron
       - product: ConvoUI
         package: finclip-neuron
+      # Note: MediaPipeTasksGenAI is managed via CocoaPods (see Podfile)
+      # CocoaPods dependencies are added to the workspace after xcodegen generate
 

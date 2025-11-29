@@ -6,6 +6,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var coordinator: ChatKitCoordinator?
   var modelManager: LocalLLMModelManager?
   private var modelDownloader: ModelDownloader?
+  private var downloadSession: URLSession?
 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     guard let windowScene = scene as? UIWindowScene else { return }
@@ -355,13 +356,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       return
     }
     
-    // Create download task
+    // Create download session and store it to keep it alive during download
+    // URLSession must remain alive for the duration of the download task
     let session = URLSession(configuration: .default)
+    self.downloadSession = session  // Store session to prevent deallocation
+    
     let downloadTask = session.downloadTask(with: downloadURL) { [weak self] tempLocation, response, error in
       guard let self = self else {
         completion(false)
         return
       }
+      
+      // Clear the session reference after download completes
+      self.downloadSession = nil
       
       if let error = error {
         print("❌ [SceneDelegate] Download failed: \(error.localizedDescription)")

@@ -12,18 +12,20 @@ generate:
 		echo "❌ XcodeGen not installed. Install with 'brew install xcodegen'."; \
 		exit 1; \
 	fi
-	@echo "🔧 Generating Xcode project..."
+	@echo "🔧 Generating Xcode project from project.yml..."
+	@echo "   (SPM dependencies: FinClipChatKit, finclip-neuron)"
 	xcodegen generate --spec project.yml
 	@echo "✅ Project generated: $(PROJECT_FILE)"
 	@echo ""
 	@if [ -f "Podfile" ]; then \
-		echo "📦 Installing CocoaPods dependencies..."; \
+		echo "📦 Installing CocoaPods dependencies (MediaPipeTasksGenAI)..."; \
 		if ! command -v pod >/dev/null 2>&1; then \
 			echo "⚠️  CocoaPods not installed. Install with 'sudo gem install cocoapods'."; \
 			echo "   Skipping pod install..."; \
 		else \
 			pod install; \
 			echo "✅ CocoaPods dependencies installed"; \
+			echo "   Workspace created: $(PROJECT_NAME).xcworkspace"; \
 		fi; \
 	else \
 		echo "ℹ️  No Podfile found, skipping pod install"; \
