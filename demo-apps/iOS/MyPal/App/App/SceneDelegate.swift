@@ -207,7 +207,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   /// Get bundled model directory from app bundle
+  /// Returns the directory containing the model file (not the file path itself)
   /// The build script copies the model file to Bundle/Models/gemma-3-270m-it-int8.task
+  /// This function consistently returns the directory that contains the model file:
+  /// - Returns Bundle/Models when file is in Bundle/Models/file.task
+  /// - Returns Bundle when file is in Bundle/file.task (legacy location)
   private func getBundledModelDirectory() -> URL? {
     guard let bundlePath = Bundle.main.resourceURL else {
       print("⚠️ [SceneDelegate] Could not get bundle resource URL")
@@ -223,7 +227,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     if FileManager.default.fileExists(atPath: modelsDir.path) {
       let modelFilePath = modelsDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
       if FileManager.default.fileExists(atPath: modelFilePath.path) {
-        print("✅ [SceneDelegate] Found bundled model at: \(modelsDir.path)")
+        print("✅ [SceneDelegate] Found bundled model at: \(modelFilePath.path)")
+        print("   Model directory: \(modelsDir.path)")
+        // Return the directory containing the file (Models subdirectory)
         return modelsDir
       } else {
         print("⚠️ [SceneDelegate] Models directory exists but model file not found")
@@ -235,9 +241,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // Fallback: Check bundle root (for legacy compatibility)
+    // If file is in bundle root, return bundle root as the directory
     let bundleRootModelPath = bundlePath.appendingPathComponent("\(AppConfig.localModelFileName).task")
     if FileManager.default.fileExists(atPath: bundleRootModelPath.path) {
       print("✅ [SceneDelegate] Found bundled model in bundle root (legacy location)")
+      print("   Model file: \(bundleRootModelPath.path)")
+      print("   Model directory: \(bundlePath.path)")
+      // Return the directory containing the file (bundle root)
       return bundlePath
     }
     
