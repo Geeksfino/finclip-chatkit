@@ -323,6 +323,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Copy from bundle to destination if needed
         do {
           try FileManager.default.createDirectory(at: destinationDir, withIntermediateDirectories: true, attributes: nil)
+          
+          // Remove existing file if present (same as download path)
+          // This handles cases where file was previously downloaded or partially copied
+          if FileManager.default.fileExists(atPath: modelFilePath.path) {
+            try FileManager.default.removeItem(at: modelFilePath)
+            print("ℹ️  [SceneDelegate] Removed existing file before copying from bundle")
+          }
+          
           try FileManager.default.copyItem(at: bundleTaskPath, to: modelFilePath)
           print("✅ [SceneDelegate] Copied model from bundle to destination")
           completion(true)
