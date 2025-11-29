@@ -45,5 +45,10 @@ struct AppConfig {
   /// Use bundled model if available (for development/testing)
   /// Set to false to always download on-demand
   static let preferBundledModel = true
+  
+  /// URL to download the MediaPipe .task model file
+  /// Set to nil if model should be manually placed
+  /// Example: "https://storage.googleapis.com/mediapipe-models/gemma-3-270m-it-int8.task"
+  static let modelDownloadURL: String? = nil
 }
 

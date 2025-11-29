@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "finclip-chatkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Geeksfino/finclip-chatkit.git",
+      "state" : {
+        "revision" : "3f65b549170e2ef7c2e553d1b1c9a19e3e84add3",
+        "version" : "0.9.4"
+      }
+    }
+  ],
+  "version" : 2
+}

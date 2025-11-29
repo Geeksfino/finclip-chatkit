@@ -206,115 +206,51 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   /// Get bundled model directory from app bundle
+  /// The build script copies the model file to Bundle/Models/gemma-3-270m-it-int8.task
   private func getBundledModelDirectory() -> URL? {
     guard let bundlePath = Bundle.main.resourceURL else {
       print("⚠️ [SceneDelegate] Could not get bundle resource URL")
       return nil
     }
     
-    // Try different possible paths for the model in the bundle
-    // XcodeGen might copy files to bundle root or to Models/ subdirectory
-    // Based on bundle contents, files appear to be in bundle root
-    let possiblePaths = [
-      bundlePath, // Bundle root (files are here based on logs)
-      bundlePath.appendingPathComponent("Models").appendingPathComponent(AppConfig.localModelFileName), // In Models subfolder
-      bundlePath.appendingPathComponent(AppConfig.localModelFileName), // Direct subdirectory in bundle root
-      bundlePath.appendingPathComponent("gemma-3-270m-it-4bit"), // Explicit name
-      // Also try with lowercase "models" in case of case sensitivity issues
-      bundlePath.appendingPathComponent("models").appendingPathComponent(AppConfig.localModelFileName),
-    ]
-    
-    for modelDir in possiblePaths {
-      print("🔍 [SceneDelegate] Checking bundled model at: \(modelDir.path)")
-      let exists = FileManager.default.fileExists(atPath: modelDir.path)
-      print("   Directory exists: \(exists)")
-      
-      // Check if this is a directory or if files are directly in bundle root
-      var isDirectory: ObjCBool = false
-      if FileManager.default.fileExists(atPath: modelDir.path, isDirectory: &isDirectory) {
-        if isDirectory.boolValue {
-          // It's a directory, check contents
-          if let files = try? FileManager.default.contentsOfDirectory(atPath: modelDir.path) {
-            print("   Files in directory: \(files.prefix(10))")
-            if isModelAvailable(at: modelDir) {
-              print("✅ [SceneDelegate] Found bundled model at: \(modelDir.path)")
-              return modelDir
-            } else {
-              print("⚠️ [SceneDelegate] Directory exists but model files not complete")
-            }
-          }
-        } else {
-          // It's a file, not a directory - skip
-          print("   Path exists but is a file, not a directory")
-        }
-      } else {
-        // Path doesn't exist - check if model files are directly in bundle root
-        if modelDir == bundlePath {
-          print("   Checking bundle root for model files directly...")
-          let configFile = bundlePath.appendingPathComponent("config.json")
-          let modelFile = bundlePath.appendingPathComponent("model.safetensors")
-          let tokenizerFile = bundlePath.appendingPathComponent("tokenizer.json")
-          
-          let hasConfig = FileManager.default.fileExists(atPath: configFile.path)
-          let hasModel = FileManager.default.fileExists(atPath: modelFile.path)
-          let hasTokenizer = FileManager.default.fileExists(atPath: tokenizerFile.path)
-          
-          print("   config.json exists: \(hasConfig)")
-          print("   model.safetensors exists: \(hasModel)")
-          print("   tokenizer.json exists: \(hasTokenizer)")
-          
-          if hasConfig && hasModel && hasTokenizer {
-            print("✅ [SceneDelegate] Found model files directly in bundle root")
-            return bundlePath
-          }
-        }
-      }
-    }
-    
-    print("⚠️ [SceneDelegate] Bundled model not found in any expected location")
-    print("   Bundle resource URL: \(bundlePath.path)")
-    print("   Tried paths:")
-    for path in possiblePaths {
-      let exists = FileManager.default.fileExists(atPath: path.path)
-      print("     - \(path.path) [exists: \(exists)]")
-    }
-    
-    // List all files in bundle root for debugging
-    if let bundleContents = try? FileManager.default.contentsOfDirectory(atPath: bundlePath.path) {
-      print("   Bundle root contents (first 50): \(Array(bundleContents.prefix(50)))")
-      
-      // Check for actual model files (not just metadata)
-      let modelFiles = bundleContents.filter { file in
-        file == "config.json" || 
-        file == "model.safetensors" || 
-        file == "tokenizer.json" ||
-        file == "tokenizer.model" ||
-        file.hasPrefix("gemma-3-270m-it-4bit")
-      }
-      if !modelFiles.isEmpty {
-        print("   Found potential model files: \(modelFiles)")
-      }
-    }
-    
-    // Also check if Models directory exists
+    // The build script copies the .task file to Models/ directory in the bundle
+    // Model file is at: Bundle/Models/gemma-3-270m-it-int8.task
+    // So the model directory is: Bundle/Models/
     let modelsDir = bundlePath.appendingPathComponent("Models")
+    
+    // Check if Models directory exists and contains the model file
     if FileManager.default.fileExists(atPath: modelsDir.path) {
-      print("   Models directory exists at: \(modelsDir.path)")
-      if let modelsContents = try? FileManager.default.contentsOfDirectory(atPath: modelsDir.path) {
-        print("   Models directory contents: \(modelsContents)")
+      let modelFilePath = modelsDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
+      if FileManager.default.fileExists(atPath: modelFilePath.path) {
+        print("✅ [SceneDelegate] Found bundled model at: \(modelsDir.path)")
+        return modelsDir
+      } else {
+        print("⚠️ [SceneDelegate] Models directory exists but model file not found")
+        print("   Expected: \(modelFilePath.path)")
+        if let files = try? FileManager.default.contentsOfDirectory(atPath: modelsDir.path) {
+          print("   Files in Models/: \(files)")
+        }
       }
-    } else {
-      print("   Models directory does NOT exist at: \(modelsDir.path)")
     }
     
-    // Check if files are directly in bundle root (without subdirectory)
-    print("   Checking for model files directly in bundle root...")
-    let directConfig = bundlePath.appendingPathComponent("config.json")
-    let directModel = bundlePath.appendingPathComponent("model.safetensors")
-    let directTokenizer = bundlePath.appendingPathComponent("tokenizer.json")
-    print("     config.json: \(FileManager.default.fileExists(atPath: directConfig.path))")
-    print("     model.safetensors: \(FileManager.default.fileExists(atPath: directModel.path))")
-    print("     tokenizer.json: \(FileManager.default.fileExists(atPath: directTokenizer.path))")
+    // Fallback: Check bundle root (for legacy compatibility)
+    let bundleRootModelPath = bundlePath.appendingPathComponent("\(AppConfig.localModelFileName).task")
+    if FileManager.default.fileExists(atPath: bundleRootModelPath.path) {
+      print("✅ [SceneDelegate] Found bundled model in bundle root (legacy location)")
+      return bundlePath
+    }
+    
+    print("⚠️ [SceneDelegate] Bundled model not found")
+    print("   Bundle resource URL: \(bundlePath.path)")
+    print("   Checked:")
+    print("     - \(modelsDir.path)/\(AppConfig.localModelFileName).task")
+    print("     - \(bundleRootModelPath.path)")
+    
+    // List Models directory contents for debugging
+    if FileManager.default.fileExists(atPath: modelsDir.path),
+       let files = try? FileManager.default.contentsOfDirectory(atPath: modelsDir.path) {
+      print("   Models/ directory contents: \(files)")
+    }
     
     return nil
   }
@@ -365,12 +301,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   private func downloadModel(to destinationDir: URL, completion: @escaping (Bool) -> Void) {
-    // MediaPipe models are .task files that should be manually placed in the Models directory
-    // Check if the model file already exists at the destination
     let modelFilePath = destinationDir.appendingPathComponent("\(AppConfig.localModelFileName).task")
     
     print("🔍 [SceneDelegate] Checking for model file at: \(modelFilePath.path)")
     
+    // Check if model file already exists at the destination
     if FileManager.default.fileExists(atPath: modelFilePath.path) {
       print("✅ [SceneDelegate] Model file already exists at destination")
       print("   File path: \(modelFilePath.path)")
@@ -397,12 +332,91 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       }
     }
     
-    // Model file not found - provide instructions
-    print("❌ [SceneDelegate] Model file not found")
-    print("ℹ️  [SceneDelegate] MediaPipe models (.task files) should be manually placed in the Models directory")
-    print("   Expected location: \(modelFilePath.path)")
-    print("   Please ensure the model file is present before using local mode")
-    completion(false)
+    // Model file not found - attempt to download if URL is configured
+    guard let downloadURLString = AppConfig.modelDownloadURL,
+          let downloadURL = URL(string: downloadURLString) else {
+      print("❌ [SceneDelegate] Model file not found and no download URL configured")
+      print("ℹ️  [SceneDelegate] MediaPipe models (.task files) should be manually placed in the Models directory")
+      print("   Expected location: \(modelFilePath.path)")
+      print("   To enable automatic download, set AppConfig.modelDownloadURL")
+      print("   Please ensure the model file is present before using local mode")
+      completion(false)
+      return
+    }
+    
+    // Download the model file
+    print("📥 [SceneDelegate] Starting model download from: \(downloadURLString)")
+    print("   Destination: \(modelFilePath.path)")
+    
+    // Check available storage (need at least 500MB for 290MB model)
+    if let availableSpace = getAvailableStorageSpace(), availableSpace < 500_000_000 {
+      print("❌ [SceneDelegate] Insufficient storage space: \(availableSpace / 1_000_000)MB available, need at least 500MB")
+      completion(false)
+      return
+    }
+    
+    // Create download task
+    let session = URLSession(configuration: .default)
+    let downloadTask = session.downloadTask(with: downloadURL) { [weak self] tempLocation, response, error in
+      guard let self = self else {
+        completion(false)
+        return
+      }
+      
+      if let error = error {
+        print("❌ [SceneDelegate] Download failed: \(error.localizedDescription)")
+        completion(false)
+        return
+      }
+      
+      guard let tempLocation = tempLocation else {
+        print("❌ [SceneDelegate] Download failed: No temporary file location")
+        completion(false)
+        return
+      }
+      
+      // Move downloaded file to destination
+      do {
+        // Create destination directory if needed
+        try FileManager.default.createDirectory(at: destinationDir, withIntermediateDirectories: true, attributes: nil)
+        
+        // Remove existing file if present
+        if FileManager.default.fileExists(atPath: modelFilePath.path) {
+          try FileManager.default.removeItem(at: modelFilePath)
+        }
+        
+        // Move downloaded file to destination
+        try FileManager.default.moveItem(at: tempLocation, to: modelFilePath)
+        
+        print("✅ [SceneDelegate] Model downloaded successfully")
+        print("   File path: \(modelFilePath.path)")
+        if let fileSize = try? FileManager.default.attributesOfItem(atPath: modelFilePath.path)[.size] as? Int64 {
+          print("   File size: \(fileSize / 1_000_000)MB")
+        }
+        
+        DispatchQueue.main.async {
+          completion(true)
+        }
+      } catch {
+        print("❌ [SceneDelegate] Failed to move downloaded file: \(error.localizedDescription)")
+        DispatchQueue.main.async {
+          completion(false)
+        }
+      }
+    }
+    
+    // Start download
+    downloadTask.resume()
+    print("⏳ [SceneDelegate] Download in progress...")
+  }
+  
+  /// Get available storage space in bytes
+  private func getAvailableStorageSpace() -> Int64? {
+    guard let attributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()),
+          let freeSpace = attributes[.systemFreeSize] as? Int64 else {
+      return nil
+    }
+    return freeSpace
   }
   
   private func initializeAndLoadModel(modelPath: URL, runtime: NeuronRuntime) {
