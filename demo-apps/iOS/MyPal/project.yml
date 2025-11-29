@@ -40,11 +40,28 @@ targets:
           - "**/*.model"
           - "**/*.md"
           - "**/README.md"
-    resources:
-      - path: App/Models
-        includes:
-          - "**/*.task"
-        createIntermediateGroups: true
+    prebuildScripts:
+      - name: Copy Model Files to Bundle
+        shell: /bin/sh
+        script: |
+          MODEL_SRC="${SRCROOT}/App/Models"
+          MODEL_DST="${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models"
+          MODEL_FILE="gemma-3-270m-it-int8.task"
+          if [ -d "${MODEL_SRC}" ]; then
+            mkdir -p "${MODEL_DST}"
+            if [ -f "${MODEL_SRC}/${MODEL_FILE}" ]; then
+              cp "${MODEL_SRC}/${MODEL_FILE}" "${MODEL_DST}/" && echo "✅ Copied ${MODEL_FILE} to app bundle"
+            else
+              echo "⚠️ Model file not found: ${MODEL_SRC}/${MODEL_FILE}"
+              echo "   Run 'make download-gemma-task' to download the model"
+            fi
+          else
+            echo "⚠️ Model source directory not found: ${MODEL_SRC}"
+          fi
+        outputPaths:
+          - "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Models/gemma-3-270m-it-int8.task"
+        inputPaths:
+          - "${SRCROOT}/App/Models/gemma-3-270m-it-int8.task"
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.finclip.chatkit.mypal
       PRODUCT_NAME: MyPal
