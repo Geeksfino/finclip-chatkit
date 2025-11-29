@@ -61,8 +61,9 @@ class LocalLLMModelManager {
         print("📦 [LocalLLMModelManager] Loading model from: \(self.modelPath.path)")
         
         // Configure LLM Inference options
-        // Note: LlmInference.Options is for model initialization
-        // Session options (temperature, topk, etc.) are set when creating a session
+        // Note: maxTokens in LlmInference.Options sets the context window size (max input tokens)
+        // maxTopk sets the sampling parameter for token selection during generation
+        // These options are applied during model initialization and used automatically by generateResponse()
         // Use 'var' instead of 'let' to allow property modification
         var options = LlmInference.Options(modelPath: self.modelPath.path)
         options.maxTokens = AppConfig.localModelContextSize
@@ -70,8 +71,9 @@ class LocalLLMModelManager {
         
         print("📋 [LocalLLMModelManager] Model options configured:")
         print("   Model path: \(options.modelPath)")
-        print("   Max tokens: \(options.maxTokens)")
-        print("   Max top-k: \(options.maxTopk)")
+        print("   Max tokens (context window): \(options.maxTokens)")
+        print("   Max top-k (sampling): \(options.maxTopk)")
+        print("   Note: These options are applied at initialization and used by generateResponse()")
         
         // Initialize LLM Inference
         print("🔄 [LocalLLMModelManager] Initializing LlmInference...")
