@@ -127,8 +127,24 @@ final class LocalLLMURLProtocol: URLProtocol {
       print("🤖 [LocalLLM] Selected tools count: \(payload.selectedTools.count)")
       
       // Retrieve conversation history for this thread
+      // CRITICAL: Add a small delay to ensure previous assistant response is saved to message store
+      // This prevents race conditions where history is retrieved before the previous response is persisted
+      // The delay is minimal (50ms) and only affects the first retry if needed
       let coordinator = LocalLLMURLProtocol.queue.sync { LocalLLMURLProtocol.coordinator }
-      let conversationHistory = self.getConversationHistory(threadId: payload.threadId, coordinator: coordinator)
+      
+      // Try to retrieve history, with a retry mechanism to handle race conditions
+      var conversationHistory = self.getConversationHistory(threadId: payload.threadId, coordinator: coordinator)
+      
+      // If history is nil (coordinator unavailable or query failed), wait briefly and retry once
+      // This helps handle cases where the previous assistant response hasn't been saved yet
+      if conversationHistory == nil && coordinator != nil {
+        print("⏳ [LocalLLM] History unavailable, waiting 50ms for message store to sync and retrying...")
+        Thread.sleep(forTimeInterval: 0.05)  // 50ms delay
+        conversationHistory = self.getConversationHistory(threadId: payload.threadId, coordinator: coordinator)
+        if conversationHistory != nil {
+          print("✅ [LocalLLM] History retrieved on retry")
+        }
+      }
       
       // Call local LLM with the user message
       guard let modelManager = modelManager else {

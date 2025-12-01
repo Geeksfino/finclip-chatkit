@@ -131,9 +131,21 @@ class LocalLLMModelManager {
           conversationHistory: conversationHistory
         )
         
-        print("🤖 [LocalLLMModelManager] Generating response for prompt: \(formattedPrompt.prefix(100))...")
+        // Log the full formatted prompt for debugging (truncated for very long prompts)
+        let promptPreview = formattedPrompt.count > 500 ? String(formattedPrompt.prefix(500)) + "..." : formattedPrompt
+        print("🤖 [LocalLLMModelManager] Generating response for prompt (\(formattedPrompt.count) chars):")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print(promptPreview)
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        
         if let history = conversationHistory, !history.isEmpty {
           print("📚 [LocalLLMModelManager] Including \(history.count) messages from conversation history")
+          for (index, msg) in history.enumerated() {
+            let preview = msg.content.prefix(50).replacingOccurrences(of: "\n", with: " ")
+            print("   History[\(index)]: \(msg.role) - \(preview)...")
+          }
+        } else {
+          print("ℹ️  [LocalLLMModelManager] No conversation history included (first message or history unavailable)")
         }
         
         // Generate response using MediaPipe LLM Inference API
@@ -198,18 +210,35 @@ class LocalLLMModelManager {
   }
   
   /// Format conversation history into a prompt-friendly string
-  /// - Parameter messages: Array of conversation messages
+  /// - Parameter messages: Array of conversation messages in chronological order
   /// - Returns: Formatted string with conversation history
+  /// 
+  /// Format: Uses a simple "Role: content" format that works well with Gemma models.
+  /// The format is:
+  /// ```
+  /// User: [first user message]
+  /// 
+  /// Assistant: [first assistant response]
+  /// 
+  /// User: [second user message]
+  /// 
+  /// Assistant: [second assistant response]
+  /// ```
   private func formatHistoryForPrompt(messages: [ConversationMessage]) -> String {
     guard !messages.isEmpty else {
       return ""
     }
     
     var formatted = ""
-    for message in messages {
+    for (index, message) in messages.enumerated() {
       // Format as "Role: content" for Gemma chat format
       let roleLabel = message.role == "user" ? "User" : "Assistant"
-      formatted += "\(roleLabel): \(message.content)\n\n"
+      formatted += "\(roleLabel): \(message.content)"
+      
+      // Add newline between messages, but not after the last one
+      if index < messages.count - 1 {
+        formatted += "\n\n"
+      }
     }
     
     return formatted.trimmingCharacters(in: .whitespacesAndNewlines)
