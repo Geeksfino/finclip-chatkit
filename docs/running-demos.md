@@ -16,21 +16,27 @@ npm run dev  # Uses emulated responses by default
 
 Wait for: `✓ Server listening at http://0.0.0.0:3000`
 
-### Terminal 2: Run iOS Demo
+### Terminal 2: Run Demo Apps
 
-**Swift Demo:**
+**iOS Swift Demo:**
 ```bash
 cd demo-apps/iOS/Simple
 make run
 ```
 
-**Objective-C Demo:**
+**iOS Objective-C Demo:**
 ```bash
 cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-That's it! The app will launch on the iOS Simulator and connect to the server.
+**Android Demo:**
+```bash
+cd demo-apps/Android
+make run
+```
+
+That's it! The app will launch on the iOS Simulator or Android device/emulator and connect to the server.
 
 ---
 
@@ -50,6 +56,11 @@ That's it! The app will launch on the iOS Simulator and connect to the server.
   ```bash
   brew install xcodegen
   ```
+
+#### For Android Apps
+- **Android Studio Hedgehog (2023.1.1) or later**: [Download](https://developer.android.com/studio)
+- **Android SDK API 24+** (Android 7.0+)
+- **GitHub Personal Access Token** (for downloading SDK packages, requires `read:packages` permission)
 
 ### Step 2: Start the Backend Server
 
@@ -90,13 +101,15 @@ npm run dev --use-llm
 
 **Server is ready when you see**: `✓ Server listening`
 
-**Don't close this terminal** - keep the server running while using the iOS apps.
+**Don't close this terminal** - keep the server running while using the demo apps.
 
-### Step 3: Run an iOS Demo
+### Step 3: Run Demo Apps
 
-Open a **new terminal window** and choose either demo:
+Open a **new terminal window** and choose a demo:
 
-#### Option A: Simple (Swift) - Recommended
+#### iOS Demos
+
+##### Option A: Simple (Swift) - Recommended
 
 ```bash
 cd demo-apps/iOS/Simple
@@ -114,7 +127,7 @@ make open
 # Then press Cmd+R to build and run
 ```
 
-#### Option B: SimpleObjC (Objective-C)
+##### Option B: SimpleObjC (Objective-C)
 
 ```bash
 cd demo-apps/iOS/SimpleObjC
@@ -126,9 +139,77 @@ make generate
 make run
 ```
 
+#### Android Demo
+
+##### Prerequisites: Configure GitHub Packages Authentication
+
+The Android demo requires a GitHub Personal Access Token to download SDK packages.
+
+**Option 1: Environment Variables (Recommended for CI/CD)**
+```bash
+export GITHUB_USERNAME=your_github_username
+export GITHUB_TOKEN=your_github_token
+```
+
+**Option 2: Gradle Properties (Recommended for Local Development)**
+
+Add to `~/.gradle/gradle.properties`:
+```properties
+gpr.user=your_github_username
+gpr.key=your_github_token
+```
+
+**Creating a GitHub Token:**
+1. Go to [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+2. Click "Generate new token (classic)"
+3. Select the `read:packages` scope
+4. Copy the generated token
+
+##### Running the Android Demo
+
+**Method 1: Using Makefile (Recommended)**
+
+```bash
+cd demo-apps/Android
+
+# Check device connection
+make check-device
+
+# Build, install, and launch (one command)
+make run
+```
+
+**Method 2: Using Gradle**
+
+```bash
+cd demo-apps/Android
+
+# Build and install
+./gradlew installDebug
+
+# Launch app
+adb shell am start -n com.finclip.chatkit.examples/.MainActivity
+```
+
+**Method 3: Using Android Studio**
+
+1. Open Android Studio
+2. Select **File → Open**
+3. Select the `demo-apps/Android` directory
+4. Wait for Gradle sync to complete
+5. Click the **Run** button or press `Shift + F10`
+
+**Configuring Server Mode:**
+
+When you first launch the app, click the **Settings** icon (⚙️) in the top-right corner:
+- **Mock Mode**: Enable to test offline without a real server
+- **Server URL**: Enter your ChatKit backend URL when not in mock mode (e.g., `http://10.0.2.2:3000/agent`, where `10.0.2.2` is the special address for Android emulator to access host localhost)
+
+**See**: [Android Demo README](../demo-apps/Android/README.md) for detailed instructions
+
 ### Step 4: Use the App
 
-**Simple (Swift):**
+**iOS Simple (Swift):**
 1. Tap hamburger menu (≡) to open drawer
 2. Tap "+" to create new conversation
 3. Type "Hello" and tap send
