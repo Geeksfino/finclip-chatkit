@@ -231,9 +231,11 @@ Start with the right guide for your needs:
 
 ## 🧪 Example Apps
 
+### iOS Examples
+
 Explore fully working examples in `demo-apps/iOS/`:
 
-### Simple (Swift) - Recommended
+#### Simple (Swift) - Recommended
 Demonstrates high-level APIs with minimal code.
 
 ```bash
@@ -249,7 +251,7 @@ make run
 
 **See**: [Simple README](demo-apps/iOS/Simple/README.md)
 
-### SimpleObjC (Objective-C)
+#### SimpleObjC (Objective-C)
 Objective-C version using high-level APIs.
 
 ```bash
@@ -263,6 +265,29 @@ make run
 - Remote dependency usage
 
 **See**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
+
+### Android Examples
+
+Explore comprehensive Android example apps in `demo-apps/Android/`:
+
+#### ChatKit Android Demo
+A complete example app with 7 different scenarios demonstrating various features of the ChatKit Android SDK.
+
+```bash
+cd demo-apps/Android
+make run
+```
+
+**What it demonstrates:**
+- Simple Chat - Minimal integration example
+- Configuration - Customize chat UI
+- Conversation Management - CRUD operations
+- Context Providers - Device/network context
+- Compose Example - Jetpack Compose integration
+- Full Feature - All features combined
+- Advanced APIs - Low-level APIs & customization
+
+**See**: [Android Demo README](demo-apps/Android/README.md) | [中文](demo-apps/Android/README_CN.md)
 
 ---
 
@@ -643,9 +668,10 @@ Follow this progressive path to master ChatKit:
    - Reproducible builds
    - Makefile and XcodeGen
 
-7. **Study Examples** → `demo-apps/iOS/Simple/` and `demo-apps/iOS/SimpleObjC/`
+7. **Study Examples** → `demo-apps/iOS/Simple/`, `demo-apps/iOS/SimpleObjC/`, and `demo-apps/Android/`
    - Complete working examples
    - High-level API patterns
+   - iOS and Android platform examples
 
 ---
 
@@ -669,7 +695,7 @@ See [LICENSE](LICENSE) for details.
 ## 🆘 Support
 
 - **Documentation**: `docs/`
-- **Examples**: `demo-apps/iOS/`
+- **Examples**: `demo-apps/iOS/` and `demo-apps/Android/`
 - **Issues**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/Geeksfino/finclip-chatkit/discussions)
 

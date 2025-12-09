@@ -1,0 +1,136 @@
+package com.finclip.chatkit.examples.config
+
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.finclip.chatkit.ChatKitConfiguration
+import com.finclip.chatkit.PromptStarterBehaviorMode
+import com.finclip.chatkit.StatusBannerStyle
+import com.finclip.chatkit.examples.MainActivity
+import com.finclip.chatkit.examples.R
+import com.finclip.chatkit.examples.settings.ChatKitHelper
+import com.finclip.chatkit.ui.ChatFragment
+import com.finclip.convoui.Models.PromptStarter.FinConvoPromptStarter
+import kotlinx.coroutines.launch
+import java.util.UUID
+
+class ConfigurationActivity : AppCompatActivity() {
+
+    private val agentId = UUID.fromString("00000000-0000-0000-0000-000000000001")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_simple_chat)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.subtitle = ChatKitHelper.getStatusDescription()
+
+        initChatKit()
+    }
+
+    private fun initChatKit() {
+        val config = createConfiguration()
+        val coordinator = ChatKitHelper.createCoordinator(this, config)
+
+        lifecycleScope.launch {
+            try {
+                val (record, _) = coordinator.startConversation(
+                    agentId = agentId,
+                    title = "Configured Chat"
+                )
+
+                val fragment = ChatFragment.newInstance(record.id)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment)
+                    .commit()
+
+            } catch (e: Exception) {
+                Toast.makeText(this@ConfigurationActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun createConfiguration(): ChatKitConfiguration {
+        return ChatKitConfiguration(
+            showWelcomeMessage = true,
+            welcomeMessageProvider = { record ->
+                "Welcome to ${record.title}! How can I help you today?"
+            },
+            promptStartersEnabled = true,
+            promptStartersProvider = {
+                listOf(
+                    FinConvoPromptStarter(
+                        starterId = "starter-1",
+                        title = "What can you do?",
+                        subtitle = "Learn about capabilities",
+                        icon = null,
+                        payload = null
+                    ),
+                    FinConvoPromptStarter(
+                        starterId = "starter-2",
+                        title = "Tell me a joke",
+                        subtitle = "Have some fun",
+                        icon = null,
+                        payload = null
+                    ),
+                    FinConvoPromptStarter(
+                        starterId = "starter-3",
+                        title = "Help me write code",
+                        subtitle = "Programming assistance",
+                        icon = null,
+                        payload = null
+                    )
+                )
+            },
+            promptStarterBehaviorMode = PromptStarterBehaviorMode.AUTO_HIDE,
+            promptStarterInsertToComposerOnTap = false,
+            onPromptStarterSelected = { starter ->
+                Toast.makeText(this, "Selected: ${starter.title}", Toast.LENGTH_SHORT).show()
+                false
+            },
+            showStatusBanner = true,
+            statusBannerStyle = StatusBannerStyle(
+                height = 36,
+                fontSize = 14f,
+                textColor = Color.WHITE,
+                connectedColor = Color.parseColor("#2E7D32"),
+                connectingColor = Color.parseColor("#F57C00"),
+                disconnectedColor = Color.parseColor("#C62828")
+            ),
+            statusBannerAutoHide = true,
+            statusBannerAutoHideDelay = 3000L,
+            inputPlaceholder = "Type your message...",
+            inputMaxLength = 2000,
+            inputAllowsMultiline = true,
+            paginationEnabled = true,
+            paginationPageSize = 50
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_example, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_home -> {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
+}

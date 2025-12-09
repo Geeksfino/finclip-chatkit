@@ -16,21 +16,27 @@ npm run dev  # 默认使用模拟响应
 
 等待：`✓ Server listening at http://0.0.0.0:3000`
 
-### 终端 2：运行 iOS 示例
+### 终端 2：运行示例应用
 
-**Swift 示例：**
+**iOS Swift 示例：**
 ```bash
 cd demo-apps/iOS/Simple
 make run
 ```
 
-**Objective-C 示例：**
+**iOS Objective-C 示例：**
 ```bash
 cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-就是这样！应用将在 iOS 模拟器上启动并连接到服务器。
+**Android 示例：**
+```bash
+cd demo-apps/Android
+make run
+```
+
+就是这样！应用将在 iOS 模拟器或 Android 设备/模拟器上启动并连接到服务器。
 
 ---
 
@@ -50,6 +56,11 @@ make run
   ```bash
   brew install xcodegen
   ```
+
+#### Android 应用
+- **Android Studio Hedgehog (2023.1.1) 或更高版本**：[下载](https://developer.android.com/studio)
+- **Android SDK API 24+**（Android 7.0+）
+- **GitHub Personal Access Token**（用于下载 SDK 包，需要 `read:packages` 权限）
 
 ### 步骤 2：启动后端服务器
 
@@ -90,13 +101,15 @@ npm run dev --use-llm
 
 **当您看到以下内容时服务器已就绪**：`✓ Server listening`
 
-**不要关闭此终端** - 在使用 iOS 应用时保持服务器运行。
+**不要关闭此终端** - 在使用示例应用时保持服务器运行。
 
-### 步骤 3：运行 iOS 示例
+### 步骤 3：运行示例应用
 
 打开**新终端窗口**并选择一个示例：
 
-#### 选项 A：Simple（Swift）- 推荐
+#### iOS 示例
+
+##### 选项 A：Simple（Swift）- 推荐
 
 ```bash
 cd demo-apps/iOS/Simple
@@ -114,7 +127,7 @@ make open
 # 然后按 Cmd+R 构建并运行
 ```
 
-#### 选项 B：SimpleObjC（Objective-C）
+##### 选项 B：SimpleObjC（Objective-C）
 
 ```bash
 cd demo-apps/iOS/SimpleObjC
@@ -126,9 +139,77 @@ make generate
 make run
 ```
 
+#### Android 示例
+
+##### 前置条件：配置 GitHub Packages 认证
+
+Android 示例需要 GitHub Personal Access Token 来下载 SDK 包。
+
+**方式 1：环境变量（推荐用于 CI/CD）**
+```bash
+export GITHUB_USERNAME=你的GitHub用户名
+export GITHUB_TOKEN=你的GitHub令牌
+```
+
+**方式 2：Gradle 属性（推荐用于本地开发）**
+
+添加到 `~/.gradle/gradle.properties`：
+```properties
+gpr.user=你的GitHub用户名
+gpr.key=你的GitHub令牌
+```
+
+**创建 GitHub Token：**
+1. 访问 [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+2. 点击 "Generate new token (classic)"
+3. 选择 `read:packages` 权限
+4. 复制生成的令牌
+
+##### 运行 Android 示例
+
+**方式 1：使用 Makefile（推荐）**
+
+```bash
+cd demo-apps/Android
+
+# 检查设备连接
+make check-device
+
+# 构建、安装并启动（一条命令）
+make run
+```
+
+**方式 2：使用 Gradle**
+
+```bash
+cd demo-apps/Android
+
+# 构建并安装
+./gradlew installDebug
+
+# 启动应用
+adb shell am start -n com.finclip.chatkit.examples/.MainActivity
+```
+
+**方式 3：使用 Android Studio**
+
+1. 打开 Android Studio
+2. 选择 **File → Open**
+3. 选择 `demo-apps/Android` 目录
+4. 等待 Gradle 同步完成
+5. 点击 **Run** 按钮或按 `Shift + F10`
+
+**配置服务器模式：**
+
+首次启动应用时，点击右上角的**设置**图标（⚙️）：
+- **Mock 模式**：启用后可在没有真实服务器的情况下进行离线测试
+- **服务器 URL**：未启用 Mock 模式时，输入你的 ChatKit 后端 URL（例如：`http://10.0.2.2:3000/agent`，其中 `10.0.2.2` 是 Android 模拟器访问主机 localhost 的特殊地址）
+
+**参见**：[Android Demo README](../demo-apps/Android/README_CN.md) 获取详细说明
+
 ### 步骤 4：使用应用
 
-**Simple（Swift）：**
+**iOS Simple（Swift）：**
 1. 点击汉堡菜单（≡）打开抽屉
 2. 点击"+"创建新会话
 3. 输入"Hello"并点击发送

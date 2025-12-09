@@ -231,9 +231,11 @@ NSDictionary *contextDict = [ChatKitContextItemFactory
 
 ## 🧪 示例应用
 
+### iOS 示例
+
 在 `demo-apps/iOS/` 中探索完整的工作示例:
 
-### Simple (Swift) - 推荐
+#### Simple (Swift) - 推荐
 演示使用最少代码的高级 API。
 
 ```bash
@@ -249,7 +251,7 @@ make run
 
 **参见**: [Simple README](demo-apps/iOS/Simple/README.md)
 
-### SimpleObjC (Objective-C)
+#### SimpleObjC (Objective-C)
 使用高级 API 的 Objective-C 版本。
 
 ```bash
@@ -263,6 +265,29 @@ make run
 - 远程依赖使用
 
 **参见**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
+
+### Android 示例
+
+在 `demo-apps/Android/` 中探索完整的 Android 示例应用:
+
+#### ChatKit Android Demo
+包含 7 个不同场景的完整示例，演示 ChatKit Android SDK 的各种功能。
+
+```bash
+cd demo-apps/Android
+make run
+```
+
+**演示内容:**
+- 简单聊天 - 最小化集成示例
+- 配置示例 - 自定义聊天 UI
+- 会话管理 - CRUD 操作
+- 上下文提供者 - 设备/网络上下文
+- Compose 示例 - Jetpack Compose 集成
+- 完整功能 - 所有功能组合
+- 高级 API - 底层 API 和自定义
+
+**参见**: [Android Demo README](demo-apps/Android/README_CN.md) | [English](demo-apps/Android/README.md)
 
 ---
 
@@ -643,9 +668,10 @@ NeuronKitConfig(..., storage: .persistent)
    - 可重现的构建
    - Makefile 和 XcodeGen
 
-7. **学习示例** → `demo-apps/iOS/Simple/` 和 `demo-apps/iOS/SimpleObjC/`
+7. **学习示例** → `demo-apps/iOS/Simple/`、`demo-apps/iOS/SimpleObjC/` 和 `demo-apps/Android/`
    - 完整的工作示例
    - 高级 API 模式
+   - iOS 和 Android 平台示例
 
 ---
 
@@ -669,7 +695,7 @@ NeuronKitConfig(..., storage: .persistent)
 ## 🆘 支持
 
 - **文档**: `docs/`
-- **示例**: `demo-apps/iOS/`
+- **示例**: `demo-apps/iOS/` 和 `demo-apps/Android/`
 - **问题**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
 - **讨论**: [GitHub Discussions](https://github.com/Geeksfino/finclip-chatkit/discussions)
 
