@@ -147,23 +147,17 @@ The Android demo requires a GitHub Personal Access Token to download SDK package
 
 **Option 1: Environment Variables (Recommended for CI/CD)**
 ```bash
-export GITHUB_USERNAME=your_github_username
-export GITHUB_TOKEN=your_github_token
+export GITHUB_USERNAME=wubingjie1st
+export GITHUB_TOKEN=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
 ```
 
 **Option 2: Gradle Properties (Recommended for Local Development)**
 
 Add to `~/.gradle/gradle.properties`:
 ```properties
-gpr.user=your_github_username
-gpr.key=your_github_token
+gpr.user=wubingjie1st
+gpr.key=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
 ```
-
-**Creating a GitHub Token:**
-1. Go to [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
-2. Click "Generate new token (classic)"
-3. Select the `read:packages` scope
-4. Copy the generated token
 
 ##### Running the Android Demo
 
