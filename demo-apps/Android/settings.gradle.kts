@@ -11,41 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // GitHub Packages - ChatKit
+        // GitHub Packages - finclip-chatkit (统一仓库，包含所有 SDK)
         maven {
-            url = uri("https://maven.pkg.github.com/Geeksfino/chatkit-android")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        // GitHub Packages - ConvoUI
-        maven {
-            url = uri("https://maven.pkg.github.com/Geeksfino/ConvoUI-Android")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        // GitHub Packages - SandboxSDK
-        maven {
-            url = uri("https://maven.pkg.github.com/Geeksfino/finclip-sandbox")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        // GitHub Packages - Convstore SDK
-        maven {
-            url = uri("https://maven.pkg.github.com/Geeksfino/convstore-android")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        // GitHub Packages - NeuronKit
-        maven {
-            url = uri("https://maven.pkg.github.com/Geeksfino/neuronkit-android")
+            url = uri("https://maven.pkg.github.com/Geeksfino/finclip-chatkit")
             credentials {
                 username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_USERNAME")
                 password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("GITHUB_TOKEN")
