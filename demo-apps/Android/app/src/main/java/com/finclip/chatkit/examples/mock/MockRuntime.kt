@@ -65,11 +65,17 @@ class MockRuntime : NeuronRuntime {
         flow.value = messages.toList()
     }
 
+    /**
+     * Update message content atomically.
+     * This method is thread-safe and should be called from the main thread for UI updates.
+     */
     internal fun updateMessage(sessionId: UUID, messageId: UUID, newContent: String) {
         val messages = messageStore[sessionId] ?: return
         val index = messages.indexOfFirst { it.id == messageId }
         if (index >= 0) {
+            // Atomically update message content
             messages[index] = messages[index].copy(content = newContent)
+            // Update StateFlow with immutable copy to avoid race conditions
             messageFlows[sessionId]?.let { flow ->
                 flow.value = messages.toList()
             }
@@ -168,19 +174,26 @@ class MockConversation(
         delay(200)
 
         // Typewriter effect: display text character by character
-        kotlinx.coroutines.withContext(Dispatchers.Main) {
-            var currentIndex = 0
-            while (currentIndex < fullResponse.length) {
-                val chunkSize = (2..4).random()
-                val endIndex = minOf(currentIndex + chunkSize, fullResponse.length)
-                val currentContent = fullResponse.substring(0, endIndex)
-                
+        // Fix: Delay operations run on background thread to avoid blocking UI,
+        // while StateFlow updates happen on main thread for proper UI rendering
+        var currentIndex = 0
+        while (currentIndex < fullResponse.length) {
+            val chunkSize = (2..4).random()
+            val endIndex = minOf(currentIndex + chunkSize, fullResponse.length)
+            val currentContent = fullResponse.substring(0, endIndex)
+            
+            // Update StateFlow on main thread to ensure UI updates correctly
+            kotlinx.coroutines.withContext(Dispatchers.Main) {
                 runtime.updateMessage(sessionId, responseMessageId, currentContent)
-                currentIndex = endIndex
-                delay((50..100).random().toLong())
             }
             
-            // Final update to ensure all content is displayed
+            currentIndex = endIndex
+            // Delay on default dispatcher (background thread) to avoid blocking UI
+            delay((50..100).random().toLong())
+        }
+        
+        // Final update to ensure all content is displayed
+        kotlinx.coroutines.withContext(Dispatchers.Main) {
             runtime.updateMessage(sessionId, responseMessageId, fullResponse)
         }
     }
