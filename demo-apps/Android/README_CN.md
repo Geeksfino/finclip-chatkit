@@ -18,8 +18,8 @@ ChatKit SDK 及其依赖托管在 GitHub Packages 上。构建前需要配置认
 ### 方式 1：环境变量（推荐用于 CI/CD）
 
 ```bash
-export GITHUB_USERNAME=wubingjie1st
-export GITHUB_TOKEN=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
+export GITHUB_USERNAME=你的GitHub用户名
+export GITHUB_TOKEN=你的GitHub令牌
 ```
 
 ### 方式 2：Gradle 属性（推荐用于本地开发）
@@ -27,9 +27,16 @@ export GITHUB_TOKEN=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
 添加到 `~/.gradle/gradle.properties`：
 
 ```properties
-gpr.user=wubingjie1st
-gpr.key=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
+gpr.user=你的GitHub用户名
+gpr.key=你的GitHub令牌
 ```
+
+### 创建 GitHub Token
+
+1. 访问 [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
+2. 点击 "Generate new token (classic)"
+3. 选择 `read:packages` 权限
+4. 复制生成的令牌
 
 ## 🚀 快速开始
 
@@ -49,13 +56,13 @@ gpr.key=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
 2. **已配置 GitHub Packages 认证**
    - 方式 1：环境变量
      ```bash
-     export GITHUB_USERNAME=wubingjie1st
-     export GITHUB_TOKEN=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
+     export GITHUB_USERNAME=你的GitHub用户名
+     export GITHUB_TOKEN=你的GitHub令牌
      ```
    - 方式 2：Gradle 属性（`~/.gradle/gradle.properties`）
      ```properties
-     gpr.user=wubingjie1st
-     gpr.key=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
+     gpr.user=你的GitHub用户名
+     gpr.key=你的GitHub令牌
      ```
 
 ### 方式 1：使用 Makefile（推荐）
