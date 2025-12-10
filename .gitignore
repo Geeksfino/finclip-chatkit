@@ -21,3 +21,7 @@ Pods/
 
 # Distribution
 .dist
+
+# Task and lock files
+*.task
+*.lock
