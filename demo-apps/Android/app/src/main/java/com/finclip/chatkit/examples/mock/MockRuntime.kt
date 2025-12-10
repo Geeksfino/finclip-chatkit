@@ -61,7 +61,8 @@ class MockRuntime : NeuronRuntime {
     internal fun addMessage(sessionId: UUID, message: Message) {
         val messages = messageStore.getOrPut(sessionId) { mutableListOf() }
         messages.add(message)
-        messageFlows.getOrPut(sessionId) { MutableStateFlow(emptyList()) }.value = messages.toList()
+        val flow = messageFlows.getOrPut(sessionId) { MutableStateFlow(emptyList()) }
+        flow.value = messages.toList()
     }
 
     internal fun updateMessage(sessionId: UUID, messageId: UUID, newContent: String) {
@@ -69,7 +70,9 @@ class MockRuntime : NeuronRuntime {
         val index = messages.indexOfFirst { it.id == messageId }
         if (index >= 0) {
             messages[index] = messages[index].copy(content = newContent)
-            messageFlows[sessionId]?.value = messages.toList()
+            messageFlows[sessionId]?.let { flow ->
+                flow.value = messages.toList()
+            }
         }
     }
 
@@ -144,23 +147,42 @@ class MockConversation(
         )
         runtime.addMessage(sessionId, userMessage)
 
-        // Generate response and add it after a delay
+        // Generate full response
         val fullResponse = generateMockResponse(text)
         
-        // Use coroutine to simulate delay
-        kotlinx.coroutines.withContext(Dispatchers.IO) {
-            delay(800) // Simulate thinking time
-        }
+        // Simulate thinking time
+        delay(800)
 
-        // Add AI response message
+        // Create empty AI message for streaming display (typewriter effect)
+        val responseMessageId = UUID.randomUUID()
         val responseMessage = Message(
-            id = UUID.randomUUID(),
+            id = responseMessageId,
             conversationId = sessionId,
-            content = fullResponse,
+            content = "",
             isUser = false,
             timestamp = Date()
         )
         runtime.addMessage(sessionId, responseMessage)
+        
+        // Wait for UI to create the message before starting streaming
+        delay(200)
+
+        // Typewriter effect: display text character by character
+        kotlinx.coroutines.withContext(Dispatchers.Main) {
+            var currentIndex = 0
+            while (currentIndex < fullResponse.length) {
+                val chunkSize = (2..4).random()
+                val endIndex = minOf(currentIndex + chunkSize, fullResponse.length)
+                val currentContent = fullResponse.substring(0, endIndex)
+                
+                runtime.updateMessage(sessionId, responseMessageId, currentContent)
+                currentIndex = endIndex
+                delay((50..100).random().toLong())
+            }
+            
+            // Final update to ensure all content is displayed
+            runtime.updateMessage(sessionId, responseMessageId, fullResponse)
+        }
     }
 
     private fun generateMockResponse(userInput: String): String {
@@ -188,6 +210,11 @@ class MockConversation(
     }
 
     override fun messages(): Flow<List<Message>> = runtime.messagesFlow(sessionId)
+    
+    // Mock mode uses updateMessage for streaming, so this returns empty Flow
+    // The typewriter effect is handled directly via updateMessage in sendMessage
+    override fun streamingUpdates(): Flow<com.finclip.chatkit.model.StreamingChunk> = 
+        kotlinx.coroutines.flow.emptyFlow()
 
     override fun unbindUI() {}
 }
