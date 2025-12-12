@@ -9,6 +9,8 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        // 优先使用本地 Maven 仓库（~/.m2/repository）
+        mavenLocal()
         google()
         mavenCentral()
         // GitHub Packages - finclip-chatkit (统一仓库，包含所有 SDK)
