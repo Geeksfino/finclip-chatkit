@@ -42,7 +42,7 @@ import com.finclip.convoui.Models.Messages.FinConvoSentMessageModel
 import com.finclip.convoui.Models.PromptStarter.FinConvoPromptStarter
 import com.finclip.convoui.Public.Composer.FinConvoAgent
 import com.finclip.convoui.Public.Composer.FinConvoComposerTool
-import com.finclip.convoui.View.RecyclerView.FinConvoChatView
+import com.finclip.convoui.Public.ConvoUIChatView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -61,7 +61,10 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
     private val TAG = "ContextProviderActivity"
     private val agentId = UUID.fromString("00000000-0000-0000-0000-000000000001")
 
-    private lateinit var chatView: FinConvoChatView
+    private lateinit var chatView: ConvoUIChatView
+    
+    // Track messages for ConvoUIChatView (since we can't access ViewModel directly)
+    private val messageMap = mutableMapOf<String, FinConvoMessageModel>()
     private lateinit var promptContainer: LinearLayout
     private lateinit var scrollPrompts: ScrollView
 
@@ -99,7 +102,7 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
         promptContainer = findViewById(R.id.chipGroupPrompts)
         scrollPrompts = findViewById(R.id.scrollPromptStarters)
 
-        chatView.setDelegate(this)
+        chatView.delegate = this
 
         // 添加提示 starters
         val starters = listOf(
@@ -162,7 +165,6 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
 
     private suspend fun showWelcomeMessage(config: ChatKitConfiguration) {
         val welcomeText = config.welcomeMessage ?: return
-        val viewModel = chatView.getViewModel()
         val welcomeModel = FinConvoMarkdownMessageModel(
             _messageId = "welcome-${conversationRecord?.id}",
             _timestamp = Date(),
@@ -170,7 +172,9 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
         ).apply {
             setContent(welcomeText, this@ContextProviderActivity)
         }
-        viewModel.addMessage(welcomeModel)
+        // 使用 ConvoUIChatView API
+        chatView.displayMessage(welcomeModel)
+        messageMap[welcomeModel.messageId] = welcomeModel
         withContext(Dispatchers.Main) {
             scrollPrompts.visibility = View.VISIBLE
             chatView.visibility = View.VISIBLE
@@ -312,16 +316,10 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
         lifecycleScope.launch {
             conversation?.messages()?.collect { messages ->
                 val sortedMessages = messages.sortedBy { it.timestamp }
-                val viewModel = chatView.getViewModel()
-                val currentList = try {
-                    viewModel.messages.value
-                } catch (e: Exception) {
-                    emptyList()
-                }
 
                 sortedMessages.forEach { msg ->
                     val msgId = msg.id.toString()
-                    val existingModel = currentList.find { it.messageId == msgId }
+                    val existingModel = messageMap[msgId]
 
                     if (existingModel == null) {
                         // 新消息
@@ -344,23 +342,57 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
                         if (!msg.isUser) {
                             displayedContentLengthMap[msgId] = msg.content.length
                         }
-                        viewModel.addMessage(model)
+                        
+                        // 使用 ConvoUIChatView API
+                        chatView.displayMessage(model)
+                        messageMap[msgId] = model
                     } else if (!msg.isUser && existingModel is FinConvoMarkdownMessageModel) {
                         // 更新现有消息（流式响应）
                         val recordedLength = displayedContentLengthMap[msgId] ?: 0
                         val fullText = msg.content
 
                         if (fullText.length > recordedLength) {
-                            val delta = fullText.substring(recordedLength)
-                            existingModel.appendDelta(delta)
+                            // Create new message with updated content
+                            val updatedModel = FinConvoMarkdownMessageModel(
+                                _messageId = msgId,
+                                _timestamp = existingModel.timestamp ?: Date(),
+                                isLoading = true  // Still streaming
+                            ).apply {
+                                if (recordedLength == 0 && fullText.isNotEmpty()) {
+                                    setContent(fullText, this@ContextProviderActivity)
+                                } else {
+                                    val currentContent = existingModel.markdownContent
+                                    setContent(currentContent, this@ContextProviderActivity)
+                                    val delta = fullText.substring(recordedLength)
+                                    appendDelta(delta)
+                                }
+                            }
+                            
                             displayedContentLengthMap[msgId] = fullText.length
-                        }
-
-                        try {
-                            val method = viewModel.javaClass.getMethod("triggerUpdate")
-                            method.invoke(viewModel)
-                        } catch (e: Exception) {
-                            // ignore
+                            
+                            // 使用 ConvoUIChatView API 替换消息
+                            chatView.replaceOrUpdateMessage(msgId, updatedModel)
+                            messageMap[msgId] = updatedModel
+                        } else if (fullText.isEmpty() && recordedLength == 0) {
+                            // Message is still loading but no content yet
+                            val updatedModel = FinConvoMarkdownMessageModel(
+                                _messageId = msgId,
+                                _timestamp = existingModel.timestamp ?: Date(),
+                                isLoading = true
+                            )
+                            chatView.replaceOrUpdateMessage(msgId, updatedModel)
+                            messageMap[msgId] = updatedModel
+                        } else if (fullText.isNotEmpty() && existingModel.isLoading) {
+                            // Message completed - mark as not loading
+                            val updatedModel = FinConvoMarkdownMessageModel(
+                                _messageId = msgId,
+                                _timestamp = existingModel.timestamp ?: Date(),
+                                isLoading = false
+                            ).apply {
+                                setContent(fullText, this@ContextProviderActivity)
+                            }
+                            chatView.replaceOrUpdateMessage(msgId, updatedModel)
+                            messageMap[msgId] = updatedModel
                         }
                     }
                 }
