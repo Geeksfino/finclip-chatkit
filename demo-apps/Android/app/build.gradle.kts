@@ -41,7 +41,7 @@ android {
 
 dependencies {
     // ChatKit SDK from GitHub Packages
-    implementation("com.finclip:chatkit:1.0.5")
+    implementation("com.finclip:chatkit:1.0.6")
     
     // AndroidX
     implementation("androidx.core:core-ktx:1.12.0")
