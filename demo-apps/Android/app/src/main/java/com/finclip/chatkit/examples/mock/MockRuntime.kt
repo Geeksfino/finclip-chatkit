@@ -133,6 +133,10 @@ class MockConversation(
     private val runtime: MockRuntime
 ) : Conversation {
 
+    // Track whether streaming should be cancelled
+    @Volatile
+    private var shouldCancelStreaming = false
+
     private val mockResponses = listOf(
         "你好！我是 Mock AI 助手。有什么我可以帮助你的吗？",
         "这是一个很好的问题！让我来为你解答...\n\nMock 模式下，我会返回预设的回复来帮助你测试应用功能。",
@@ -143,6 +147,9 @@ class MockConversation(
     )
 
     override suspend fun sendMessage(text: String) {
+        // Reset cancellation flag
+        shouldCancelStreaming = false
+        
         // Add user message
         val userMessage = Message(
             id = UUID.randomUUID(),
@@ -174,10 +181,8 @@ class MockConversation(
         delay(200)
 
         // Typewriter effect: display text character by character
-        // Fix: Delay operations run on background thread to avoid blocking UI,
-        // while StateFlow updates happen on main thread for proper UI rendering
         var currentIndex = 0
-        while (currentIndex < fullResponse.length) {
+        while (currentIndex < fullResponse.length && !shouldCancelStreaming) {
             val chunkSize = (2..4).random()
             val endIndex = minOf(currentIndex + chunkSize, fullResponse.length)
             val currentContent = fullResponse.substring(0, endIndex)
@@ -192,10 +197,13 @@ class MockConversation(
             delay((50..100).random().toLong())
         }
         
-        // Final update to ensure all content is displayed
-        kotlinx.coroutines.withContext(Dispatchers.Main) {
-            runtime.updateMessage(sessionId, responseMessageId, fullResponse)
+        // Final update to ensure all content is displayed (if not cancelled)
+        if (!shouldCancelStreaming && currentIndex >= fullResponse.length) {
+            kotlinx.coroutines.withContext(Dispatchers.Main) {
+                runtime.updateMessage(sessionId, responseMessageId, fullResponse)
+            }
         }
+        
     }
 
     private fun generateMockResponse(userInput: String): String {
@@ -228,6 +236,11 @@ class MockConversation(
     // The typewriter effect is handled directly via updateMessage in sendMessage
     override fun streamingUpdates(): Flow<com.finclip.chatkit.model.StreamingChunk> = 
         kotlinx.coroutines.flow.emptyFlow()
+
+    override fun cancelCurrentRun() {
+        // Mock mode: Set cancellation flag to stop streaming
+        shouldCancelStreaming = true
+    }
 
     override fun unbindUI() {}
 }
