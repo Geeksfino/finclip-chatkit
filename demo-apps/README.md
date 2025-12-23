@@ -22,11 +22,11 @@ Building the intelligence for your AI agent is hard enough. Don't waste weeks fi
 We know you want to see code running. Choose your path:
 
 ### 🍎 For iOS Developers
-* **Swift?** → [**Jump to Swift Quick Start**](docs/getting-started.md#swift-quick-start) (The modern way)
-* **Objective-C?** → [**Jump to Obj-C Quick Start**](docs/getting-started.md#objective-c-quick-start) (Legacy codebase? We got you.)
+* **Swift?** → [**Jump to Swift Quick Start**](../docs/getting-started.md#swift-quick-start) (The modern way)
+* **Objective-C?** → [**Jump to Obj-C Quick Start**](../docs/getting-started.md#objective-c-quick-start) (Legacy codebase? We got you.)
 
 ### 🤖 For Android Developers
-* **Kotlin/Java?** → [**Android Examples**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md)
+* **Kotlin/Java?** → [**Android Examples**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md)
 
 ---
 
@@ -72,11 +72,11 @@ Don't leave users stranded when the AI hits a limit.
 
 We fit your workflow, whether you need speed or control.
 
-🏎️ **Ship Fast (High-Level APIs)**: Need a chat screen now? Components like `ChatKitConversationViewController` handle lifecycle and UI rendering for you. [Read Guide](docs/api-levels.md#high-level-apis-recommended)
+🏎️ **Ship Fast (High-Level APIs)**: Need a chat screen now? Components like `ChatKitConversationViewController` handle lifecycle and UI rendering for you. [Read Guide](../docs/api-levels.md#high-level-apis-recommended)
 
-🛠️ **Full Control (Low-Level APIs)**: Need custom layouts? Drop down to direct runtime access and manual UI binding. [Read Guide](docs/api-levels.md#low-level-apis-advanced)
+🛠️ **Full Control (Low-Level APIs)**: Need custom layouts? Drop down to direct runtime access and manual UI binding. [Read Guide](../docs/api-levels.md#low-level-apis-advanced)
 
-🧩 **Make It Yours (Providers)**: Inject Location, Calendar events, or custom data directly into the LLM context. [Context Providers Guide](docs/guides/context-providers.md)
+🧩 **Make It Yours (Providers)**: Inject Location, Calendar events, or custom data directly into the LLM context. [Context Providers Guide](../docs/guides/context-providers.md)
 
 ---
 
@@ -93,7 +93,7 @@ cd demo-apps/iOS/Simple
 make run
 ```
 
-**See**: [Simple README](demo-apps/iOS/Simple/README.md)
+**See**: [Simple README](iOS/Simple/README.md)
 
 ### SimpleObjC (Objective-C)
 **Location**: `demo-apps/iOS/SimpleObjC/`  
@@ -104,7 +104,7 @@ cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-**See**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
+**See**: [SimpleObjC README](iOS/SimpleObjC/README.md)
 
 ### Android Examples
 **Location**: `demo-apps/Android/`  
@@ -115,28 +115,28 @@ cd demo-apps/Android
 make run
 ```
 
-**See**: [Android Examples](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md) | [中文](demo-apps/Android/README_CN.md)
+**See**: [Android Examples](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
 
 ---
 
 ## 📚 Documentation Index
 
 ### Core Guides
-* **[Swift Developer Guide](docs/guides/developer-guide.md)** - From basic usage to advanced patterns.
-* **[Objective-C Developer Guide](docs/guides/objective-c-guide.md)** - Complete API reference for Obj-C.
-* **[Configuration Guide](docs/guides/configuration.md)** - Customize everything: themes, prompt starters, debug settings.
+* **[Swift Developer Guide](../docs/guides/developer-guide.md)** - From basic usage to advanced patterns.
+* **[Objective-C Developer Guide](../docs/guides/objective-c-guide.md)** - Complete API reference for Obj-C.
+* **[Configuration Guide](../docs/guides/configuration.md)** - Customize everything: themes, prompt starters, debug settings.
 
 ### Advanced Concepts
-* **[Context Providers](docs/guides/context-providers.md)** - How to inject custom data into conversations.
-* **[Component Embedding](docs/component-embedding.md)** - Embed chat in Drawers, Sheets, or Tabs.
-* **[Prompt Starters](docs/guides/prompt-starters.md)** - Configure welcome chips and initial suggestions.
+* **[Context Providers](../docs/guides/context-providers.md)** - How to inject custom data into conversations.
+* **[Component Embedding](../docs/component-embedding.md)** - Embed chat in Drawers, Sheets, or Tabs.
+* **[Prompt Starters](../docs/guides/prompt-starters.md)** - Configure welcome chips and initial suggestions.
 
 ### Setup & Tools
-* **[Installation Guide](docs/integration-guide.md)** - SPM, CocoaPods setup.
-* **[Build Tooling](docs/build-tooling.md)** - Makefile & XcodeGen guide.
-* **[Troubleshooting](docs/troubleshooting.md)** - Solutions for common issues.
+* **[Installation Guide](../docs/integration-guide.md)** - SPM, CocoaPods setup.
+* **[Build Tooling](../docs/build-tooling.md)** - Makefile & XcodeGen guide.
+* **[Troubleshooting](../docs/troubleshooting.md)** - Solutions for common issues.
 
-➡️ **Full index**: [docs/README.md](docs/README.md)
+➡️ **Full index**: [../docs/README.md](../docs/README.md)
 
 ---
 

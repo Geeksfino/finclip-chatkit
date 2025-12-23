@@ -22,11 +22,11 @@
 我们知道您想直接看代码跑起来。请选择您的开发语言：
 
 ### 🍎 iOS 开发者
-* **Swift?** → [**传送门：Swift 快速开始**](docs/getting-started.zh.md#swift-quick-start)（推荐）
-* **Objective-C?** → [**传送门：Obj-C 快速开始**](docs/getting-started.zh.md#objective-c-quick-start)（老项目也没问题，我们全支持）
+* **Swift?** → [**传送门：Swift 快速开始**](../docs/getting-started.zh.md#swift-quick-start)（推荐）
+* **Objective-C?** → [**传送门：Obj-C 快速开始**](../docs/getting-started.zh.md#objective-c-quick-start)（老项目也没问题，我们全支持）
 
 ### 🤖 Android 开发者
-* **Kotlin/Java?** → [**Android 示例**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md) | [中文](demo-apps/Android/README_CN.md)
+* **Kotlin/Java?** → [**Android 示例**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
 
 ---
 
@@ -72,11 +72,11 @@ ChatKit 的设计初衷是灵活适应从"轻量级嵌入"到"全功能助理"�
 
 无论您追求极速上线，还是极致定制，我们都能满足。
 
-🏎️ **极速开发 (High-Level APIs)**：老板催着要 demo？像 `ChatKitConversationViewController` 这样的组件会帮你搞定生命周期和渲染。你只管业务，剩下的交给我们。[了解高级 API](docs/api-levels.zh.md#high-level-apis-recommended)
+🏎️ **极速开发 (High-Level APIs)**：老板催着要 demo？像 `ChatKitConversationViewController` 这样的组件会帮你搞定生命周期和渲染。你只管业务，剩下的交给我们。[了解高级 API](../docs/api-levels.zh.md#high-level-apis-recommended)
 
-🛠️ **极致掌控 (Low-Level APIs)**：设计师有特殊需求？下潜到低级 API，直接访问运行时并手动绑定 UI。[了解低级 API](docs/api-levels.zh.md#low-level-apis-advanced)
+🛠️ **极致掌控 (Low-Level APIs)**：设计师有特殊需求？下潜到低级 API，直接访问运行时并手动绑定 UI。[了解低级 API](../docs/api-levels.zh.md#low-level-apis-advanced)
 
-🧩 **注入灵魂 (Providers)**：利用 Provider 机制，轻松将地理位置、日历事件注入到 LLM 上下文中，甚至随意替换 ASR 引擎。[上下文提供器指南](docs/guides/context-providers.zh.md)
+🧩 **注入灵魂 (Providers)**：利用 Provider 机制，轻松将地理位置、日历事件注入到 LLM 上下文中，甚至随意替换 ASR 引擎。[上下文提供器指南](../docs/guides/context-providers.zh.md)
 
 ---
 
@@ -93,7 +93,7 @@ cd demo-apps/iOS/Simple
 make run
 ```
 
-**参见**: [Simple README](demo-apps/iOS/Simple/README.md)
+**参见**: [Simple README](iOS/Simple/README.md)
 
 ### SimpleObjC (Objective-C)
 **位置**: `demo-apps/iOS/SimpleObjC/`  
@@ -104,7 +104,7 @@ cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-**参见**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
+**参见**: [SimpleObjC README](iOS/SimpleObjC/README.md)
 
 ### Android 示例
 **位置**: `demo-apps/Android/`  
@@ -115,28 +115,28 @@ cd demo-apps/Android
 make run
 ```
 
-**参见**: [Android 示例](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md) | [中文](demo-apps/Android/README_CN.md)
+**参见**: [Android 示例](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
 
 ---
 
 ## 📚 文档索引
 
 ### 核心指南
-* **[Swift 开发者指南](docs/guides/developer-guide.zh.md)** - 从入门到精通的完整指南。
-* **[Objective-C 开发者指南](docs/guides/objective-c-guide.zh.md)** - 完整的 Obj-C API 参考。
-* **[配置指南](docs/guides/configuration.zh.md)** - 自定义一切：主题、调试设置等。
+* **[Swift 开发者指南](../docs/guides/developer-guide.zh.md)** - 从入门到精通的完整指南。
+* **[Objective-C 开发者指南](../docs/guides/objective-c-guide.zh.md)** - 完整的 Obj-C API 参考。
+* **[配置指南](../docs/guides/configuration.zh.md)** - 自定义一切：主题、调试设置等。
 
 ### 进阶概念
-* **[上下文提供器](docs/guides/context-providers.zh.md)** - 如何向对话注入自定义数据。
-* **[组件嵌入指南](docs/component-embedding.md)** - 在侧边栏、弹窗或标签页中嵌入聊天。
-* **[提示启动器](docs/guides/prompt-starters.zh.md)** - 配置欢迎语和快捷建议。
+* **[上下文提供器](../docs/guides/context-providers.zh.md)** - 如何向对话注入自定义数据。
+* **[组件嵌入指南](../docs/component-embedding.md)** - 在侧边栏、弹窗或标签页中嵌入聊天。
+* **[提示启动器](../docs/guides/prompt-starters.zh.md)** - 配置欢迎语和快捷建议。
 
 ### 设置与工具
-* **[安装指南](docs/integration-guide.zh.md)** - SPM、CocoaPods 安装说明。
-* **[构建工具](docs/build-tooling.zh.md)** - Makefile 与 XcodeGen 使用指南。
-* **[故障排除](docs/troubleshooting.zh.md)** - 常见问题解决方案。
+* **[安装指南](../docs/integration-guide.zh.md)** - SPM、CocoaPods 安装说明。
+* **[构建工具](../docs/build-tooling.zh.md)** - Makefile 与 XcodeGen 使用指南。
+* **[故障排除](../docs/troubleshooting.zh.md)** - 常见问题解决方案。
 
-➡️ **完整索引**: [docs/README.zh.md](docs/README.zh.md)
+➡️ **完整索引**: [../docs/README.zh.md](../docs/README.zh.md)
 
 ---
 
