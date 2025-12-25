@@ -414,9 +414,13 @@ npm run dev
 
 ## 下一步
 
+- **构建您自己的应用**：
+  - [快速开始指南](./quick-start.zh.md) - 最小化骨架代码
+  - [入门指南](./getting-started.zh.md) - 详细演练
+  - [Swift 开发者指南](./guides/developer-guide.zh.md) - 全面的 Swift 模式
+  - [Objective-C 开发者指南](./guides/objective-c-guide.zh.md) - 完整的 Objective-C 指南
 - **自定义示例**：参见示例 README 文件了解架构详情
 - **探索服务器选项**：[服务器文档](../demo-apps/server/README.md)
-- **构建您自己的应用**：[ChatKit 开发者指南](guides/developer-guide.zh.md)
 - **理解协议**：[AG-UI 规范](../demo-apps/server/agui-test-server/docs/agui-compliance.md)
 
 ---

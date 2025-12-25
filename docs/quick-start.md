@@ -1,8 +1,12 @@
 # Quick Start Guide
 
-Get up and running with ChatKit in under 5 minutes. This guide provides minimal skeleton code to build your first AI chat app.
+Get up and running with ChatKit in under 5 minutes. This guide provides **minimal skeleton code** to build your first AI chat app.
 
-> 📚 **Want more detail?** See the [Getting Started Guide](./getting-started.md) for a complete walkthrough, or the [Developer Guide](./developer-guide.md) for comprehensive patterns.
+> 📚 **Want detailed explanations?** See the [Getting Started Guide](./getting-started.md) for a complete walkthrough with explanations.
+> 
+> 📖 **Looking for comprehensive patterns?** See the [Swift Developer Guide](./guides/developer-guide.md) or [Objective-C Developer Guide](./guides/objective-c-guide.md).
+> 
+> 📦 **Need installation help?** See the [Integration Guide](./integration-guide.md) for package manager setup.
 
 ---
 
@@ -265,12 +269,14 @@ In your main view controller:
 - **Objective-C**: [Objective-C Developer Guide](./guides/objective-c-guide.md) - Complete Objective-C guide with API reference
 
 ### See Examples
+- **[Running Demos](./running-demos.md)** - How to run the demo applications
 - **[Simple Demo](../demo-apps/iOS/Simple/)** - Complete Swift example using high-level APIs
 - **[SimpleObjC Demo](../demo-apps/iOS/SimpleObjC/)** - Complete Objective-C example
 
 ### Customize
 - **[Component Embedding Guide](./component-embedding.md)** - Embed chat UI in sheets, drawers, tabs
 - **[Build Tooling Guide](./build-tooling.md)** - Reproducible builds with Makefile and XcodeGen
+- **[Configuration Guide](./guides/configuration.md)** - Complete configuration reference
 
 ---
 

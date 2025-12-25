@@ -646,8 +646,10 @@ See: `demo-apps/iOS/SimpleObjC/` for Objective-C specific patterns
 ## Next Steps
 
 - **[Quick Start Guide](./quick-start.md)** - Build your first app
+- **[Getting Started Guide](./getting-started.md)** - Detailed walkthrough
 - **[Component Embedding Guide](./component-embedding.md)** - Learn component usage
-- **[Developer Guide](./developer-guide.md)** - Comprehensive patterns
+- **[Swift Developer Guide](./guides/developer-guide.md)** - Comprehensive Swift patterns
+- **[Objective-C Developer Guide](./guides/objective-c-guide.md)** - Complete Objective-C guide
 
 ---
 

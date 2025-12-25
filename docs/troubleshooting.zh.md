@@ -571,10 +571,11 @@ let needsReconnect = coordinator.neuronRuntime == nil ||
 
 ### 自助服务
 1. 检查此故障排除指南
-2. 查看[开发者指南](./developer-guide.zh.md)
+2. 查看[入门指南](./getting-started.zh.md)或[快速开始指南](./quick-start.zh.md)
 3. 研究可工作的示例：
-   - `demo-apps/iOS/AI-Bank`
-   - `demo-apps/iOS/Smart-Gov`
+   - 参见[运行演示](./running-demos.zh.md)了解完整说明
+   - `demo-apps/iOS/Simple/` - Swift 示例
+   - `demo-apps/iOS/SimpleObjC/` - Objective-C 示例
 
 ### 社区支持
 1. 搜索 [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
@@ -622,4 +623,8 @@ nm -gU ChatKit.xcframework/*/FinClipChatKit.framework/FinClipChatKit | grep -i c
 
 ---
 
-**下一步**：[开发者指南](./developer-guide.zh.md) - 学习 ChatKit 模式和最佳实践
+**下一步**：
+- **[入门指南](./getting-started.zh.md)** - 学习 ChatKit 模式和最佳实践
+- **[快速开始指南](./quick-start.zh.md)** - 最小化骨架代码
+- **[Swift 开发者指南](./guides/developer-guide.zh.md)** - 全面的 Swift 模式
+- **[Objective-C 开发者指南](./guides/objective-c-guide.zh.md)** - 完整的 Objective-C 指南

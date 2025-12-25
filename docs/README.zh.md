@@ -16,7 +16,8 @@
 
 ## 📚 文档结构
 
-### 入门指南
+### 概览与入门
+- **[概览](./overview.zh.md)** - ChatKit 完整介绍：功能、协议和特性
 - **[入门指南](./getting-started.zh.md)** - 特定语言的快速开始（Swift 和 Objective-C）
 - **[快速开始指南](./quick-start.zh.md)** - 最小化骨架模板（5 分钟）
 
@@ -63,6 +64,8 @@
 
 ### Swift 开发者
 
+0. **可选：了解 ChatKit** → [概览](./overview.zh.md) - 了解功能、协议和特性
+
 1. **从这里开始**: [Swift 快速开始](./getting-started.zh.md#swift)
    - 5 分钟设置
    - 最小化代码示例
@@ -80,6 +83,8 @@
 5. **高级**: [API 层级](./api-levels.zh.md) | [架构](./architecture/overview.zh.md)
 
 ### Objective-C 开发者
+
+0. **可选：了解 ChatKit** → [概览](./overview.zh.md) - 了解功能、协议和特性
 
 1. **从这里开始**: [Objective-C 快速开始](./getting-started.zh.md#objective-c)
    - 5 分钟设置
@@ -104,6 +109,9 @@
 ## 📖 用例导航
 
 ### 我想要...
+
+#### 了解 ChatKit 及其功能
+- **[概览](./overview.zh.md)** - 完整介绍：功能、协议、特性和您可以构建的内容
 
 #### 构建简单的聊天应用
 - **Swift**: [快速开始](./getting-started.zh.md#swift) → [Swift 指南](./guides/developer-guide.zh.md)
@@ -191,41 +199,45 @@ make run
 
 ```
 docs/
-├── README.md（本文件）
+├── README.zh.md（本文件）          # 主要文档索引
+├── overview.zh.md                  # 高级概览和介绍
 │
 ├── 入门指南
-│   ├── getting-started.md          # 特定语言的快速开始
-│   └── quick-start.md              # 最小化骨架模板
+│   ├── getting-started.zh.md       # 详细演练（Swift 和 Objective-C）
+│   └── quick-start.zh.md           # 最小化骨架模板（5 分钟）
 │
-├── guides/
-│   ├── developer-guide.md          # Swift 全面指南
-│   ├── objective-c-guide.md         # Objective-C 全面指南
-│   ├── configuration.md            # 配置指南（Swift 和 Objective-C）
-│   ├── configuration.zh.md         # 配置指南（中文）
-│   ├── context-providers.md         # 上下文提供器指南（Swift 和 Objective-C）
-│   ├── context-providers.zh.md      # 上下文提供器指南（中文）
-│   ├── prompt-starters.md          # 提示启动器指南（Swift 和 Objective-C）
-│   └── prompt-starters.zh.md       # 提示启动器指南（中文）
+├── guides/                         # 特定语言的全面指南
+│   ├── developer-guide.zh.md       # Swift 全面指南
+│   ├── objective-c-guide.zh.md    # Objective-C 全面指南
+│   ├── configuration.zh.md         # 配置指南（Swift 和 Objective-C）
+│   ├── context-providers.zh.md      # 上下文提供器指南（Swift 和 Objective-C）
+│   └── prompt-starters.zh.md       # 提示启动器指南（Swift 和 Objective-C）
 │
-├── 核心概念
-│   ├── api-levels.md               # 高级 API 与低级 API
-│   └── component-embedding.md      # 组件使用场景
+├── 核心概念                        # 共享概念（Swift 和 Objective-C）
+│   ├── api-levels.zh.md            # 高级 API 与低级 API
+│   └── component-embedding.zh.md   # 组件使用场景
 │
-├── integration/
-│   ├── integration-guide.md        # 包管理器、安装
-│   ├── build-tooling.md           # Makefile、XcodeGen
-│   └── remote-dependencies.md      # 远程二进制依赖
+├── 集成与设置
+│   ├── integration-guide.zh.md     # 包管理器、安装
+│   ├── build-tooling.zh.md         # Makefile、XcodeGen
+│   ├── remote-dependencies.zh.md  # 远程二进制依赖
+│   └── running-demos.zh.md         # 运行演示应用
 │
-├── customization/
+├── 自定义
 │   └── how-to/
-│       └── customize-ui.md         # UI 自定义
+│       └── customize-ui.zh.md     # UI 自定义
 │
-├── reference/
+├── 参考
 │   ├── architecture/
-│   │   └── overview.md             # 框架架构
-│   └── troubleshooting.md          # 常见问题
+│   │   └── overview.zh.md          # 框架架构
+│   └── troubleshooting.zh.md      # 常见问题和解决方案
 │
-└──（遗留文件 - 待整合）
+└── archive/                        # 历史/维护者文档
+    ├── summaries/                  # 历史摘要
+    ├── llmtxt/                     # 遗留内容
+    ├── STRUCTURE.zh.md             # 文档结构（供维护者使用）
+    ├── RESTRUCTURING_SUMMARY.zh.md # 重构摘要（供维护者使用）
+    └── TRANSLATION_STATUS.zh.md    # 翻译状态（供维护者使用）
 ```
 
 ---

@@ -376,9 +376,12 @@ See: `demo-apps/iOS/MyChatGPT/` (conceptual reference - demonstrates pattern, no
 ## Next Steps
 
 - **[Quick Start Guide](./quick-start.md)** - Get started with high-level APIs (Swift & Objective-C)
+- **[Getting Started Guide](./getting-started.md)** - Detailed walkthrough with explanations
 - **[Component Embedding Guide](./component-embedding.md)** - Learn how to embed components (Swift & Objective-C examples)
 - **Swift**: [Swift Developer Guide](./guides/developer-guide.md) - Comprehensive patterns and examples
 - **Objective-C**: [Objective-C Developer Guide](./guides/objective-c-guide.md) - Complete Objective-C guide with API reference
+- **[Context Providers Guide](./guides/context-providers.md)** - Implementing custom context providers
+- **[Configuration Guide](./guides/configuration.md)** - Complete configuration reference
 
 ---
 

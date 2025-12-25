@@ -723,10 +723,13 @@ sheetConfig.showStatusBanner = false // 在表单中不那么突兀
 
 ## 下一步
 
-- **[快速入门指南](./quick-start.zh.md)** - 开始使用组件（Swift 和 Objective-C）
+- **[快速开始指南](./quick-start.zh.md)** - 开始使用组件（Swift 和 Objective-C）
+- **[入门指南](./getting-started.zh.md)** - 带解释的详细演练
 - **[API 层级指南](./api-levels.zh.md)** - 了解组件 API
 - **Swift**：[Swift 开发者指南](./guides/developer-guide.zh.md) - 全面的模式
 - **Objective-C**：[Objective-C 开发者指南](./guides/objective-c-guide.zh.md) - 完整的 Objective-C 指南
+- **[配置指南](./guides/configuration.zh.md)** - 自定义组件行为
+- **[自定义 UI 指南](./how-to/customize-ui.zh.md)** - 样式和主题
 
 ---
 

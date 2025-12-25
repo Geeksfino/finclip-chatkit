@@ -724,9 +724,12 @@ See: `demo-apps/iOS/SimpleObjC/App/ViewControllers/`
 ## Next Steps
 
 - **[Quick Start Guide](./quick-start.md)** - Get started with components (Swift & Objective-C)
+- **[Getting Started Guide](./getting-started.md)** - Detailed walkthrough with explanations
 - **[API Levels Guide](./api-levels.md)** - Understand component APIs
 - **Swift**: [Swift Developer Guide](./guides/developer-guide.md) - Comprehensive patterns
 - **Objective-C**: [Objective-C Developer Guide](./guides/objective-c-guide.md) - Complete Objective-C guide
+- **[Configuration Guide](./guides/configuration.md)** - Customize component behavior
+- **[Customize UI Guide](./how-to/customize-ui.md)** - Styling and theming
 
 ---
 

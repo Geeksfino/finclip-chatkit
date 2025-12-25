@@ -2,9 +2,11 @@
 
 This guide covers specific integration scenarios and deployment options for ChatKit.
 
-> 📚 **For learning to build with ChatKit**, see the [Developer Guide](./developer-guide.md) instead.
+> 📚 **For learning to build with ChatKit**, see the [Getting Started Guide](./getting-started.md) or [Quick Start Guide](./quick-start.md).
 > 
 > 🔧 **For build tooling setup**, see the [Build Tooling Guide](./build-tooling.md) for Makefile, XcodeGen, and reproducible builds.
+> 
+> 📖 **For comprehensive development guides**, see the [Swift Developer Guide](./guides/developer-guide.md) or [Objective-C Developer Guide](./guides/objective-c-guide.md).
 
 ---
 
@@ -468,9 +470,13 @@ See: `demo-apps/iOS/Smart-Gov/Podfile`
 
 For integration issues:
 1. Check [Troubleshooting Guide](./troubleshooting.md)
-2. Review [Example Apps](../demo-apps/iOS/)
+2. Review [Running Demos](./running-demos.md) for example apps
 3. Open [GitHub Issue](https://github.com/Geeksfino/finclip-chatkit/issues)
 
 ---
 
-**Next**: [Developer Guide](./developer-guide.md) - Learn to build with ChatKit
+**Next Steps**:
+- **[Getting Started Guide](./getting-started.md)** - Learn to build with ChatKit
+- **[Quick Start Guide](./quick-start.md)** - Minimal skeleton code
+- **[Swift Developer Guide](./guides/developer-guide.md)** - Comprehensive Swift patterns
+- **[Objective-C Developer Guide](./guides/objective-c-guide.md)** - Complete Objective-C guide
