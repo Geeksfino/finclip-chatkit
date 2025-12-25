@@ -16,7 +16,8 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 
 ## 📚 Documentation Structure
 
-### Getting Started
+### Overview & Getting Started
+- **[Overview](./overview.md)** - Complete introduction to ChatKit: features, protocols, and capabilities
 - **[Getting Started Guide](./getting-started.md)** - Language-specific quick starts (Swift & Objective-C)
 - **[Quick Start Guide](./quick-start.md)** - Minimal skeleton templates (5 minutes)
 
@@ -63,6 +64,8 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 
 ### For Swift Developers
 
+0. **Optional: Learn About ChatKit** → [Overview](./overview.md) - Understand features, protocols, and capabilities
+
 1. **Start Here**: [Swift Quick Start](./getting-started.md#swift)
    - 5-minute setup
    - Minimal code example
@@ -80,6 +83,8 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 5. **Advanced**: [API Levels](./api-levels.md) | [Architecture](./architecture/overview.md)
 
 ### For Objective-C Developers
+
+0. **Optional: Learn About ChatKit** → [Overview](./overview.md) - Understand features, protocols, and capabilities
 
 1. **Start Here**: [Objective-C Quick Start](./getting-started.md#objective-c)
    - 5-minute setup
@@ -104,6 +109,9 @@ Complete documentation for building AI-powered chat applications with FinClip Ch
 ## 📖 Use Case Navigation
 
 ### I want to...
+
+#### Learn about ChatKit and its features
+- **[Overview](./overview.md)** - Complete introduction: features, protocols, capabilities, and what you can build
 
 #### Build a simple chat app
 - **Swift**: [Quick Start](./getting-started.md#swift) → [Swift Guide](./guides/developer-guide.md)
@@ -191,41 +199,57 @@ make run
 
 ```
 docs/
-├── README.md (this file)
+├── README.md (this file)           # Main documentation index
+├── overview.md                     # High-level overview and introduction
 │
 ├── Getting Started
-│   ├── getting-started.md          # Language-specific quick starts
-│   └── quick-start.md              # Minimal skeleton templates
+│   ├── getting-started.md          # Detailed walkthrough (Swift & Objective-C)
+│   └── quick-start.md              # Minimal skeleton templates (5 minutes)
 │
-├── guides/
+├── guides/                         # Language-specific comprehensive guides
 │   ├── developer-guide.md          # Swift comprehensive guide
-│   ├── objective-c-guide.md         # Objective-C comprehensive guide
+│   ├── developer-guide.zh.md       # Swift guide (Chinese)
+│   ├── objective-c-guide.md        # Objective-C comprehensive guide
+│   ├── objective-c-guide.zh.md     # Objective-C guide (Chinese)
 │   ├── configuration.md            # Configuration guide (Swift & Objective-C)
 │   ├── configuration.zh.md         # Configuration guide (Chinese)
-│   ├── context-providers.md         # Context providers guide (Swift & Objective-C)
-│   ├── context-providers.zh.md      # Context providers guide (Chinese)
+│   ├── context-providers.md        # Context providers guide (Swift & Objective-C)
+│   ├── context-providers.zh.md     # Context providers guide (Chinese)
 │   ├── prompt-starters.md          # Prompt starters guide (Swift & Objective-C)
 │   └── prompt-starters.zh.md       # Prompt starters guide (Chinese)
 │
-├── Core Concepts
+├── Core Concepts                   # Shared concepts (Swift & Objective-C)
 │   ├── api-levels.md               # High-level vs low-level APIs
-│   └── component-embedding.md      # Component usage scenarios
+│   ├── api-levels.zh.md            # API levels (Chinese)
+│   ├── component-embedding.md      # Component usage scenarios
+│   └── component-embedding.zh.md   # Component embedding (Chinese)
 │
-├── integration/
+├── Integration & Setup
 │   ├── integration-guide.md        # Package managers, installation
-│   ├── build-tooling.md           # Makefile, XcodeGen
-│   └── remote-dependencies.md      # Remote binary dependencies
+│   ├── integration-guide.zh.md     # Integration guide (Chinese)
+│   ├── build-tooling.md             # Makefile, XcodeGen
+│   ├── build-tooling.zh.md         # Build tooling (Chinese)
+│   ├── remote-dependencies.md      # Remote binary dependencies
+│   ├── remote-dependencies.zh.md  # Remote dependencies (Chinese)
+│   └── running-demos.md            # Running demo applications
 │
-├── customization/
+├── Customization
 │   └── how-to/
-│       └── customize-ui.md         # UI customization
+│       ├── customize-ui.md         # UI customization
+│       └── customize-ui.zh.md      # UI customization (Chinese)
 │
-├── reference/
+├── Reference
 │   ├── architecture/
-│   │   └── overview.md             # Framework architecture
-│   └── troubleshooting.md          # Common issues
+│   │   ├── overview.md             # Framework architecture
+│   │   └── overview.zh.md          # Architecture (Chinese)
+│   └── troubleshooting.md          # Common issues and solutions
 │
-└── (legacy files - to be consolidated)
+└── archive/                        # Historical/maintainer documentation
+    ├── summaries/                  # Historical summaries
+    ├── llmtxt/                     # Legacy content
+    ├── STRUCTURE.md                # Documentation structure (for maintainers)
+    ├── RESTRUCTURING_SUMMARY.md    # Restructuring summary (for maintainers)
+    └── TRANSLATION_STATUS.zh.md    # Translation status (for maintainers)
 ```
 
 ---

@@ -1,12 +1,14 @@
 # ChatKit 入门指南
 
-欢迎使用 ChatKit！本指南提供特定语言的快速开始，帮助您在几分钟内启动并运行。
+欢迎使用 ChatKit！本指南提供**详细演练**和解释，帮助您启动并运行。
 
-> 🚀 **想要最小化代码？** 参见[快速开始指南](./quick-start.zh.md)获取骨架模板（5 分钟）。
+> 🚀 **想要最小化骨架代码？** 参见[快速开始指南](./quick-start.zh.md)获取最小化模板（5 分钟）。
 > 
 > 📚 **寻找全面指南？**
 > - **Swift**: [Swift 开发者指南](./guides/developer-guide.zh.md)
 > - **Objective-C**: [Objective-C 开发者指南](./guides/objective-c-guide.zh.md)
+> 
+> 📦 **需要安装帮助？** 参见[集成指南](./integration-guide.zh.md)了解包管理器设置。
 
 ---
 
@@ -481,6 +483,9 @@ CKTChatKitCoordinator *coordinator = [[CKTChatKitCoordinator alloc] initWithConf
 → 参见 [自定义 UI 指南](./how-to/customize-ui.zh.md)了解：
 - 样式和主题
 
+→ 参见 [配置指南](./guides/configuration.zh.md)了解：
+- 完整配置参考
+
 ### 🔧 设置构建？
 
 → 参见 [构建工具指南](./build-tooling.zh.md)了解：
@@ -497,18 +502,15 @@ CKTChatKitCoordinator *coordinator = [[CKTChatKitCoordinator alloc] initWithConf
 
 ### 🧪 想看示例？
 
-→ 探索示例应用：
+→ 参见 [运行演示](./running-demos.zh.md)了解运行演示应用的完整说明。
 
-**Simple 示例（Swift）：**
+**快速命令：**
 ```bash
-cd demo-apps/iOS/Simple
-make run
-```
+# Simple 示例（Swift）
+cd demo-apps/iOS/Simple && make run
 
-**SimpleObjC 示例（Objective-C）：**
-```bash
-cd demo-apps/iOS/SimpleObjC
-make run
+# SimpleObjC 示例（Objective-C）
+cd demo-apps/iOS/SimpleObjC && make run
 ```
 
 **注意：** 这些示例展示了使用最小化代码的高级 API - 非常适合学习！
@@ -578,8 +580,8 @@ manager.recordsPublisher
 
 ## 支持
 
-- **全面指南**: [开发者指南](./guides/developer-guide.zh.md)
-- **示例**: `demo-apps/iOS/AI-Bank` 和 `demo-apps/iOS/Smart-Gov`
+- **全面指南**: [Swift 开发者指南](./guides/developer-guide.zh.md) 或 [Objective-C 开发者指南](./guides/objective-c-guide.zh.md)
+- **示例**: 参见 [运行演示](./running-demos.zh.md) 了解演示应用
 - **问题**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
 
 祝您编码愉快！🚀

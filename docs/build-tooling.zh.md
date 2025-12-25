@@ -645,9 +645,11 @@ fi
 
 ## 下一步
 
-- **[快速入门指南](./quick-start.zh.md)** - 构建您的第一个应用
+- **[快速开始指南](./quick-start.zh.md)** - 构建您的第一个应用
+- **[入门指南](./getting-started.zh.md)** - 详细演练
 - **[组件嵌入指南](./component-embedding.zh.md)** - 学习组件使用
-- **[开发者指南](./guides/developer-guide.zh.md)** - 全面的模式
+- **[Swift 开发者指南](./guides/developer-guide.zh.md)** - 全面的 Swift 模式
+- **[Objective-C 开发者指南](./guides/objective-c-guide.zh.md)** - 完整的 Objective-C 指南
 
 ---
 

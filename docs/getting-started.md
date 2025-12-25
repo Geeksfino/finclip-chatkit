@@ -1,12 +1,14 @@
 # Getting Started with ChatKit
 
-Welcome to ChatKit! This guide provides language-specific quick starts to get you up and running in minutes.
+Welcome to ChatKit! This guide provides a **detailed walkthrough** with explanations to get you up and running.
 
-> 🚀 **Want minimal code?** See the [Quick Start Guide](./quick-start.md) for skeleton templates (5 minutes).
+> 🚀 **Want minimal skeleton code?** See the [Quick Start Guide](./quick-start.md) for minimal templates (5 minutes).
 > 
 > 📚 **Looking for comprehensive guides?**
 > - **Swift**: [Swift Developer Guide](./guides/developer-guide.md)
 > - **Objective-C**: [Objective-C Developer Guide](./guides/objective-c-guide.md)
+> 
+> 📦 **Need installation help?** See the [Integration Guide](./integration-guide.md) for package manager setup.
 
 ---
 
@@ -481,6 +483,9 @@ Choose your learning path:
 → See [Customize UI Guide](./how-to/customize-ui.md) for:
 - Styling and theming
 
+→ See [Configuration Guide](./guides/configuration.md) for:
+- Complete configuration reference
+
 ### 🔧 Set Up Builds?
 
 → See [Build Tooling Guide](./build-tooling.md) for:
@@ -497,18 +502,15 @@ Choose your learning path:
 
 ### 🧪 Want to See Examples?
 
-→ Explore the demos:
+→ See [Running Demos](./running-demos.md) for complete instructions on running the demo applications.
 
-**Simple Demo (Swift):**
+**Quick commands:**
 ```bash
-cd demo-apps/iOS/Simple
-make run
-```
+# Simple Demo (Swift)
+cd demo-apps/iOS/Simple && make run
 
-**SimpleObjC Demo (Objective-C):**
-```bash
-cd demo-apps/iOS/SimpleObjC
-make run
+# SimpleObjC Demo (Objective-C)
+cd demo-apps/iOS/SimpleObjC && make run
 ```
 
 **Note:** These examples demonstrate high-level APIs with minimal code - perfect for learning!

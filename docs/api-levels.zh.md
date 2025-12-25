@@ -376,9 +376,12 @@ CKTConversationManager *manager = [[CKTConversationManager alloc] initWithTitleP
 ## 下一步
 
 - **[快速开始指南](./quick-start.zh.md)** - 开始使用高级 API（Swift 和 Objective-C）
+- **[入门指南](./getting-started.zh.md)** - 带解释的详细演练
 - **[组件嵌入指南](./component-embedding.zh.md)** - 学习如何嵌入组件（Swift 和 Objective-C 示例）
 - **Swift**：[Swift 开发者指南](./guides/developer-guide.zh.md) - 全面的模式和示例
 - **Objective-C**：[Objective-C 开发者指南](./guides/objective-c-guide.zh.md) - 完整的 Objective-C 指南和 API 参考
+- **[上下文提供器指南](./guides/context-providers.zh.md)** - 实现自定义上下文提供器
+- **[配置指南](./guides/configuration.zh.md)** - 完整配置参考
 
 ---
 

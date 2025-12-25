@@ -414,9 +414,13 @@ npm run dev
 
 ## Next Steps
 
+- **Build your own app**: 
+  - [Quick Start Guide](./quick-start.md) - Minimal skeleton code
+  - [Getting Started Guide](./getting-started.md) - Detailed walkthrough
+  - [Swift Developer Guide](./guides/developer-guide.md) - Comprehensive Swift patterns
+  - [Objective-C Developer Guide](./guides/objective-c-guide.md) - Complete Objective-C guide
 - **Customize the demos**: See demo README files for architecture details
 - **Explore server options**: [Server Documentation](../demo-apps/server/README.md)
-- **Build your own app**: [ChatKit Developer Guide](guides/developer-guide.md)
 - **Understand protocols**: [AG-UI Spec](../demo-apps/server/agui-test-server/docs/agui-compliance.md)
 
 ---

@@ -1,742 +1,157 @@
+<div align="center">
+  <img src="assets/FinClip ChatKit Banner 1200x300.png" alt="FinClip ChatKit" width="100%">
+</div>
+
 # FinClip ChatKit
 
-[English](README.md) | [简体中文](README.zh.md)
+> **别再从头手撸聊天界面了。**
+> 专为移动应用打造的原生 AI 聊天应用开发套件。
 
-**为 iOS 应用打造的对话式 AI SDK。**
+[简体中文](README.zh.md) | [English](README.md)
 
-FinClip ChatKit 是一个可嵌入的 SDK,让您能够直接在 iOS 应用中构建智能的、上下文感知的对话体验。它提供了即插即用的聊天界面、安全的代理操作沙箱,以及对代理协议(如 AG-UI、OpenAI Apps SDK 和 MCP-UI)的原生桥接——所有功能集于一身。
+搞定 AI 的核心逻辑已经够累了，就别再跟列表视图、键盘高度和气泡渲染较劲了。ChatKit 为您提供了一套**生产级、开箱即用**的原生聊天界面，让您的 AI 应用像系统原生 App 一样丝滑。
 
-为希望快速添加 AI 聊天和代理辅助操作的开发者而构建,ChatKit 将原生 UI 性能与上下文感知和安全性相结合。它汇集了实时文本流、多媒体渲染和基于策略的沙箱执行——让您的应用能够安全地交谈、行动和推理。
-
-无论您是在构建个人助手、支持机器人还是工作流自动化工具,ChatKit 都能帮助您在几小时内而非几周内交付生产就绪的对话体验。
-
-## 为什么选择 ChatKit?
-
-现代 AI 助手不仅需要文本交互——它们还需要理解上下文、安全地执行操作,并无缝集成到您的应用现有流程中。ChatKit 提供:
-
-**🧠 上下文感知智能**  
-自动捕获丰富的设备信号——位置、时间、传感器、网络状态、日历事件——让您的 AI 无需额外工作即可理解用户的情况。上下文提供器在后台高效运行,用相关的环境数据丰富每次对话。
-
-**🎨 生产就绪的 UI 组件**  
-在几小时内而非几周内交付聊天体验。即插即用的视图控制器具有丰富的消息渲染(Markdown、多媒体、表单、按钮、卡片)、实时文本流、输入指示器,以及对按住说话语音输入的支持。包含浅色/深色模式和完整主题支持。
-
-**🔒 安全优先架构**  
-每个 AI 发起的操作都通过基于能力的沙箱运行,具有细粒度的策略控制。要求明确的用户同意、强制执行速率限制、设置敏感级别,并维护完整的审计跟踪——全部内置。您的用户始终保持控制权。
-
-**💾 持久化对话管理**  
-多会话支持与自动持久化。跟踪对话历史、跨应用启动恢复会话、管理多个代理,并与云存储无缝同步——所有这些都由框架的集成存储层处理。
-
-**🔌 灵活集成**  
-用于快速开发的高级 API(20-30 行代码即可实现聊天 UI),或在需要最大控制时使用低级 API。适用于 WebSocket/HTTP 后端,支持自定义网络适配器,并可轻松嵌入导航栈、Sheet、抽屉或标签页中。
-
-**📱 原生性能**  
-纯 iOS/Swift 实现,使用原生 WKWebView 渲染交互式组件。无跨平台妥协——专为 iOS 构建,具有最佳内存使用和流畅的 60fps 滚动,即使有数百条消息也是如此。
+<div align="center">
+  <img src="assets/chatkit-beyond-text-hero.png" width="100%">
+</div>
 
 ---
 
-## 扩展性和自定义
+## 🚀 5 分钟快速上手
 
-ChatKit 通过强大的**提供器系统**实现可扩展性——一种轻量级的类插件架构,让开发者能够深度自定义 ChatKit 的行为和与用户的交互方式。通过注册或替换提供器,您可以使 ChatKit 适应新的用例、与企业基础设施集成,或提供更丰富、更具上下文的 AI 体验。
+我们知道您想直接看代码跑起来。请选择您的开发语言：
 
-### 上下文提供器
-开发者可以创建自定义上下文提供器——收集结构化用户输入或上下文数据(如地图、日历或表单)的"迷你"界面,并在发送给代理或 LLM 之前将此信息附加到用户查询。这些临时 UI 可以在代理请求更多上下文或用户触发上下文收集操作时动态出现。例如,您可以在安排日程时显示日期选择器,或在选择位置时显示地图界面,无缝收集结构化数据以增强代理推理。
+### 🍎 iOS 开发者
+* **Swift?** → [**传送门：Swift 快速开始**](../docs/getting-started.zh.md#swift-quick-start)（推荐）| [最小化骨架](../docs/quick-start.zh.md#swift-快速开始)
+* **Objective-C?** → [**传送门：Obj-C 快速开始**](../docs/getting-started.zh.md#objective-c-quick-start)（老项目也没问题，我们全支持）| [最小化骨架](../docs/quick-start.zh.md#objective-c-快速开始)
 
-### ASR 提供器
-使用 ASR(自动语音识别)提供器插入任何语音识别引擎。无论您需要 Deepgram、OpenAI Whisper、Apple Dictation 还是符合企业要求的语音引擎,ChatKit 都允许您交换或扩展 ASR 提供器来捕获语音输入、适应语言要求或满足合规需求——所有这些都无需修改核心 SDK。
-
-### 标题生成器
-开发者可以注入自定义自动标题生成逻辑,以自动命名聊天会话或改善用户体验。例如,您可以使用对话摘要、用户的第一条消息或自定义的基于 LLM 的摘要器来生成描述性和相关的会话标题。
-
-### 类插件的灵活性
-每个提供器都像轻量级插件一样工作:轻松注册、替换或扩展它们,使您的基于 ChatKit 的应用更强大、更具上下文感知能力。混合和匹配提供器以支持新的模态、企业集成或独特的工作流——无需分叉或重写 SDK。
-
-> ChatKit 的提供器系统使从简单的聊天框到深度上下文化的多模态 AI 体验变得容易。
+### 🤖 Android 开发者
+* **Kotlin/Java?** → [**Android 示例**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
 
 ---
 
-### 您可以构建什么
+## 🏗 您可以构建什么？
 
-- **客户支持机器人**,具有代理移交和丰富的媒体附件  
-- **个人 AI 助手**,访问设备传感器和日历以帮助用户  
-- **应用内购物顾问**,了解用户偏好和购买历史  
-- **健康指导应用**,基于时间和位置提供上下文感知建议  
-- **企业自动化**工具,AI 提议需要用户批准的操作  
-- **教育导师**,具有交互式表单、测验和进度跟踪
+ChatKit 的设计初衷是灵活适应从"轻量级嵌入"到"全功能助理"的各种需求。
 
----
+<div align="center">
+  <img src="assets/from-components-to-solutions.png" width="100%">
+</div>
 
-## 在代理生态系统中的定位
+### 1. 嵌入式 AI Copilot
+不要让用户跳出当前业务流。您可以将 ChatKit 作为**小程序浮层**或**悬浮入口**，无缝嵌入到 K 线图、文档阅读器或任何原生页面中。
+* **上下文注入 (Context Injection)**：自动将当前屏幕的信息"喂"给 AI，让 AI 真正"看懂"用户当前在做什么。[了解更多](../docs/guides/context-providers.zh.md)
+* **即用即走**：用户在需要时唤起，解决问题后立即返回主任务，体验无中断。[组件嵌入指南](../docs/component-embedding.zh.md)
 
-ChatKit 是 FinClip Agentic Middleware 生态系统的一部分,但它是**完全开放且与服务器无关的**——您永远不会被锁定在 FinClip 服务器上。因为它原生支持 **AG-UI 协议**,开发者可以托管自己的代理服务器或构建遵循 AG-UI 的自定义服务器,从而完全控制后端逻辑、隐私和数据。
+### 2. 垂直领域专家 Agent
+打造像 *Project Samantha* 这样不仅能聊天，还能干活的专家级助理。
+* **生成式 UI (Generative UI)**：通过 **MCP-UI** 或 **AG-UI** 协议，让 AI 动态生成复杂的交易面板、表单或图表，而非仅仅输出文本。[协议支持](../docs/overview.zh.md#-协议与约定支持)
+* **一语直达 (One-Shot Action)**：支持将自然语言指令（如"买入100股苹果"）直接转化为安全沙箱内的原子操作，实现从意图到执行的闭环。[架构概述](../docs/architecture/overview.zh.md)
 
-您甚至可以**结合** AG-UI 与 **MCP-UI** 或 **OpenAI Apps SDK** 来提供生成式 UI 功能。ChatKit 将与任何兼容的 AG-UI 或 MCP-UI 服务器无缝互操作,自动在您的 iOS 应用中渲染动态的、代理生成的 UI 元素(按钮、表单、卡片等)。
-
-ChatKit 充当代理协议(如 AG-UI(代理 UI)和 MCP-UI(模型上下文协议 UI))的移动端运行时桥接。这些协议共同实现生成式 UI——对话动态生成交互式元素(如按钮、表单和卡片),在 iOS 中安全渲染。
-
----
-
-## 🚀 快速开始
-
-### 5 分钟设置
-
-**1. 将依赖添加到您的 `Package.swift`:**
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
-]
-```
-
-**2. 在应用启动时初始化协调器:**
-
-```swift
-import UIKit
-import FinClipChatKit
-
-// 在 SceneDelegate 或 AppDelegate 中
-let config = NeuronKitConfig.default(serverURL: URL(string: "http://127.0.0.1:3000/agent")!)
-    .withUserId("demo-user")
-let coordinator = ChatKitCoordinator(config: config)
-```
-
-**3. 创建对话并显示聊天 UI:**
-
-```swift
-// 当用户点击"新建聊天"按钮时
-Task { @MainActor in
-    let agentId = UUID(uuidString: "E1E72B3D-845D-4F5D-B6CA-5550F2643E6B")!
-    let (record, conversation) = try await coordinator.startConversation(
-        agentId: agentId,
-        title: nil,
-        agentName: "My Agent"
-    )
-    
-    // 显示现成的聊天 UI
-    let chatVC = ChatKitConversationViewController(
-        record: record,
-        conversation: conversation,
-        coordinator: coordinator,
-        configuration: .default
-    )
-    
-    navigationController?.pushViewController(chatVC, animated: true)
-}
-```
-
-就是这样!您现在拥有一个具有持久化存储和全功能 UI 的工作 AI 聊天应用。
-
-**📖 详细示例**: 参见 [快速开始指南](docs/quick-start.md) 获取 Swift 和 Objective-C 示例代码。
-
-### 发送带上下文的消息
-
-ChatKit 提供了使用 `ChatKitContextItemFactory` 将上下文附加到消息的统一方法。该工厂从简单的元数据字典创建 `ConversationContextItem` 实例，使发送程序化上下文变得容易。
-
-**Swift 示例:**
-
-```swift
-import FinClipChatKit
-
-// 创建上下文元数据
-let context: [String: Any] = [
-  "type": "strategy",
-  "strategyId": "123",
-  "strategyTitle": "增长策略"
-]
-
-// 使用工厂创建上下文项
-let contextItem = ChatKitContextItemFactory.metadata(context, type: "strategy")
-
-// 发送带上下文的消息
-try await conversation.sendMessage(
-  "告诉我这个策略的情况",
-  contextItems: [contextItem]
-)
-```
-
-**多个上下文项:**
-
-```swift
-// 创建多个上下文项
-let strategyContext = ChatKitContextItemFactory.metadata(
-  ["strategyId": "123", "strategyTitle": "增长"],
-  type: "strategy"
-)
-let userContext = ChatKitContextItemFactory.metadata(
-  ["userId": "456", "userRole": "premium"],
-  type: "user"
-)
-
-try await conversation.sendMessage(
-  "为我的账户分析这个策略",
-  contextItems: [strategyContext, userContext]
-)
-```
-
-**Objective-C 示例:**
-
-```objc
-#import <FinClipChatKit/FinClipChatKit-Swift.h>
-
-// 创建元数据字典
-NSDictionary *metadata = @{
-    @"type": @"strategy",
-    @"strategyId": @"123",
-    @"strategyTitle": @"增长策略"
-};
-
-// 使用工厂创建上下文字典
-NSDictionary *contextDict = [ChatKitContextItemFactory 
-    contextDictionaryFromMetadata:metadata
-                             type:@"strategy"
-                      displayName:nil];
-
-// 与 runtime 的 sendMessage 方法一起使用
-// 注意：您需要从对话中访问 runtime 和 sessionId
-```
-
-更多详细信息，请参见[开发者指南](docs/guides/developer-guide.zh.md#发送带上下文的消息)和[Objective-C 指南](docs/guides/objective-c-guide.zh.md#以编程方式发送带上下文的消息)。
+### 3. 人机协同工作流
+不要让 AI 的局限性成为服务的终点。
+* **无缝接管**：在遇到高风险操作或复杂意图时，自动将对话路由给真人顾问，同时保留完整的上下文记忆。
+* **三方会商**：支持独特的 **User + AI + Human** 协作模式，AI 不退场，而是转为辅助角色，实时为真人顾问提供数据摘要。
 
 ---
 
-## 📚 文档
+## 💡 为什么选择 ChatKit？
 
-从适合您需求的指南开始:
+**上下文为王。** 通用聊天机器人失败的原因在于它们不知道用户是谁。ChatKit 连接了这些点。
 
-### 快速开始
-- **[快速开始指南](docs/quick-start.md)** - 最小示例代码(Swift 和 Objective-C) - **从这里开始!**
-- **[入门指南](docs/getting-started.md)** - 带解释的详细演练
+<div align="center">
+  <img src="assets/no-friction-way-to-intelligence.jpg" alt="上下文感知 vs 通用" width="100%">
+</div>
 
-### 核心指南
+* **无摩擦**：无需询问"您在哪里？"。SDK 已经知道。[上下文提供器指南](../docs/guides/context-providers.zh.md)
+* **主动式**：基于位置、时间或电池状态触发操作。[概览](../docs/overview.zh.md#-上下文感知智能)
 
-#### Swift
-- **[Swift 开发者指南](docs/guides/developer-guide.md)** - 从初学者到专家的全面 Swift 指南
+---
 
-#### Objective-C
-- **[Objective-C 开发者指南](docs/guides/objective-c-guide.md)** - 完整的 Objective-C 指南与 API 参考
+## 💡 为什么开发者喜欢 ChatKit？
 
-#### 共享概念
-- **[API 层级指南](docs/api-levels.md)** - 理解高级与低级 API
-- **[组件嵌入指南](docs/component-embedding.md)** - 在 Sheet、抽屉、标签页中嵌入组件(Swift 和 Objective-C)
-- **[构建工具指南](docs/build-tooling.md)** - 使用 Makefile 和 XcodeGen 进行可重现构建
+无论您追求极速上线，还是极致定制，我们都能满足。
 
-### 参考
-- **[架构概览](docs/architecture/overview.md)** - 理解框架结构
-- **[自定义 UI 指南](docs/how-to/customize-ui.md)** - 样式和主题
-- **[故障排除指南](docs/troubleshooting.md)** - 常见问题和解决方案
-- **[集成指南](docs/integration-guide.md)** - SPM、CocoaPods、部署
+🏎️ **极速开发 (High-Level APIs)**：老板催着要 demo？像 `ChatKitConversationViewController` 这样的组件会帮你搞定生命周期和渲染。你只管业务，剩下的交给我们。[了解高级 API](../docs/api-levels.zh.md#high-level-apis-recommended)
 
-**📑 [完整文档索引](docs/README.md)** - 完整导航和学习路径
+🛠️ **极致掌控 (Low-Level APIs)**：设计师有特殊需求？下潜到低级 API，直接访问运行时并手动绑定 UI。[了解低级 API](../docs/api-levels.zh.md#low-level-apis-advanced)
+
+🧩 **注入灵魂 (Providers)**：利用 Provider 机制，轻松将地理位置、日历事件注入到 LLM 上下文中，甚至随意替换 ASR 引擎。[上下文提供器指南](../docs/guides/context-providers.zh.md)
 
 ---
 
 ## 🧪 示例应用
 
-### iOS 示例
+克隆仓库并运行这些 Demo，亲自体验 ChatKit。
 
-在 `demo-apps/iOS/` 中探索完整的工作示例:
+**📖 完整说明**: 参见[运行演示](../docs/running-demos.zh.md)了解详细设置和故障排除。
 
-#### Simple (Swift) - 推荐
-演示使用最少代码的高级 API。
+### Simple (Swift)
+**位置**: `demo-apps/iOS/Simple/`  
+演示了高级 API、抽屉式导航和标准构建工具的使用。
 
 ```bash
 cd demo-apps/iOS/Simple
 make run
 ```
 
-**演示内容:**
-- 高级 API(`ChatKitCoordinator`、`ChatKitConversationViewController`)
-- 基于抽屉的导航模式
-- 组件嵌入
-- 标准构建工具(Makefile、XcodeGen)
+**参见**: [Simple README](iOS/Simple/README.md)
 
-**参见**: [Simple README](demo-apps/iOS/Simple/README.md)
-
-#### SimpleObjC (Objective-C)
-使用高级 API 的 Objective-C 版本。
+### SimpleObjC (Objective-C)
+**位置**: `demo-apps/iOS/SimpleObjC/`  
+演示了 Objective-C 集成和对老项目的支持。
 
 ```bash
 cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-**演示内容:**
-- Objective-C 高级 API(`CKTChatKitCoordinator`、`ChatKitConversationViewController`)
-- 基于导航的流程
-- 远程依赖使用
-
-**参见**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
+**参见**: [SimpleObjC README](iOS/SimpleObjC/README.md)
 
 ### Android 示例
-
-在 `demo-apps/Android/` 中探索完整的 Android 示例应用:
-
-#### ChatKit Android Demo
-包含 7 个不同场景的完整示例，演示 ChatKit Android SDK 的各种功能。
+**位置**: `demo-apps/Android/`  
+包含多个场景的完整演示应用。
 
 ```bash
 cd demo-apps/Android
 make run
 ```
 
-**演示内容:**
-- 简单聊天 - 最小化集成示例
-- 配置示例 - 自定义聊天 UI
-- 会话管理 - CRUD 操作
-- 上下文提供者 - 设备/网络上下文
-- Compose 示例 - Jetpack Compose 集成
-- 完整功能 - 所有功能组合
-- 高级 API - 底层 API 和自定义
-
-**参见**: [Android Demo README](demo-apps/Android/README_CN.md) | [English](demo-apps/Android/README.md)
+**参见**: [Android 示例](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
 
 ---
 
-## ✨ 您获得的功能
+## 📚 文档索引
 
-### 核心功能
-- ✅ **ChatKitCoordinator** - 安全的运行时生命周期管理
-- ✅ **ChatKitConversationManager** - 可选的多对话跟踪
-- ✅ **NeuronRuntime** - AI 代理编排
-- ✅ **Conversation API** - 会话管理和消息传递
-- ✅ **持久化存储** - 自动对话持久化(convstore)
-- ✅ **响应式更新** - 用于 UI 绑定的 Combine 发布器
+### 概览与入门
+* **[概览](../docs/overview.zh.md)** - ChatKit 完整介绍：功能、协议和特性
+* **[入门指南](../docs/getting-started.zh.md)** - 特定语言的快速开始（Swift 和 Objective-C）
+* **[快速开始](../docs/quick-start.zh.md)** - 最小化骨架代码（5 分钟）
 
-### UI 组件
-- ✅ **ChatKitConversationViewController** - 现成的聊天 UI 组件
-- ✅ **ChatKitConversationListViewController** - 现成的对话列表组件
-- ✅ **消息气泡** - 用户和代理消息渲染
-- ✅ **输入编辑器** - 带附件的富文本输入
-- ✅ **输入指示器** - 实时输入反馈
-- ✅ **可自定义主题** - 浅色/深色模式支持
+### 核心指南
+* **[Swift 开发者指南](../docs/guides/developer-guide.zh.md)** - 从入门到精通的完整指南。
+* **[Objective-C 开发者指南](../docs/guides/objective-c-guide.zh.md)** - 完整的 Obj-C API 参考。
+* **[配置指南](../docs/guides/configuration.zh.md)** - 自定义一切：主题、调试设置等。
 
-### 可选便利功能
-- ✅ **ConversationManager** - 自动跟踪多个会话
-- ✅ **ConversationRecord** - 轻量级元数据模型
-- ✅ **自动持久化** - 将对话保存到 convstore
-- ✅ **自动标题** - 使用第一条用户消息作为标题
-- ✅ **响应式列表** - 对话更新的发布器
+### 进阶概念
+* **[上下文提供器](../docs/guides/context-providers.zh.md)** - 如何向对话注入自定义数据。
+* **[组件嵌入指南](../docs/component-embedding.zh.md)** - 在侧边栏、弹窗或标签页中嵌入聊天。
+* **[提示启动器](../docs/guides/prompt-starters.zh.md)** - 配置欢迎语和快捷建议。
 
----
+### 设置与工具
+* **[安装指南](../docs/integration-guide.zh.md)** - SPM、CocoaPods 安装说明。
+* **[构建工具](../docs/build-tooling.zh.md)** - Makefile 与 XcodeGen 使用指南。
+* **[故障排除](../docs/troubleshooting.zh.md)** - 常见问题解决方案。
 
-## 🌐 协议和约定支持
-
-ChatKit 为现代 AI 代理协议和 UI 约定提供全面支持,实现与更广泛的 AI 生态系统的无缝集成。
-
-### 🤖 AG-UI 协议支持
-
-ChatKit 通过 NeuronKit 包含完整的 **AG-UI(代理 UI)协议**支持,使您能够构建与 AG-UI 服务器兼容的智能副驾驶应用(相当于 Web 的 CopilotKit)。
-
-**主要功能:**
-- ✅ **完整的 SSE 事件支持** - 所有 AG-UI 事件类型(`RUN_*`、`TEXT_MESSAGE_*`、`TOOL_CALL_*` 等)
-- ✅ **类型化工具参数** - 保留 JSON 类型(数字、布尔值、对象、数组)而不是转换为字符串
-- ✅ **多会话 SSE** - 具有独立 SSE 连接的多个并发对话会话
-- ✅ **文本流** - 带序列跟踪的实时增量文本流
-- ✅ **工具/函数调用** - 代理通过 Sandbox PDP 请求工具执行并进行适当的同意流程
-- ✅ **线程管理** - 使用 `runId` 和元数据跟踪对话线程
-- ✅ **双向通信** - HTTP POST 用于出站消息,SSE 用于入站流
-
-**用法:**
-```swift
-import FinClipChatKit
-
-let config = NeuronKitConfig.default(serverURL: URL(string: "https://your-agui-server.com/agent")!)
-    .withUserId("user-123")
-
-let coordinator = ChatKitCoordinator(config: config)
-
-// 配置 AG-UI 适配器
-let aguiAdapter = AGUI_Adapter(
-    baseEventURL: URL(string: "https://your-agui-server.com/agent")!,
-    connectionMode: .postStream  // POST 与 SSE 响应
-)
-coordinator.runtime.setNetworkAdapter(aguiAdapter)
-
-// 启动对话 - 自动使用 AG-UI 协议
-let (record, conversation) = try await coordinator.startConversation(
-    agentId: agentId,
-    title: nil,
-    agentName: "My Agent"
-)
-```
-
-**连接模式:**
-- **POST Stream**(推荐):用于发送消息和接收 SSE 响应的单一端点
-- **Event Stream**:SSE 连接和消息发送的独立端点
-
-### 🎨 OpenAI Apps SDK 桥接
-
-ChatKit 包含一个 **OpenAI Bridge**,提供与 **OpenAI Apps SDK 小部件**的兼容性,使您能够使用为 OpenAI 的 chatkit-js 设计的小部件而无需修改。
-
-**主要功能:**
-- ✅ **`window.openai` API** - 完整的 JavaScript API 兼容性
-- ✅ **基于 Promise 的架构** - 对工具调用和状态操作的 async/await 支持
-- ✅ **状态管理** - 内置 `setState()` 和 `getState()` 用于小部件状态持久化
-- ✅ **事件系统** - 支持 `on()` 和 `off()` 事件处理程序
-- ✅ **原生集成** - 使用 WKWebView 和 WKScriptMessageHandler 进行安全的桥接通信
-
-**用法:**
-来自基于 OpenAI Apps SDK 的 MCP 服务器的小部件会自动在 ChatKit 的对话 UI 中渲染。桥接透明地处理所有 JavaScript 到原生的通信。
-
-**JavaScript API(在小部件中):**
-```javascript
-// 基于 Promise 的工具调用
-window.openai.callTool({
-    name: "get_weather",
-    parameters: { location: "San Francisco" }
-}).then(result => {
-    console.log("Weather:", result);
-});
-
-// 状态管理
-window.openai.setState({ count: 5 });
-const state = window.openai.getState(); // { count: 5 }
-```
-
-### 🌐 MCP-UI 支持
-
-ChatKit 为 **MCP-UI(模型上下文协议 UI)** 提供全面支持,实现 MCP 服务器交互式基于 Web 的 UI 组件的原生 iOS 渲染。
-
-**主要功能:**
-- ✅ **原生 WKWebView 渲染** - 安全的沙箱执行以实现 Web 兼容性
-- ✅ **一次性操作** - 简单的操作模式(`callTool`、`triggerIntent`、`submitPrompt`、`notify`、`openLink`)
-- ✅ **自动调整大小支持** - 通过 `reportSize()` 实现动态内容大小调整
-- ✅ **渲染数据注入** - 用于小部件个性化的动态内容注入
-- ✅ **安全沙箱** - 具有内容安全策略(CSP)执行的 WKWebView
-- ✅ **多种内容类型** - 支持 HTML(`text/html`)、外部 URL(`text/uri-list`)和远程 DOM 脚本
-
-**用法:**
-MCP-UI 小部件会自动在 ChatKit 的对话 UI 中检测并渲染。来自小部件的操作通过对话的委托方法处理。
-
-**JavaScript API(在小部件中):**
-```javascript
-// 调用后端的工具/函数
-window.mcpUI.callTool("search", { query: "example" });
-
-// 触发意图
-window.mcpUI.triggerIntent("book_flight", { destination: "NYC" });
-
-// 提交新提示
-window.mcpUI.submitPrompt("Tell me more about...");
-
-// 显示通知
-window.mcpUI.notify("Operation completed", "success");
-
-// 打开链接
-window.mcpUI.openLink("https://example.com");
-
-// 报告小部件大小以进行自动调整大小
-window.mcpUI.reportSize(450);
-```
-
-### 📊 协议比较
-
-| 功能 | AG-UI | OpenAI Bridge | MCP-UI |
-|---------|-------|---------------|--------|
-| **目的** | 代理通信的网络协议 | 小部件兼容层 | UI 组件渲染 |
-| **API 风格** | SSE + HTTP POST | 基于 Promise(`window.openai`) | 一次性(`window.mcpUI`) |
-| **状态管理** | 对话级别 | 小部件级别(`setState`/`getState`) | 手动(在小部件中) |
-| **工具调用** | 通过 Sandbox 的完整同意流程 | 基于 Promise 并有响应 | 一次性 |
-| **文本流** | ✅ 实时增量 | 不适用 | 不适用 |
-| **多会话** | ✅ 是 | 不适用 | 不适用 |
-| **最适合** | 代理编排和通信 | OpenAI Apps SDK 小部件 | MCP-UI 生态系统小部件 |
-
-**集成:** 所有三种约定在 ChatKit 中无缝协作。AG-UI 处理代理通信,而小部件根据小部件类型使用 OpenAI Bridge 或 MCP-UI 支持自动渲染。
+➡️ **完整索引**: [../docs/README.zh.md](../docs/README.zh.md)
 
 ---
 
-## 🏗️ API 层级
+## 🤝 贡献与支持
 
-ChatKit 提供多个 API 层级以适应不同需求:
-
-### 高级 API(推荐)
-用于快速开发的现成组件:
-- `ChatKitCoordinator` - 运行时生命周期管理
-- `ChatKitConversationViewController` - 完整的聊天 UI
-- `ChatKitConversationListViewController` - 对话列表 UI
-- 最少代码(基本聊天 20-30 行)
-
-**最适合**: 大多数应用、标准聊天 UI、快速开发
-
-**参见**: [API 层级指南](docs/api-levels.md#high-level-apis-recommended) | [Simple 演示](demo-apps/iOS/Simple/)
-
-### 低级 API(高级)
-直接访问以获得最大灵活性:
-- 直接运行时访问
-- 手动 UI 绑定
-- 自定义实现
-- 更多代码(200+ 行),更多控制
-
-**最适合**: 自定义 UI 要求、专用布局
-
-**参见**: [API 层级指南](docs/api-levels.md#low-level-apis-advanced)
-
-### 提供器机制
-无需修改代码即可自定义框架行为:
-- 上下文提供器 - 附加位置、日历等
-- ASR 提供器 - 自定义语音识别
-- 标题生成提供器 - 自定义对话标题
-
-**参见**: [API 层级指南](docs/api-levels.md#provider-mechanism)
+* **提交 Issue**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
+* **参与讨论**: [GitHub Discussions](https://github.com/Geeksfino/finclip-chatkit/discussions)
 
 ---
 
-## 📦 安装
-
-### Swift Package Manager(推荐)
-
-**选项 1: Package.swift**
-
-```swift
-// swift-tools-version: 5.9
-import PackageDescription
-
-let package = Package(
-    name: "MyApp",
-    platforms: [.iOS(.v16)],
-    dependencies: [
-        .package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
-    ],
-    targets: [
-        .target(
-            name: "MyApp",
-            dependencies: [
-                .product(name: "ChatKit", package: "finclip-chatkit")
-            ]
-        )
-    ]
-)
-```
-
-**选项 2: Xcode**
-
-1. File → Add Package Dependencies
-2. 输入: `https://github.com/Geeksfino/finclip-chatkit.git`
-3. 选择版本: `0.6.1` 或更高
-
-### CocoaPods
-
-```ruby
-pod 'ChatKit', :podspec => 'https://raw.githubusercontent.com/Geeksfino/finclip-chatkit/main/ChatKit.podspec'
-```
-
-然后运行:
-```bash
-pod install
-```
-
-> **注意**: 我们使用直接的 podspec URL,因为 CocoaPods trunk 上的"ChatKit"名称被不同的项目占用。
-
----
-
-## 🎯 最佳实践
-
-### ✅ 应该做
-
-1. **在应用启动时初始化一次协调器**
-   ```swift
-   // 在 SceneDelegate 或 AppDelegate 中
-   let coordinator = ChatKitCoordinator(config: config)
-   ```
-
-2. **使用高级 API 构建标准聊天 UI**
-   ```swift
-   // 创建对话
-   let (record, conversation) = try await coordinator.startConversation(...)
-   
-   // 显示现成的聊天 UI
-   let chatVC = ChatKitConversationViewController(
-       record: record,
-       conversation: conversation,
-       coordinator: coordinator,
-       configuration: .default
-   )
-   ```
-
-3. **使用 ConversationManager 管理多会话应用**
-   ```swift
-   let manager = ChatKitConversationManager()
-   manager.attach(runtime: coordinator.runtime)
-   ```
-
-4. **使用 Combine 进行响应式观察**
-   ```swift
-   manager.recordsPublisher
-       .sink { records in /* 更新 UI */ }
-       .store(in: &cancellables)
-   ```
-
-5. **在任何容器中嵌入组件**
-   ```swift
-   // 导航、Sheet、抽屉、标签页 - 都可以!
-   navigationController?.pushViewController(chatVC, animated: true)
-   ```
-
-### ❌ 不应该做
-
-1. **不要在应用启动时创建对话**
-   ```swift
-   // ❌ 错误: 太早了,用户还没有请求
-   func application(...) -> Bool {
-       let coordinator = ChatKitCoordinator(config: config)
-       let conversation = try await coordinator.startConversation(...) // 不要这样做!
-   }
-   ```
-
-2. **不要创建多个协调器**
-   ```swift
-   // ❌ 错误: 创建多个运行时
-   func newChat() {
-       let coordinator = ChatKitCoordinator(config: config) // 不要这样做!
-   }
-   ```
-
-3. **不要忘记存储协调器**
-   ```swift
-   // ❌ 错误: 立即被释放
-   func setup() {
-       let coordinator = ChatKitCoordinator(config: config)
-       // 糟糕,函数返回时释放
-   }
-   ```
-
-4. **除非必要,否则不要使用低级 API**
-   ```swift
-   // ❌ 错误: 标准用例不必要的复杂性
-   let hosting = ChatHostingController()
-   let adapter = ChatKitAdapter(chatView: hosting.chatView)
-   conversation.bindUI(adapter) // 太冗长!
-   
-   // ✅ 正确: 使用高级组件
-   let chatVC = ChatKitConversationViewController(...) // 简单!
-   ```
-
-5. **不要编辑生成的 Xcode 项目**
-   ```swift
-   // ❌ 错误: 重新生成时更改会丢失
-   // 直接编辑 .xcodeproj
-   
-   // ✅ 正确: 编辑 project.yml,然后重新生成
-   // make generate
-   ```
-
----
-
-## 🔧 故障排除
-
-### 找不到 ChatKitCoordinator
-**解决方案**: 更新到 v0.6.1 或更高版本
-```swift
-.package(url: "https://github.com/Geeksfino/finclip-chatkit.git", from: "0.6.1")
-```
-
-### 对话未持久化
-**解决方案**: 使用 `.persistent` 存储
-```swift
-NeuronKitConfig(..., storage: .persistent)
-```
-
-### 更多帮助
-参见完整的[故障排除指南](docs/troubleshooting.md)。
-
----
-
-## 📖 学习路径
-
-遵循这条渐进式路径来掌握 ChatKit:
-
-1. **快速开始** → [快速开始指南](docs/quick-start.md)
-   - 最小示例代码(5 分钟)
-   - Swift 和 Objective-C 示例
-
-2. **学习基础** → [入门指南](docs/getting-started.md)
-   - 详细演练
-   - 解释关键概念
-
-3. **理解 API** → [API 层级指南](docs/api-levels.md)
-   - 高级与低级 API
-   - 何时使用每种
-
-4. **构建功能**
-   - **Swift**: [Swift 开发者指南](docs/guides/developer-guide.md) - 多对话、历史、高级模式
-   - **Objective-C**: [Objective-C 开发者指南](docs/guides/objective-c-guide.md) - 多对话、列表 UI、API 参考
-
-5. **自定义和嵌入** → [组件嵌入指南](docs/component-embedding.md)
-   - 在 Sheet、抽屉、标签页中嵌入
-   - 自定义容器模式
-
-6. **设置构建** → [构建工具指南](docs/build-tooling.md)
-   - 可重现的构建
-   - Makefile 和 XcodeGen
-
-7. **学习示例** → `demo-apps/iOS/Simple/`、`demo-apps/iOS/SimpleObjC/` 和 `demo-apps/Android/`
-   - 完整的工作示例
-   - 高级 API 模式
-   - iOS 和 Android 平台示例
-
----
-
-## 🤝 贡献
-
-我们欢迎贡献!请:
-
-1. 为错误或功能请求开启 issue
-2. 提交改进的 pull request
-3. 为新功能更新文档
-4. 为新功能添加测试
-
----
-
-## 📄 许可证
-
-详见 [LICENSE](LICENSE)。
-
----
-
-## 🆘 支持
-
-- **文档**: `docs/`
-- **示例**: `demo-apps/iOS/` 和 `demo-apps/Android/`
-- **问题**: [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
-- **讨论**: [GitHub Discussions](https://github.com/Geeksfino/finclip-chatkit/discussions)
-
----
-
-## 🎓 您将学到什么
-
-从示例和文档中:
-
-- ✅ 用于快速开发的高级 API
-- ✅ 使用 `ChatKitCoordinator` 进行安全的运行时生命周期管理
-- ✅ 现成的 UI 组件(`ChatKitConversationViewController`、`ChatKitConversationListViewController`)
-- ✅ 在各种容器中嵌入组件(导航、Sheet、抽屉、标签页)
-- ✅ 使用 `ChatKitConversationManager` 管理多个对话
-- ✅ 提供器机制(上下文、ASR、标题生成)
-- ✅ 使用 Makefile 和 XcodeGen 进行可重现的构建
-- ✅ 最佳实践和常见陷阱
-
----
-
-## 🔧 构建工具
-
-ChatKit 示例使用标准化构建工具以实现可重现性:
-
-- **XcodeGen** - 从 YAML 生成 Xcode 项目
-- **Makefile** - 标准化构建命令
-- **project.yml** - 版本控制的项目配置
-
-**参见**: [构建工具指南](docs/build-tooling.md) 获取完整说明。
-
-**快速开始**:
-```bash
-cd demo-apps/iOS/Simple
-make generate  # 生成 Xcode 项目
-make run       # 在模拟器上构建并运行
-```
-
----
-
-**准备好构建了吗?** 从 [快速开始指南](docs/quick-start.md) 开始 →
-
----
-
-由 FinClip 团队制作
+Made with ❤️ by the FinClip team

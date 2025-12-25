@@ -571,10 +571,11 @@ When encountering issues, verify:
 
 ### Self-Service
 1. Check this troubleshooting guide
-2. Review [Developer Guide](./developer-guide.md)
+2. Review [Getting Started Guide](./getting-started.md) or [Quick Start Guide](./quick-start.md)
 3. Study working examples:
-   - `demo-apps/iOS/AI-Bank`
-   - `demo-apps/iOS/Smart-Gov`
+   - See [Running Demos](./running-demos.md) for complete instructions
+   - `demo-apps/iOS/Simple/` - Swift example
+   - `demo-apps/iOS/SimpleObjC/` - Objective-C example
 
 ### Community Support
 1. Search [GitHub Issues](https://github.com/Geeksfino/finclip-chatkit/issues)
@@ -622,4 +623,8 @@ nm -gU ChatKit.xcframework/*/FinClipChatKit.framework/FinClipChatKit | grep -i c
 
 ---
 
-**Next**: [Developer Guide](./developer-guide.md) - Learn ChatKit patterns and best practices
+**Next Steps**:
+- **[Getting Started Guide](./getting-started.md)** - Learn ChatKit patterns and best practices
+- **[Quick Start Guide](./quick-start.md)** - Minimal skeleton code
+- **[Swift Developer Guide](./guides/developer-guide.md)** - Comprehensive Swift patterns
+- **[Objective-C Developer Guide](./guides/objective-c-guide.md)** - Complete Objective-C guide

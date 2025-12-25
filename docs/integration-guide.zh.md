@@ -2,9 +2,11 @@
 
 本指南涵盖 ChatKit 的特定集成场景和部署选项。
 
-> 📚 **要学习如何使用 ChatKit 构建应用**，请参见[开发者指南](./developer-guide.zh.md)。
+> 📚 **要学习如何使用 ChatKit 构建应用**，请参见[入门指南](./getting-started.zh.md)或[快速开始指南](./quick-start.zh.md)。
 > 
 > 🔧 **要设置构建工具**，请参见[构建工具指南](./build-tooling.zh.md)了解 Makefile、XcodeGen 和可重现构建。
+> 
+> 📖 **要查看全面开发指南**，请参见[Swift 开发者指南](./guides/developer-guide.zh.md)或[Objective-C 开发者指南](./guides/objective-c-guide.zh.md)。
 
 ---
 
@@ -468,9 +470,13 @@ end
 
 对于集成问题：
 1. 检查[故障排除指南](./troubleshooting.zh.md)
-2. 查看[示例应用](../demo-apps/iOS/)
+2. 查看[运行演示](./running-demos.zh.md)了解示例应用
 3. 打开 [GitHub Issue](https://github.com/Geeksfino/finclip-chatkit/issues)
 
 ---
 
-**下一步**：[开发者指南](./developer-guide.zh.md) - 学习如何使用 ChatKit 构建应用
+**下一步**：
+- **[入门指南](./getting-started.zh.md)** - 学习如何使用 ChatKit 构建应用
+- **[快速开始指南](./quick-start.zh.md)** - 最小化骨架代码
+- **[Swift 开发者指南](./guides/developer-guide.zh.md)** - 全面的 Swift 模式
+- **[Objective-C 开发者指南](./guides/objective-c-guide.zh.md)** - 完整的 Objective-C 指南
