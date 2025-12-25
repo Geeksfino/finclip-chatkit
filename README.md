@@ -22,11 +22,11 @@ Building the intelligence for your AI agent is hard enough. Don't waste weeks fi
 We know you want to see code running. Choose your path:
 
 ### 🍎 For iOS Developers
-* **Swift?** → [**Jump to Swift Quick Start**](../docs/getting-started.md#swift-quick-start) (The modern way) | [Minimal Skeleton](../docs/quick-start.md#swift-quick-start)
-* **Objective-C?** → [**Jump to Obj-C Quick Start**](../docs/getting-started.md#objective-c-quick-start) (Legacy codebase? We got you.) | [Minimal Skeleton](../docs/quick-start.md#objective-c-quick-start)
+* **Swift?** → [**Jump to Swift Quick Start**](docs/getting-started.md#swift-quick-start) (The modern way) | [Minimal Skeleton](docs/quick-start.md#swift-quick-start)
+* **Objective-C?** → [**Jump to Obj-C Quick Start**](docs/getting-started.md#objective-c-quick-start) (Legacy codebase? We got you.) | [Minimal Skeleton](docs/quick-start.md#objective-c-quick-start)
 
 ### 🤖 For Android Developers
-* **Kotlin/Java?** → [**Android Examples**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md)
+* **Kotlin/Java?** → [**Android Examples**](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md)
 
 ---
 
@@ -40,13 +40,13 @@ ChatKit is designed to scale from simple embedded widgets to full-blown AI assis
 
 ### 1. Embedded Context-Aware Copilots
 Don't force users to leave their current task to get help. Embed ChatKit as a **mini-program overlay** or a **floating entry** directly within your existing workflows (e.g., stock charts, dashboards).
-* **Context Injection**: Automatically pass the current screen's data to the LLM. The agent "sees" what the user sees. [Learn more](../docs/guides/context-providers.md)
-* **Non-intrusive**: Users summon the agent for specific tasks and dismiss it immediately. [Component Embedding Guide](../docs/component-embedding.md)
+* **Context Injection**: Automatically pass the current screen's data to the LLM. The agent "sees" what the user sees. [Learn more](docs/guides/context-providers.md)
+* **Non-intrusive**: Users summon the agent for specific tasks and dismiss it immediately. [Component Embedding Guide](docs/component-embedding.md)
 
 ### 2. Vertical Expert Agents
 Build independent, professional-grade AI assistants (like *Project Samantha*) capable of handling complex domain logic.
-* **Generative UI**: Render complex financial tables, forms, or interactive charts dynamically using **MCP-UI** or **AG-UI** protocols. [Protocol Support](../docs/overview.md#-protocol--convention-support)
-* **One-Shot Execution**: Turn natural language (e.g., "Buy 100 shares of AAPL") into secure, sandboxed actions immediately—bypassing deep menus. [Architecture Overview](../docs/architecture/overview.md)
+* **Generative UI**: Render complex financial tables, forms, or interactive charts dynamically using **MCP-UI** or **AG-UI** protocols. [Protocol Support](docs/overview.md#-protocol--convention-support)
+* **One-Shot Execution**: Turn natural language (e.g., "Buy 100 shares of AAPL") into secure, sandboxed actions immediately—bypassing deep menus. [Architecture Overview](docs/architecture/overview.md)
 
 ### 3. Hybrid Human-AI Workflows
 Don't leave users stranded when the AI hits a limit.
@@ -63,8 +63,8 @@ Don't leave users stranded when the AI hits a limit.
   <img src="assets/no-friction-way-to-intelligence.jpg" alt="Context Aware vs Generic" width="100%">
 </div>
 
-* **Frictionless**: No need to ask "Where are you?". The SDK already knows. [Context Providers Guide](../docs/guides/context-providers.md)
-* **Proactive**: Trigger actions based on location, time, or battery status. [Overview](../docs/overview.md#-context-aware-intelligence)
+* **Frictionless**: No need to ask "Where are you?". The SDK already knows. [Context Providers Guide](docs/guides/context-providers.md)
+* **Proactive**: Trigger actions based on location, time, or battery status. [Overview](docs/overview.md#-context-aware-intelligence)
 
 ---
 
@@ -72,11 +72,11 @@ Don't leave users stranded when the AI hits a limit.
 
 We fit your workflow, whether you need speed or control.
 
-🏎️ **Ship Fast (High-Level APIs)**: Need a chat screen now? Components like `ChatKitConversationViewController` handle lifecycle and UI rendering for you. [Read Guide](../docs/api-levels.md#high-level-apis-recommended)
+🏎️ **Ship Fast (High-Level APIs)**: Need a chat screen now? Components like `ChatKitConversationViewController` handle lifecycle and UI rendering for you. [Read Guide](docs/api-levels.md#high-level-apis-recommended)
 
-🛠️ **Full Control (Low-Level APIs)**: Need custom layouts? Drop down to direct runtime access and manual UI binding. [Read Guide](../docs/api-levels.md#low-level-apis-advanced)
+🛠️ **Full Control (Low-Level APIs)**: Need custom layouts? Drop down to direct runtime access and manual UI binding. [Read Guide](docs/api-levels.md#low-level-apis-advanced)
 
-🧩 **Make It Yours (Providers)**: Inject Location, Calendar events, or custom data directly into the LLM context. [Context Providers Guide](../docs/guides/context-providers.md)
+🧩 **Make It Yours (Providers)**: Inject Location, Calendar events, or custom data directly into the LLM context. [Context Providers Guide](docs/guides/context-providers.md)
 
 ---
 
@@ -84,7 +84,7 @@ We fit your workflow, whether you need speed or control.
 
 Clone the repo and run these demos to see ChatKit in action.
 
-**📖 For complete instructions**: See [Running Demos](../docs/running-demos.md) for detailed setup and troubleshooting.
+**📖 For complete instructions**: See [Running Demos](docs/running-demos.md) for detailed setup and troubleshooting.
 
 ### Simple (Swift)
 **Location**: `demo-apps/iOS/Simple/`  
@@ -95,7 +95,7 @@ cd demo-apps/iOS/Simple
 make run
 ```
 
-**See**: [Simple README](iOS/Simple/README.md)
+**See**: [Simple README](demo-apps/iOS/Simple/README.md)
 
 ### SimpleObjC (Objective-C)
 **Location**: `demo-apps/iOS/SimpleObjC/`  
@@ -106,7 +106,7 @@ cd demo-apps/iOS/SimpleObjC
 make run
 ```
 
-**See**: [SimpleObjC README](iOS/SimpleObjC/README.md)
+**See**: [SimpleObjC README](demo-apps/iOS/SimpleObjC/README.md)
 
 ### Android Examples
 **Location**: `demo-apps/Android/`  
@@ -117,33 +117,33 @@ cd demo-apps/Android
 make run
 ```
 
-**See**: [Android Examples](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](Android/README.md) | [中文](Android/README_CN.md)
+**See**: [Android Examples](https://github.com/Geeksfino/finclip-chatkit/tree/main/demo-apps/Android) | [README](demo-apps/Android/README.md) | [中文](demo-apps/Android/README_CN.md)
 
 ---
 
 ## 📚 Documentation Index
 
 ### Overview & Getting Started
-* **[Overview](../docs/overview.md)** - Complete introduction to ChatKit: features, protocols, and capabilities
-* **[Getting Started](../docs/getting-started.md)** - Language-specific quick starts (Swift & Objective-C)
-* **[Quick Start](../docs/quick-start.md)** - Minimal skeleton code (5 minutes)
+* **[Overview](docs/overview.md)** - Complete introduction to ChatKit: features, protocols, and capabilities
+* **[Getting Started](docs/getting-started.md)** - Language-specific quick starts (Swift & Objective-C)
+* **[Quick Start](docs/quick-start.md)** - Minimal skeleton code (5 minutes)
 
 ### Core Guides
-* **[Swift Developer Guide](../docs/guides/developer-guide.md)** - From basic usage to advanced patterns.
-* **[Objective-C Developer Guide](../docs/guides/objective-c-guide.md)** - Complete API reference for Obj-C.
-* **[Configuration Guide](../docs/guides/configuration.md)** - Customize everything: themes, prompt starters, debug settings.
+* **[Swift Developer Guide](docs/guides/developer-guide.md)** - From basic usage to advanced patterns.
+* **[Objective-C Developer Guide](docs/guides/objective-c-guide.md)** - Complete API reference for Obj-C.
+* **[Configuration Guide](docs/guides/configuration.md)** - Customize everything: themes, prompt starters, debug settings.
 
 ### Advanced Concepts
-* **[Context Providers](../docs/guides/context-providers.md)** - How to inject custom data into conversations.
-* **[Component Embedding](../docs/component-embedding.md)** - Embed chat in Drawers, Sheets, or Tabs.
-* **[Prompt Starters](../docs/guides/prompt-starters.md)** - Configure welcome chips and initial suggestions.
+* **[Context Providers](docs/guides/context-providers.md)** - How to inject custom data into conversations.
+* **[Component Embedding](docs/component-embedding.md)** - Embed chat in Drawers, Sheets, or Tabs.
+* **[Prompt Starters](docs/guides/prompt-starters.md)** - Configure welcome chips and initial suggestions.
 
 ### Setup & Tools
-* **[Installation Guide](../docs/integration-guide.md)** - SPM, CocoaPods setup.
-* **[Build Tooling](../docs/build-tooling.md)** - Makefile & XcodeGen guide.
-* **[Troubleshooting](../docs/troubleshooting.md)** - Solutions for common issues.
+* **[Installation Guide](docs/integration-guide.md)** - SPM, CocoaPods setup.
+* **[Build Tooling](docs/build-tooling.md)** - Makefile & XcodeGen guide.
+* **[Troubleshooting](docs/troubleshooting.md)** - Solutions for common issues.
 
-➡️ **Full index**: [../docs/README.md](../docs/README.md)
+➡️ **Full index**: [docs/README.md](docs/README.md)
 
 ---
 
