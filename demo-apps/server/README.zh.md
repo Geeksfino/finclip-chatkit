@@ -1,6 +1,6 @@
 # 演示后端服务器
 
-用于测试 ChatKit 演示应用的后端服务器。这些服务器实现了 ChatKit iOS 演示所需的协议，并提供各种代理类型用于测试不同场景。
+用于测试 ChatKit 演示应用的后端服务器。这些服务器实现了 ChatKit 移动应用演示所需的协议，并提供各种代理类型用于测试不同场景。
 
 ## 📦 可用服务器
 
@@ -11,16 +11,25 @@
 - 🤖 LiteLLM 集成（通过代理的真实 LLM）
 - 🧠 DeepSeek 集成（直接 API）
 
-**最适合**：使用可预测响应或真实 AI 测试 iOS 演示。
+**最适合**：使用可预测响应或真实 AI 测试移动应用演示。
 
 [→ agui-test-server 文档](agui-test-server/README.md)
 
 ### mcpui-test-server  
-**MCP-UI 协议测试服务器**，用于测试交互式 Web 组件和小部件。
+**MCP-UI / MCP Apps 协议测试服务器**，用于测试交互式 Web 组件和小部件。
+
+> **📌 协议更新**: MCP-UI 现已标准化为 MCP Apps。本服务器同时支持 MCP Apps 标准和传统 MCP-UI 协议。更多信息请参考 [MCP-UI 官网](https://mcpui.dev/)。
 
 **最适合**：测试高级 UI 组件，如表单、按钮和嵌入式小部件。
 
 [→ mcpui-test-server 文档](mcpui-test-server/README.md)
+
+### a2ui-test-server
+**A2UI 协议测试服务器**，用于测试从 AI 代理生成声明式 UI。
+
+**最适合**: 测试 A2UI 协议集成、基于场景的 UI 生成和 LLM 驱动的 UI 创建。
+
+[→ a2ui-test-server 文档](a2ui-test-server/README.md)
 
 ---
 
@@ -121,9 +130,9 @@ HOST=0.0.0.0
 
 ---
 
-## 📱 与 iOS 演示配合使用
+## 📱 与移动应用演示配合使用
 
-### Simple 演示（Swift）
+### iOS Simple 演示（Swift）
 
 1. **启动服务器**：
    ```bash
@@ -142,7 +151,7 @@ HOST=0.0.0.0
    - 点击 "Connect" → 点击 "+" 创建对话
    - 开始聊天！
 
-### SimpleObjC 演示（Objective-C）
+### iOS SimpleObjC 演示（Objective-C）
 
 与上述步骤相同，但运行：
 ```bash
@@ -334,19 +343,21 @@ kill -9 PID
 PORT=3001
 ```
 
-### iOS 应用无法连接 - "网络错误"
+### 移动应用无法连接 - "网络错误"
 
 1. **检查服务器是否正在运行**：
    ```bash
    curl http://localhost:3000/health
    ```
 
-2. **如果使用 iOS 模拟器**：`localhost` 和 `127.0.0.1` 工作正常
+2. **如果使用模拟器/模拟器**：
+   - iOS 模拟器：`localhost` 和 `127.0.0.1` 工作正常
+   - Android 模拟器：使用 `10.0.2.2` 代替 `localhost`
 
 3. **如果使用物理设备**： 
-   - 使用 Mac 的本地 IP（例如，`http://192.168.1.100:3000`）
-   - 查找 IP：`系统设置 → 网络 → Wi-Fi → 详细信息 → IP 地址`
-   - 确保设备和 Mac 在同一 Wi-Fi 网络上
+   - 使用开发机器的本地 IP（例如，`http://192.168.1.100:3000`）
+   - 查找 IP：`系统设置 → 网络 → Wi-Fi → 详细信息 → IP 地址`（macOS）或网络设置（其他系统）
+   - 确保设备和开发机器在同一 Wi-Fi 网络上
 
 ### LiteLLM/DeepSeek 无响应
 
@@ -385,7 +396,8 @@ PORT=3001
 
 - [agui-test-server README](agui-test-server/README.md) - 完整的 AG-UI 服务器文档
 - [mcpui-test-server README](mcpui-test-server/README.md) - 完整的 MCP-UI 服务器文档
-- [ChatKit 开发者指南](../../docs/guides/developer-guide.md) - iOS SDK 集成指南
+- [a2ui-test-server README](a2ui-test-server/README.md) - 完整的 A2UI 服务器文档
+- [ChatKit 开发者指南](../../docs/guides/developer-guide.md) - 移动 SDK 集成指南
 - [AG-UI 协议规范](agui-test-server/docs/agui-compliance.md) - 协议规范
 
 ---

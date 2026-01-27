@@ -54,7 +54,7 @@ Compatibility bridge for OpenAI-style widgets (`window.openai`) rendered inside 
 - ✅ **Promise-Based Architecture** - Async/await support for tool calls and state operations
 - ✅ **State Management** - Built-in `setState()` and `getState()` for widget state persistence
 - ✅ **Event System** - Support for `on()` and `off()` event handlers
-- ✅ **Native Integration** - Uses WKWebView and WKScriptMessageHandler for secure bridge communication
+- ✅ **Native Integration** - Uses native WebView and message handlers for secure bridge communication
 
 **Usage:**
 Widgets from OpenAI Apps SDK-based MCP servers are automatically rendered in ChatKit's conversation UI. The bridge handles all JavaScript-to-native communication transparently.
@@ -74,16 +74,18 @@ window.openai.setState({ count: 5 });
 const state = window.openai.getState(); // { count: 5 }
 ```
 
-## MCP-UI Support
+## MCP-UI / MCP Apps Support
 
-Render MCP-UI widgets in a secure WKWebView environment (`window.mcpUI`) with sandboxed actions.
+> **📌 Protocol Update**: MCP-UI has been standardized as **MCP Apps**, the official standard for interactive UI in MCP. ChatKit supports both the MCP Apps standard and legacy MCP-UI protocol for backward compatibility. Learn more at [mcpui.dev](https://mcpui.dev/).
+
+Render MCP-UI / MCP Apps widgets in a secure WebView environment (`window.mcpUI`) with sandboxed actions on mobile platforms.
 
 **Key Features:**
-- ✅ **Native WKWebView Rendering** - Secure, sandboxed execution for web compatibility
+- ✅ **Native WebView Rendering** - Secure, sandboxed execution for web compatibility
 - ✅ **Fire-and-Forget Actions** - Simple action pattern (`callTool`, `triggerIntent`, `submitPrompt`, `notify`, `openLink`)
 - ✅ **Auto-Resize Support** - Dynamic content sizing via `reportSize()`
 - ✅ **Render Data Injection** - Dynamic content injection for widget personalization
-- ✅ **Security Sandboxing** - WKWebView with Content Security Policy (CSP) enforcement
+- ✅ **Security Sandboxing** - WebView with Content Security Policy (CSP) enforcement
 - ✅ **Multiple Content Types** - Support for HTML (`text/html`), external URLs (`text/uri-list`), and remote DOM scripts
 
 **Usage:**
@@ -110,5 +112,22 @@ window.mcpUI.openLink("https://example.com");
 window.mcpUI.reportSize(450);
 ```
 
-> All conventions can be combined: AG-UI handles agent communication; widgets are rendered via the OpenAI Bridge or MCP-UI depending on type.
+## A2UI Protocol Support
+
+ChatKit provides comprehensive support for the **A2UI (Agent to UI) protocol**, enabling native mobile app rendering of declarative UI components generated from AI agents.
+
+**Key Features:**
+- ✅ **JSONL Streaming** - Stream A2UI messages in JSON Lines format via SSE
+- ✅ **Declarative Components** - Support for standard components (Text, Button, Row, Column, Card, TextField, etc.)
+- ✅ **Data Binding** - Full path binding and data model update support
+- ✅ **Progressive Rendering** - Stream UI components for incremental updates
+- ✅ **Flat Component Model** - Adjacency list-based component structure for efficient rendering
+
+**Usage:**
+A2UI messages are automatically detected and rendered in ChatKit's conversation UI. Components are updated through standard A2UI message types (surfaceUpdate, dataModelUpdate, beginRendering).
+
+**Test Server:**
+- [a2ui-test-server](../server/a2ui-test-server/) - Complete A2UI test server implementation
+
+> All conventions can be combined: AG-UI handles agent communication; widgets are rendered via the OpenAI Bridge, MCP-UI, or A2UI depending on type.
 

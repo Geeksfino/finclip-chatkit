@@ -1,6 +1,6 @@
 # Demo Backend Servers
 
-Backend servers for testing ChatKit demo applications. These servers implement the protocols required by ChatKit's iOS demos and provide various agent types for testing different scenarios.
+Backend servers for testing ChatKit demo applications. These servers implement the protocols required by ChatKit's mobile app demos and provide various agent types for testing different scenarios.
 
 ## 📦 Available Servers
 
@@ -11,16 +11,25 @@ Backend servers for testing ChatKit demo applications. These servers implement t
 - 🤖 LiteLLM integration (real LLM via proxy)
 - 🧠 DeepSeek integration (direct API)
 
-**Best for**: Testing iOS demos with predictable responses or real AI.
+**Best for**: Testing mobile app demos with predictable responses or real AI.
 
 [→ agui-test-server Documentation](agui-test-server/README.md)
 
 ### mcpui-test-server  
-**MCP-UI protocol test server** for testing interactive web components and widgets.
+**MCP-UI / MCP Apps protocol test server** for testing interactive web components and widgets.
+
+> **📌 Protocol Update**: MCP-UI has been standardized as MCP Apps. This server supports both MCP Apps standard and legacy MCP-UI protocol. Learn more at [mcpui.dev](https://mcpui.dev/).
 
 **Best for**: Testing advanced UI components like forms, buttons, and embedded widgets.
 
 [→ mcpui-test-server Documentation](mcpui-test-server/README.md)
+
+### a2ui-test-server
+**A2UI protocol test server** for testing declarative UI generation from AI agents.
+
+**Best for**: Testing A2UI protocol integration, scenario-based UI generation, and LLM-powered UI creation.
+
+[→ a2ui-test-server Documentation](a2ui-test-server/README.md)
 
 ---
 
@@ -121,9 +130,9 @@ HOST=0.0.0.0
 
 ---
 
-## 📱 Using with iOS Demos
+## 📱 Using with Mobile App Demos
 
-### Simple Demo (Swift)
+### iOS Simple Demo (Swift)
 
 1. **Start the server**:
    ```bash
@@ -142,7 +151,7 @@ HOST=0.0.0.0
    - Tap "Connect" → Tap "+" to create a conversation
    - Start chatting!
 
-### SimpleObjC Demo (Objective-C)
+### iOS SimpleObjC Demo (Objective-C)
 
 Same steps as above, but run:
 ```bash
@@ -334,19 +343,21 @@ Or change the port in `.env`:
 PORT=3001
 ```
 
-### iOS app can't connect - "Network error"
+### Mobile app can't connect - "Network error"
 
 1. **Check server is running**:
    ```bash
    curl http://localhost:3000/health
    ```
 
-2. **If using iOS Simulator**: `localhost` and `127.0.0.1` work fine
+2. **If using emulator/simulator**:
+   - iOS Simulator: `localhost` and `127.0.0.1` work fine
+   - Android Emulator: Use `10.0.2.2` instead of `localhost`
 
 3. **If using physical device**: 
-   - Use your Mac's local IP instead (e.g., `http://192.168.1.100:3000`)
-   - Find IP: `System Settings → Network → Wi-Fi → Details → IP address`
-   - Ensure device and Mac are on same Wi-Fi network
+   - Use your development machine's local IP instead (e.g., `http://192.168.1.100:3000`)
+   - Find IP: `System Settings → Network → Wi-Fi → Details → IP address` (macOS) or network settings (other systems)
+   - Ensure device and development machine are on same Wi-Fi network
 
 ### LiteLLM/DeepSeek not responding
 
@@ -385,7 +396,8 @@ PORT=3001
 
 - [agui-test-server README](agui-test-server/README.md) - Full AG-UI server documentation
 - [mcpui-test-server README](mcpui-test-server/README.md) - Full MCP-UI server documentation
-- [ChatKit Developer Guide](../../docs/guides/developer-guide.md) - iOS SDK integration guide
+- [a2ui-test-server README](a2ui-test-server/README.md) - Full A2UI server documentation
+- [ChatKit Developer Guide](../../docs/guides/developer-guide.md) - Mobile SDK integration guide
 - [AG-UI Protocol Spec](agui-test-server/docs/agui-compliance.md) - Protocol specification
 
 ---

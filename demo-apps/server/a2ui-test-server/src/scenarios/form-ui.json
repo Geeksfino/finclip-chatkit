@@ -1,0 +1,198 @@
+{
+  "id": "form-ui",
+  "name": "Form UI",
+  "description": "Complex form with multiple input types",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*form.*|.*表单.*|.*register.*|.*注册.*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["card"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "card",
+                "component": {
+                  "Card": {
+                    "child": "card-content"
+                  }
+                }
+              },
+              {
+                "id": "card-content",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["title", "form-row"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "title",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Registration Form"
+                    },
+                    "usageHint": "h2"
+                  }
+                }
+              },
+              {
+                "id": "form-row",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["name-field", "email-field", "date-field", "submit-row"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "name-field",
+                "component": {
+                  "TextField": {
+                    "label": {
+                      "literalString": "Full Name"
+                    },
+                    "value": {
+                      "path": "/registration/name",
+                      "literalString": ""
+                    },
+                    "placeholder": {
+                      "literalString": "Enter your name"
+                    }
+                  }
+                }
+              },
+              {
+                "id": "email-field",
+                "component": {
+                  "TextField": {
+                    "label": {
+                      "literalString": "Email Address"
+                    },
+                    "value": {
+                      "path": "/registration/email",
+                      "literalString": ""
+                    },
+                    "placeholder": {
+                      "literalString": "example@email.com"
+                    }
+                  }
+                }
+              },
+              {
+                "id": "date-field",
+                "component": {
+                  "DateTimeInput": {
+                    "label": {
+                      "literalString": "Date of Birth"
+                    },
+                    "value": {
+                      "path": "/registration/dob"
+                    },
+                    "enableDate": true,
+                    "enableTime": false
+                  }
+                }
+              },
+              {
+                "id": "submit-row",
+                "component": {
+                  "Row": {
+                    "alignment": "end",
+                    "children": {
+                      "explicitList": ["submit-btn"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "submit-btn",
+                "component": {
+                  "Button": {
+                    "child": "submit-text",
+                    "action": {
+                      "name": "submit_registration",
+                      "context": [
+                        {
+                          "key": "name",
+                          "value": {
+                            "path": "/registration/name"
+                          }
+                        },
+                        {
+                          "key": "email",
+                          "value": {
+                            "path": "/registration/email"
+                          }
+                        },
+                        {
+                          "key": "dob",
+                          "value": {
+                            "path": "/registration/dob"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "submit-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Register"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "path": "registration",
+            "contents": [
+              {
+                "key": "name",
+                "valueString": ""
+              },
+              {
+                "key": "email",
+                "valueString": ""
+              },
+              {
+                "key": "dob",
+                "valueString": ""
+              }
+            ]
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 200
+    }
+  ]
+}

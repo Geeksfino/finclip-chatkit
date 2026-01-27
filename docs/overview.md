@@ -2,9 +2,9 @@
 
 [English](README.md) | [简体中文](README.zh.md)
 
-**The conversational AI SDK for iOS apps.**
+**The conversational AI SDK for mobile apps.**
 
-FinClip ChatKit is an embeddable SDK that lets you build intelligent, context-aware conversational experiences directly inside your iOS apps. It provides a drop-in chat interface, secure sandbox for agent actions, and native bridges for agent protocols such as AG-UI, OpenAI Apps SDK, and MCP-UI — all in one package.
+FinClip ChatKit is an embeddable SDK that lets you build intelligent, context-aware conversational experiences directly inside your mobile apps. It provides a drop-in chat interface, secure sandbox for agent actions, and native bridges for agent protocols such as AG-UI, OpenAI Apps SDK, MCP-UI / MCP Apps, and A2UI — all in one package.
 
 Built for developers who want to add AI chat and agent-assisted actions quickly, ChatKit combines native UI performance with context awareness and security. It brings together real-time text streaming, multimedia rendering, and policy-based sandbox execution — so your app can talk, act, and reason safely.
 
@@ -30,7 +30,7 @@ Multi-session support with automatic persistence. Track conversation history, re
 High-level APIs for rapid development (20-30 lines to a working chat UI) or low-level APIs when you need maximum control. Works with WebSocket/HTTP backends, supports custom network adapters, and embeds easily in navigation stacks, sheets, drawers, or tabs.
 
 **📱 Native Performance**  
-Pure iOS/Swift implementation with native WKWebView rendering for interactive components. No cross-platform compromises—built specifically for iOS with optimal memory usage and smooth 60fps scrolling even with hundreds of messages.
+Multi-platform native implementation (iOS/Swift, Android/Kotlin) with native WebView rendering for interactive components. No cross-platform compromises—built specifically for each platform with optimal memory usage and smooth 60fps scrolling even with hundreds of messages.
 
 ---
 
@@ -69,9 +69,9 @@ Each provider acts like a lightweight plugin: register, replace, or extend them 
 
 ChatKit is part of the FinClip Agentic Middleware ecosystem, but it’s **fully open and server-agnostic** — you’re never locked to FinClip servers. Because it natively supports the **AG-UI protocol**, developers can host their own agent servers or build custom ones that speak AG-UI, enabling full control over backend logic, privacy, and data.
 
-You can even **combine** AG-UI with **MCP-UI** or the **OpenAI Apps SDK** to provide generative UI capabilities. ChatKit will seamlessly interoperate with any compliant AG-UI or MCP-UI server, automatically rendering dynamic, agent-generated UI elements (buttons, forms, cards, etc.) within your iOS app.
+You can even **combine** AG-UI with **MCP-UI / MCP Apps** or the **OpenAI Apps SDK** to provide generative UI capabilities. ChatKit will seamlessly interoperate with any compliant AG-UI or MCP-UI / MCP Apps server, automatically rendering dynamic, agent-generated UI elements (buttons, forms, cards, etc.) within your mobile app.
 
-ChatKit acts as the mobile-side runtime bridge for agent protocols like AG-UI (Agent UI) and MCP-UI (Model Context Protocol UI). Together, these protocols enable generative UI — where conversations dynamically generate interactive elements such as buttons, forms, and cards, rendered securely in iOS.
+ChatKit acts as the mobile-side runtime bridge for agent protocols like AG-UI (Agent UI), MCP-UI (Model Context Protocol UI), and A2UI (Agent to UI). Together, these protocols enable generative UI — where conversations dynamically generate interactive elements such as buttons, forms, and cards, rendered securely in mobile apps.
 
 ---
 
@@ -258,16 +258,18 @@ window.openai.setState({ count: 5 });
 const state = window.openai.getState(); // { count: 5 }
 ```
 
-### 🌐 MCP-UI Support
+### 🌐 MCP-UI / MCP Apps Support
 
-ChatKit provides comprehensive support for **MCP-UI (Model Context Protocol UI)**, enabling native iOS rendering of interactive web-based UI components from MCP servers.
+> **📌 Protocol Update**: MCP-UI has been standardized as **MCP Apps**, the official standard for interactive UI in MCP. ChatKit supports both the MCP Apps standard and legacy MCP-UI protocol for backward compatibility. Learn more at [mcpui.dev](https://mcpui.dev/).
+
+ChatKit provides comprehensive support for **MCP-UI / MCP Apps (Model Context Protocol UI)**, enabling native mobile app rendering of interactive web-based UI components from MCP servers.
 
 **Key Features:**
-- ✅ **Native WKWebView Rendering** - Secure, sandboxed execution for web compatibility
+- ✅ **Native WebView Rendering** - Secure, sandboxed execution for web compatibility
 - ✅ **Fire-and-Forget Actions** - Simple action pattern (`callTool`, `triggerIntent`, `submitPrompt`, `notify`, `openLink`)
 - ✅ **Auto-Resize Support** - Dynamic content sizing via `reportSize()`
 - ✅ **Render Data Injection** - Dynamic content injection for widget personalization
-- ✅ **Security Sandboxing** - WKWebView with Content Security Policy (CSP) enforcement
+- ✅ **Security Sandboxing** - WebView with Content Security Policy (CSP) enforcement
 - ✅ **Multiple Content Types** - Support for HTML (`text/html`), external URLs (`text/uri-list`), and remote DOM scripts
 
 **Usage:**
@@ -294,19 +296,36 @@ window.mcpUI.openLink("https://example.com");
 window.mcpUI.reportSize(450);
 ```
 
+### 🎯 A2UI Protocol Support
+
+ChatKit provides comprehensive support for the **A2UI (Agent to UI) protocol**, enabling native mobile app rendering of declarative UI components generated from AI agents.
+
+**Key Features:**
+- ✅ **JSONL Streaming** - Stream A2UI messages in JSON Lines format via SSE
+- ✅ **Declarative Components** - Support for standard components (Text, Button, Row, Column, Card, TextField, etc.)
+- ✅ **Data Binding** - Full path binding and data model update support
+- ✅ **Progressive Rendering** - Stream UI components for incremental updates
+- ✅ **Flat Component Model** - Adjacency list-based component structure for efficient rendering
+
+**Usage:**
+A2UI messages are automatically detected and rendered in ChatKit's conversation UI. Components are updated through standard A2UI message types (surfaceUpdate, dataModelUpdate, beginRendering).
+
+**Test Server:**
+- [a2ui-test-server](../../demo-apps/server/a2ui-test-server/) - Complete A2UI test server implementation
+
 ### 📊 Protocol Comparison
 
-| Feature | AG-UI | OpenAI Bridge | MCP-UI |
-|---------|-------|---------------|--------|
-| **Purpose** | Network protocol for agent communication | Widget compatibility layer | UI component rendering |
-| **API Style** | SSE + HTTP POST | Promise-based (`window.openai`) | Fire-and-forget (`window.mcpUI`) |
-| **State Management** | Conversation-level | Widget-level (`setState`/`getState`) | Manual (in widget) |
-| **Tool Calls** | Full consent flow via Sandbox | Promise-based with responses | Fire-and-forget |
-| **Text Streaming** | ✅ Real-time incremental | N/A | N/A |
-| **Multi-Session** | ✅ Yes | N/A | N/A |
-| **Best For** | Agent orchestration & communication | OpenAI Apps SDK widgets | MCP-UI ecosystem widgets |
+| Feature | AG-UI | OpenAI Bridge | MCP-UI / MCP Apps | A2UI |
+|---------|-------|---------------|-------------------|------|
+| **Purpose** | Network protocol for agent communication | Widget compatibility layer | UI component rendering | Declarative UI generation |
+| **API Style** | SSE + HTTP POST | Promise-based (`window.openai`) | Fire-and-forget (`window.mcpUI`) | JSONL streaming |
+| **State Management** | Conversation-level | Widget-level (`setState`/`getState`) | Manual (in widget) | Data model binding |
+| **Tool Calls** | Full consent flow via Sandbox | Promise-based with responses | Fire-and-forget | User action events |
+| **Text Streaming** | ✅ Real-time incremental | N/A | N/A | ✅ Component streaming |
+| **Multi-Session** | ✅ Yes | N/A | N/A | ✅ Yes |
+| **Best For** | Agent orchestration & communication | OpenAI Apps SDK widgets | MCP-UI / MCP Apps ecosystem widgets | Declarative UI generation |
 
-**Integration:** All three conventions work seamlessly together in ChatKit. AG-UI handles agent communication, while widgets are automatically rendered using either the OpenAI Bridge or MCP-UI support depending on the widget type.
+**Integration:** All four conventions work seamlessly together in ChatKit. AG-UI handles agent communication, while UI components are automatically rendered using OpenAI Bridge, MCP-UI / MCP Apps, or A2UI support depending on type.
 
 ---
 

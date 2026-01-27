@@ -45,7 +45,7 @@ Don't force users to leave their current task to get help. Embed ChatKit as a **
 
 ### 2. Vertical Expert Agents
 Build independent, professional-grade AI assistants (like *Project Samantha*) capable of handling complex domain logic.
-* **Generative UI**: Render complex financial tables, forms, or interactive charts dynamically using **MCP-UI** or **AG-UI** protocols. [Protocol Support](docs/overview.md#-protocol--convention-support)
+* **Generative UI**: Render complex financial tables, forms, or interactive charts dynamically using **MCP-UI / MCP Apps**, **AG-UI**, or **A2UI** protocols. [Protocol Support](docs/overview.md#-protocol--convention-support)
 * **One-Shot Execution**: Turn natural language (e.g., "Buy 100 shares of AAPL") into secure, sandboxed actions immediately—bypassing deep menus. [Architecture Overview](docs/architecture/overview.md)
 
 ### 3. Hybrid Human-AI Workflows

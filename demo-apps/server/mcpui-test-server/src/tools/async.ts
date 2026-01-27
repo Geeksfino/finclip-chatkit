@@ -133,7 +133,7 @@ export function registerAsyncTools(server: McpServer): void {
     {
       title: 'Process Async Request',
       description: 'Handles async tool call demo requests and returns processed data',
-      inputSchema: asyncRequestInputShape,
+      inputSchema: asyncRequestInputShape as any,
     },
     async (params: unknown) => {
       const parsed = z.object(asyncRequestInputShape).parse(params);
@@ -151,7 +151,7 @@ export function registerAsyncTools(server: McpServer): void {
       return {
         content: [
           {
-            type: 'text',
+            type: 'text' as const,
             text: JSON.stringify(responsePayload),
           },
         ],

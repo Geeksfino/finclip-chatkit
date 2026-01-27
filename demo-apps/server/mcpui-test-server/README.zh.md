@@ -1,6 +1,8 @@
-# MCP-UI 测试服务器
+# MCP-UI / MCP Apps 测试服务器
 
-用于 ConvoUI-iOS 集成测试的综合 MCP-UI 协议测试服务器。实现了具有完整 MCP-UI 支持的模型上下文协议（MCP）。
+> **📌 协议更新说明**: MCP-UI 现已标准化为 **MCP Apps**，成为 MCP 中交互式 UI 的官方标准。本服务器同时支持 MCP Apps 标准和传统的 MCP-UI 协议，确保向后兼容性。更多信息请参考 [MCP-UI 官网](https://mcpui.dev/)。
+
+用于 ChatKit 移动应用集成测试的综合 MCP-UI / MCP Apps 协议测试服务器。实现了具有完整 MCP-UI 支持的模型上下文协议（MCP）。
 
 ## 功能特性
 

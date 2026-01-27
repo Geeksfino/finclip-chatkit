@@ -445,7 +445,7 @@ Ensure correct platform specification:
 
 ```swift
 platforms: [
-    .iOS(.v16)  // ✅ Only iOS is supported
+    .iOS(.v16)  // ✅ iOS platform requirement
 ]
 ```
 

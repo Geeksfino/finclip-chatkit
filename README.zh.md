@@ -45,7 +45,7 @@ ChatKit 的设计初衷是灵活适应从"轻量级嵌入"到"全功能助理"�
 
 ### 2. 垂直领域专家 Agent
 打造像 *Project Samantha* 这样不仅能聊天，还能干活的专家级助理。
-* **生成式 UI (Generative UI)**：通过 **MCP-UI** 或 **AG-UI** 协议，让 AI 动态生成复杂的交易面板、表单或图表，而非仅仅输出文本。[协议支持](docs/overview.zh.md#-协议与约定支持)
+* **生成式 UI (Generative UI)**：通过 **MCP-UI / MCP Apps**、**AG-UI** 或 **A2UI** 协议，让 AI 动态生成复杂的交易面板、表单或图表，而非仅仅输出文本。[协议支持](docs/overview.zh.md#-协议与约定支持)
 * **一语直达 (One-Shot Action)**：支持将自然语言指令（如"买入100股苹果"）直接转化为安全沙箱内的原子操作，实现从意图到执行的闭环。[架构概述](docs/architecture/overview.zh.md)
 
 ### 3. 人机协同工作流

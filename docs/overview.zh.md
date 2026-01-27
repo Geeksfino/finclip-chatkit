@@ -2,9 +2,9 @@
 
 [English](README.md) | [简体中文](README.zh.md)
 
-**为 iOS 应用打造的对话式 AI SDK。**
+**为移动应用打造的对话式 AI SDK。**
 
-FinClip ChatKit 是一个可嵌入的 SDK,让您能够直接在 iOS 应用中构建智能的、上下文感知的对话体验。它提供了即插即用的聊天界面、安全的代理操作沙箱,以及对代理协议(如 AG-UI、OpenAI Apps SDK 和 MCP-UI)的原生桥接——所有功能集于一身。
+FinClip ChatKit 是一个可嵌入的 SDK,让您能够直接在移动应用中构建智能的、上下文感知的对话体验。它提供了即插即用的聊天界面、安全的代理操作沙箱,以及对代理协议(如 AG-UI、OpenAI Apps SDK、MCP-UI 和 A2UI)的原生桥接——所有功能集于一身。
 
 为希望快速添加 AI 聊天和代理辅助操作的开发者而构建,ChatKit 将原生 UI 性能与上下文感知和安全性相结合。它汇集了实时文本流、多媒体渲染和基于策略的沙箱执行——让您的应用能够安全地交谈、行动和推理。
 
@@ -30,7 +30,7 @@ FinClip ChatKit 是一个可嵌入的 SDK,让您能够直接在 iOS 应用中构
 用于快速开发的高级 API(20-30 行代码即可实现聊天 UI),或在需要最大控制时使用低级 API。适用于 WebSocket/HTTP 后端,支持自定义网络适配器,并可轻松嵌入导航栈、Sheet、抽屉或标签页中。
 
 **📱 原生性能**  
-纯 iOS/Swift 实现,使用原生 WKWebView 渲染交互式组件。无跨平台妥协——专为 iOS 构建,具有最佳内存使用和流畅的 60fps 滚动,即使有数百条消息也是如此。
+多平台原生实现(iOS/Swift、Android/Kotlin),使用原生 WebView 渲染交互式组件。无跨平台妥协——专为各平台构建,具有最佳内存使用和流畅的 60fps 滚动,即使有数百条消息也是如此。
 
 ---
 
@@ -69,9 +69,11 @@ ChatKit 通过强大的**提供器系统**实现可扩展性——一种轻量�
 
 ChatKit 是 FinClip Agentic Middleware 生态系统的一部分,但它是**完全开放且与服务器无关的**——您永远不会被锁定在 FinClip 服务器上。因为它原生支持 **AG-UI 协议**,开发者可以托管自己的代理服务器或构建遵循 AG-UI 的自定义服务器,从而完全控制后端逻辑、隐私和数据。
 
-您甚至可以**结合** AG-UI 与 **MCP-UI** 或 **OpenAI Apps SDK** 来提供生成式 UI 功能。ChatKit 将与任何兼容的 AG-UI 或 MCP-UI 服务器无缝互操作,自动在您的 iOS 应用中渲染动态的、代理生成的 UI 元素(按钮、表单、卡片等)。
+您甚至可以**结合** AG-UI 与 **MCP-UI / MCP Apps**、**A2UI** 或 **OpenAI Apps SDK** 来提供生成式 UI 功能。ChatKit 将与任何兼容的 AG-UI、MCP-UI / MCP Apps 或 A2UI 服务器无缝互操作,自动在您的移动应用中渲染动态的、代理生成的 UI 元素(按钮、表单、卡片等)。
 
-ChatKit 充当代理协议(如 AG-UI(代理 UI)和 MCP-UI(模型上下文协议 UI))的移动端运行时桥接。这些协议共同实现生成式 UI——对话动态生成交互式元素(如按钮、表单和卡片),在 iOS 中安全渲染。
+> **📌 协议更新**: MCP-UI 现已标准化为 **MCP Apps**，成为 MCP 中交互式 UI 的官方标准。ChatKit 同时支持 MCP Apps 标准和传统 MCP-UI 协议。更多信息请参考 [MCP-UI 官网](https://mcpui.dev/)。
+
+ChatKit 充当代理协议(如 AG-UI(代理 UI)、MCP-UI / MCP Apps(模型上下文协议 UI)和 A2UI(Agent to UI))的移动端运行时桥接。这些协议共同实现生成式 UI——对话动态生成交互式元素(如按钮、表单和卡片),在移动应用中安全渲染。
 
 ---
 
@@ -294,19 +296,36 @@ window.mcpUI.openLink("https://example.com");
 window.mcpUI.reportSize(450);
 ```
 
+### 🎯 A2UI 协议支持
+
+ChatKit 为 **A2UI (Agent to UI) 协议**提供全面支持,实现从 AI 代理生成声明式 UI 组件的原生移动应用渲染。
+
+**主要功能:**
+- ✅ **JSONL 流式传输** - 通过 SSE 流式传输 JSON Lines 格式的 A2UI 消息
+- ✅ **声明式组件** - 支持标准组件(Text、Button、Row、Column、Card、TextField 等)
+- ✅ **数据绑定** - 完整的路径绑定和数据模型更新支持
+- ✅ **渐进式渲染** - 流式传输 UI 组件,实现增量更新
+- ✅ **扁平组件模型** - 基于邻接表的组件结构,高效渲染
+
+**用法:**
+A2UI 消息会自动在 ChatKit 的对话 UI 中检测并渲染。组件通过标准的 A2UI 消息类型(surfaceUpdate、dataModelUpdate、beginRendering)进行更新。
+
+**测试服务器:**
+- [a2ui-test-server](../../demo-apps/server/a2ui-test-server/) - 完整的 A2UI 测试服务器实现
+
 ### 📊 协议比较
 
-| 功能 | AG-UI | OpenAI Bridge | MCP-UI |
-|---------|-------|---------------|--------|
-| **目的** | 代理通信的网络协议 | 小部件兼容层 | UI 组件渲染 |
-| **API 风格** | SSE + HTTP POST | 基于 Promise(`window.openai`) | 一次性(`window.mcpUI`) |
-| **状态管理** | 对话级别 | 小部件级别(`setState`/`getState`) | 手动(在小部件中) |
-| **工具调用** | 通过 Sandbox 的完整同意流程 | 基于 Promise 并有响应 | 一次性 |
-| **文本流** | ✅ 实时增量 | 不适用 | 不适用 |
-| **多会话** | ✅ 是 | 不适用 | 不适用 |
-| **最适合** | 代理编排和通信 | OpenAI Apps SDK 小部件 | MCP-UI 生态系统小部件 |
+| 功能 | AG-UI | OpenAI Bridge | MCP-UI / MCP Apps | A2UI |
+|---------|-------|---------------|-------------------|------|
+| **目的** | 代理通信的网络协议 | 小部件兼容层 | UI 组件渲染 | 声明式 UI 生成 |
+| **API 风格** | SSE + HTTP POST | 基于 Promise(`window.openai`) | 一次性(`window.mcpUI`) | JSONL 流式传输 |
+| **状态管理** | 对话级别 | 小部件级别(`setState`/`getState`) | 手动(在小部件中) | 数据模型绑定 |
+| **工具调用** | 通过 Sandbox 的完整同意流程 | 基于 Promise 并有响应 | 一次性 | 用户操作事件 |
+| **文本流** | ✅ 实时增量 | 不适用 | 不适用 | ✅ 组件流式传输 |
+| **多会话** | ✅ 是 | 不适用 | 不适用 | ✅ 是 |
+| **最适合** | 代理编排和通信 | OpenAI Apps SDK 小部件 | MCP-UI / MCP Apps 生态系统小部件 | 声明式 UI 生成 |
 
-**集成:** 所有三种约定在 ChatKit 中无缝协作。AG-UI 处理代理通信,而小部件根据小部件类型使用 OpenAI Bridge 或 MCP-UI 支持自动渲染。
+**集成:** 所有四种约定在 ChatKit 中无缝协作。AG-UI 处理代理通信,而 UI 组件根据类型使用 OpenAI Bridge、MCP-UI / MCP Apps 或 A2UI 支持自动渲染。
 
 ---
 

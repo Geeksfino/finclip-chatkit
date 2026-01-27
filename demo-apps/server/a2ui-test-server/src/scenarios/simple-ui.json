@@ -1,0 +1,262 @@
+{
+  "id": "simple-ui",
+  "name": "Simple UI",
+  "description": "Basic UI with Text and Button components",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*hello.*|.*hi.*|.*你好.*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["header", "button"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "header",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Hello! Welcome to A2UI"
+                    },
+                    "usageHint": "h1"
+                  }
+                }
+              },
+              {
+                "id": "button",
+                "component": {
+                  "Button": {
+                    "child": "button-text",
+                    "action": {
+                      "name": "greet_back",
+                      "context": [
+                        {
+                          "key": "message",
+                          "value": {
+                            "literalString": "Hello from button!"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "button-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Click Me"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "contents": []
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 150
+    },
+    {
+      "trigger": {
+        "userMessage": ".*form.*|.*表单.*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["title", "form"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "title",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Contact Form"
+                    },
+                    "usageHint": "h2"
+                  }
+                }
+              },
+              {
+                "id": "form",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["name-field", "email-field", "submit-btn"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "name-field",
+                "component": {
+                  "TextField": {
+                    "label": {
+                      "literalString": "Name"
+                    },
+                    "value": {
+                      "path": "/form/name",
+                      "literalString": ""
+                    }
+                  }
+                }
+              },
+              {
+                "id": "email-field",
+                "component": {
+                  "TextField": {
+                    "label": {
+                      "literalString": "Email"
+                    },
+                    "value": {
+                      "path": "/form/email",
+                      "literalString": ""
+                    }
+                  }
+                }
+              },
+              {
+                "id": "submit-btn",
+                "component": {
+                  "Button": {
+                    "child": "submit-text",
+                    "action": {
+                      "name": "submit_form",
+                      "context": [
+                        {
+                          "key": "name",
+                          "value": {
+                            "path": "/form/name"
+                          }
+                        },
+                        {
+                          "key": "email",
+                          "value": {
+                            "path": "/form/email"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "submit-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Submit"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "path": "form",
+            "contents": [
+              {
+                "key": "name",
+                "valueString": ""
+              },
+              {
+                "key": "email",
+                "valueString": ""
+              }
+            ]
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 200
+    },
+    {
+      "trigger": {
+        "userMessage": "*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["response-text"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "response-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "I understand. How can I help you?"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "contents": []
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 150
+    }
+  ]
+}

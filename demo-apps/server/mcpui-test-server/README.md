@@ -1,6 +1,8 @@
-# MCP-UI Test Server
+# MCP-UI / MCP Apps Test Server
 
-A comprehensive MCP-UI protocol test server for ConvoUI-iOS integration testing. Implements the Model Context Protocol (MCP) with full MCP-UI support.
+> **📌 Protocol Update**: MCP-UI has been standardized as **MCP Apps**, the official standard for interactive UI in MCP. This server supports both the MCP Apps standard and legacy MCP-UI protocol for backward compatibility. Learn more at [mcpui.dev](https://mcpui.dev/).
+
+A comprehensive MCP-UI / MCP Apps protocol test server for ChatKit mobile app integration testing. Implements the Model Context Protocol (MCP) with full MCP-UI support.
 
 ## Features
 

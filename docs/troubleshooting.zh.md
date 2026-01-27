@@ -438,14 +438,14 @@ error: platform 'macOS' is not supported
 ```
 
 **根本原因：**
-ChatKit 仅支持 iOS 16.0+。
+ChatKit 支持 iOS 16.0+ 和 Android（最低版本要求请参考各平台文档）。
 
 **解决方案：**
 确保正确的平台规范：
 
 ```swift
 platforms: [
-    .iOS(.v16)  // ✅ 仅支持 iOS
+    .iOS(.v16)  // ✅ iOS 平台要求
 ]
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "mcpui-test-server",
   "version": "1.0.0",
-  "description": "MCP-UI protocol test server for ConvoUI-iOS integration testing",
+  "description": "MCP-UI protocol test server for Chatkit SDK integration testing",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
@@ -22,7 +22,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@mcp-ui/server": "5.12.0-alpha.5",
+    "@mcp-ui/server": "^5.16.3",
     "@modelcontextprotocol/sdk": "^1.0.4",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

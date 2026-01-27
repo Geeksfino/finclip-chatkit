@@ -16,7 +16,7 @@ export function registerHTMLTools(server: McpServer): void {
     {
       title: 'Show Simple HTML',
       description: 'Displays basic HTML content with styling and interactive buttons',
-      inputSchema: simpleHtmlInputSchema,
+      inputSchema: simpleHtmlInputSchema as any,
     },
     async (params: unknown) => {
       const { message = 'Hello from MCP-UI Test Server!' } = z.object(simpleHtmlInputSchema).parse(params);

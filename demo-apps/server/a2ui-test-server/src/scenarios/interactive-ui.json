@@ -1,0 +1,276 @@
+{
+  "id": "interactive-ui",
+  "name": "Interactive UI",
+  "description": "UI with data binding and dynamic updates",
+  "turns": [
+    {
+      "trigger": {
+        "userMessage": ".*counter.*|.*计数器.*|.*count.*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["title", "counter-row", "button-row"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "title",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Interactive Counter"
+                    },
+                    "usageHint": "h2"
+                  }
+                }
+              },
+              {
+                "id": "counter-row",
+                "component": {
+                  "Row": {
+                    "alignment": "center",
+                    "children": {
+                      "explicitList": ["counter-label", "counter-value"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "counter-label",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Count:"
+                    }
+                  }
+                }
+              },
+              {
+                "id": "counter-value",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "path": "/counter/value"
+                    },
+                    "usageHint": "h3"
+                  }
+                }
+              },
+              {
+                "id": "button-row",
+                "component": {
+                  "Row": {
+                    "alignment": "center",
+                    "children": {
+                      "explicitList": ["decrement-btn", "increment-btn"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "decrement-btn",
+                "component": {
+                  "Button": {
+                    "child": "decrement-text",
+                    "action": {
+                      "name": "decrement",
+                      "context": [
+                        {
+                          "key": "currentValue",
+                          "value": {
+                            "path": "/counter/value"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "decrement-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "-"
+                    }
+                  }
+                }
+              },
+              {
+                "id": "increment-btn",
+                "component": {
+                  "Button": {
+                    "child": "increment-text",
+                    "action": {
+                      "name": "increment",
+                      "context": [
+                        {
+                          "key": "currentValue",
+                          "value": {
+                            "path": "/counter/value"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "increment-text",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "+"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "path": "counter",
+            "contents": [
+              {
+                "key": "value",
+                "valueNumber": 0
+              }
+            ]
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 200
+    },
+    {
+      "trigger": {
+        "userMessage": ".*list.*|.*列表.*|.*items.*"
+      },
+      "messages": [
+        {
+          "surfaceUpdate": {
+            "surfaceId": "main",
+            "components": [
+              {
+                "id": "root",
+                "component": {
+                  "Column": {
+                    "children": {
+                      "explicitList": ["title", "items-list"]
+                    }
+                  }
+                }
+              },
+              {
+                "id": "title",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "literalString": "Dynamic List"
+                    },
+                    "usageHint": "h2"
+                  }
+                }
+              },
+              {
+                "id": "items-list",
+                "component": {
+                  "List": {
+                    "children": {
+                      "template": {
+                        "dataBinding": {
+                          "path": "/items"
+                        },
+                        "componentId": "item-template"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "id": "item-template",
+                "component": {
+                  "Card": {
+                    "child": "item-content"
+                  }
+                }
+              },
+              {
+                "id": "item-content",
+                "component": {
+                  "Text": {
+                    "text": {
+                      "path": "/title"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dataModelUpdate": {
+            "surfaceId": "main",
+            "contents": [
+              {
+                "key": "items",
+                "valueMap": [
+                  {
+                    "key": "0",
+                    "valueMap": [
+                      {
+                        "key": "title",
+                        "valueString": "Item 1"
+                      }
+                    ]
+                  },
+                  {
+                    "key": "1",
+                    "valueMap": [
+                      {
+                        "key": "title",
+                        "valueString": "Item 2"
+                      }
+                    ]
+                  },
+                  {
+                    "key": "2",
+                    "valueMap": [
+                      {
+                        "key": "title",
+                        "valueString": "Item 3"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "beginRendering": {
+            "surfaceId": "main",
+            "root": "root"
+          }
+        }
+      ],
+      "delayMs": 200
+    }
+  ]
+}

@@ -38,7 +38,7 @@ export function registerURLTools(server: McpServer): void {
     {
       title: 'Show Custom URL',
       description: 'Displays a custom URL provided by the user',
-      inputSchema: customUrlInputSchema,
+      inputSchema: customUrlInputSchema as any,
     },
     async (params: unknown) => {
       const { url } = z.object(customUrlInputSchema).parse(params);
