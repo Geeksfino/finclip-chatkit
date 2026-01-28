@@ -12,8 +12,8 @@ A comprehensive MCP-UI / MCP Apps protocol test server for ChatKit mobile app in
 - 🔧 **3 Content Types** - HTML, External URLs, Remote DOM
 - 📊 **Metadata Support** - Preferred size, render data
 - 🔄 **Async Protocol** - Message IDs, acknowledgments, responses
-- 🚀 **High Performance** - Built on Express
-- 📝 **Structured Logging** - Pino-based logging
+- 🚀 **High Performance** - Built on Fastify
+- 📝 **Structured Logging** - Pino-based logging (Fastify native)
 
 ## Quick Start
 
@@ -185,7 +185,11 @@ curl -X POST http://localhost:3100/mcp \
 ```
 mcpui-test-server/
 ├── src/
-│   ├── server.ts           # Main Express server
+│   ├── server.ts           # Main Fastify server
+│   ├── routes/
+│   │   ├── health.ts       # Health check endpoint
+│   │   ├── tools.ts        # Tools list endpoint
+│   │   └── mcp.ts          # MCP protocol endpoints
 │   ├── mcp/
 │   │   └── session.ts      # Session management
 │   ├── tools/
@@ -198,7 +202,8 @@ mcpui-test-server/
 │   ├── types/
 │   │   └── index.ts        # TypeScript types
 │   └── utils/
-│       └── logger.ts       # Logging utilities
+│       ├── config.ts       # Configuration loader
+│       └── logger.ts       # Pino logger
 ├── tests/
 ├── package.json
 ├── tsconfig.json

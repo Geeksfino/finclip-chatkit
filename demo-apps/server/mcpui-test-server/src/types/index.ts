@@ -1,3 +1,7 @@
+/**
+ * Type definitions for MCP-UI Test Server
+ */
+
 export interface ServerConfig {
   port: number;
   host: string;
@@ -5,6 +9,8 @@ export interface ServerConfig {
   version: string;
   corsOrigin: string;
   sessionTimeout: number;
+  logLevel: string;
+  logPretty: boolean;
 }
 
 export interface MCPSession {

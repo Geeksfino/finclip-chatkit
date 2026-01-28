@@ -1,4 +1,4 @@
-import { MCPSession } from '../types/index.js';
+import type { MCPSession } from '../types/index.js';
 import { logger } from '../utils/logger.js';
 
 export class SessionManager {

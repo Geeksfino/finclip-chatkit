@@ -1,9 +1,9 @@
 {
   "name": "mcpui-test-server",
   "version": "1.0.0",
-  "description": "MCP-UI protocol test server for Chatkit SDK integration testing",
-  "main": "dist/server.js",
+  "description": "MCP-UI / MCP Apps protocol test server for ChatKit SDK integration testing",
   "type": "module",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
@@ -16,32 +16,34 @@
   "keywords": [
     "mcp",
     "mcp-ui",
+    "mcp-apps",
     "test-server",
     "model-context-protocol"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@fastify/cors": "^10.0.1",
     "@mcp-ui/server": "^5.16.3",
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "pino": "^8.16.2",
-    "pino-pretty": "^10.2.3",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^4.17.23",
-    "@types/node": "^20.19.21",
-    "@typescript-eslint/eslint-plugin": "^8.12.2",
-    "@typescript-eslint/parser": "^8.12.2",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
     "@vitest/ui": "^3.2.4",
-    "eslint": "^9.13.0",
-    "prettier": "^3.3.3",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
     "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

@@ -1,17 +1,22 @@
-import pino from 'pino';
+/**
+ * Structured logger using Pino
+ */
 
-const isPretty = process.env.LOG_PRETTY === 'true';
+import pino, { type LoggerOptions } from 'pino';
+import { config } from './config.js';
 
-export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  transport: isPretty
+export const loggerOptions: LoggerOptions = {
+  level: config.logLevel,
+  transport: config.logPretty
     ? {
         target: 'pino-pretty',
         options: {
           colorize: true,
-          translateTime: 'HH:MM:ss',
+          translateTime: 'HH:MM:ss Z',
           ignore: 'pid,hostname',
         },
       }
     : undefined,
-});
+};
+
+export const logger = pino(loggerOptions);
