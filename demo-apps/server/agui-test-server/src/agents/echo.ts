@@ -11,12 +11,12 @@ import type {
   TextMessageChunkEvent,
 } from '@ag-ui/core';
 import { EventType } from '@ag-ui/core';
+import { getLastUserMessage } from '../utils/helpers.js';
 
 export class EchoAgent extends BaseAgent {
   async *run(input: RunAgentInput): AsyncGenerator<BaseEvent> {
     const { threadId, runId, messages } = input;
 
-    // Start run
     const started: RunStartedEvent = {
       type: EventType.RUN_STARTED,
       threadId,
@@ -24,14 +24,11 @@ export class EchoAgent extends BaseAgent {
     };
     yield started;
 
-    // Get last user message
-    const lastUserMessage = messages
-      .filter((m) => m.role === 'user')
-      .pop();
-
+    const lastUserMessage = getLastUserMessage(messages);
     if (lastUserMessage) {
       const messageId = this.generateMessageId();
-      const echoText = `Echo: ${lastUserMessage.content}`;
+      const content = (lastUserMessage as { content?: string }).content ?? '';
+      const echoText = `Echo: ${content}`;
 
       // Stream the echo response
       for (const char of echoText) {

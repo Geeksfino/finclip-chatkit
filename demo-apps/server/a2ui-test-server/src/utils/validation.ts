@@ -2,7 +2,11 @@
  * Input validation utilities for A2UI requests
  */
 
-import type { A2UIRequest, ClientEventMessage } from '../types/a2ui.js';
+import type {
+  A2AMessageRequest,
+  NormalizedAgentInput,
+  ClientEventMessage,
+} from '../types/a2ui.js';
 
 export class ValidationError extends Error {
   constructor(message: string) {
@@ -12,26 +16,41 @@ export class ValidationError extends Error {
 }
 
 /**
- * Validate A2UI request input
+ * Validate A2A Message request input (A2UI v0.8 compliant)
  */
-export function validateA2UIRequest(input: unknown): asserts input is A2UIRequest {
+export function validateA2AMessageRequest(
+  input: unknown
+): asserts input is A2AMessageRequest {
   if (!input || typeof input !== 'object') {
     throw new ValidationError('Input must be an object');
   }
 
-  const data = input as Partial<A2UIRequest>;
+  const data = input as Record<string, unknown>;
+  const message = data.message as Record<string, unknown> | undefined;
+  const prompt = message?.prompt as Record<string, unknown> | undefined;
+  const text = prompt?.text;
 
-  if (!data.threadId || typeof data.threadId !== 'string') {
-    throw new ValidationError('threadId is required and must be a string');
+  if (typeof text !== 'string' || !text.trim()) {
+    throw new ValidationError('message.prompt.text is required and must be a non-empty string');
   }
+}
 
-  if (!data.runId || typeof data.runId !== 'string') {
-    throw new ValidationError('runId is required and must be a string');
-  }
-
-  if (!data.message || typeof data.message !== 'string') {
-    throw new ValidationError('message is required and must be a string');
-  }
+/**
+ * Normalize A2A Message to internal agent input
+ */
+export function normalizeA2AMessageToAgentInput(
+  input: A2AMessageRequest
+): NormalizedAgentInput {
+  const metadata = input.metadata ?? {};
+  return {
+    message: input.message.prompt.text,
+    surfaceId: metadata.surfaceId ?? 'main',
+    metadata: metadata.a2uiClientCapabilities
+      ? { a2uiClientCapabilities: metadata.a2uiClientCapabilities }
+      : undefined,
+    threadId: typeof metadata.threadId === 'string' ? metadata.threadId : undefined,
+    runId: typeof metadata.runId === 'string' ? metadata.runId : undefined,
+  };
 }
 
 /**

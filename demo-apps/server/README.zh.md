@@ -77,17 +77,22 @@ npm run dev
 ### 运行 mcpui-test-server
 
 ```bash
-# 导航到服务器目录
 cd demo-apps/server/mcpui-test-server
-
-# 安装依赖项
 npm install
-# 或
-pnpm install
-
-# 启动服务器
 npm run dev
 ```
+
+服务器运行在 **http://localhost:3100**。
+
+### 运行 a2ui-test-server
+
+```bash
+cd demo-apps/server/a2ui-test-server
+npm install
+npm run dev
+```
+
+服务器运行在 **http://localhost:3200**。使用 agui-test-server 且 `EXTENSION_MODE=a2ui` 时需要启动。
 
 ---
 
@@ -95,28 +100,28 @@ npm run dev
 
 ### agui-test-server 配置
 
-编辑 `agui-test-server/.env`：
+编辑 `agui-test-server/.env`（完整选项见 `.env.example`）：
 
 ```env
-# 服务器设置
-PORT=3000                    # 监听端口
-HOST=0.0.0.0                 # 绑定主机
+# 服务器
+PORT=3000
+HOST=0.0.0.0
 
-# 代理类型（选择一个）
-DEFAULT_AGENT=scenario       # 预编写脚本响应（推荐用于测试）
-# DEFAULT_AGENT=echo         # 简单回声代理
-# DEFAULT_AGENT=litellm      # LiteLLM 代理集成
-# DEFAULT_AGENT=deepseek     # 直接 DeepSeek API
+# 代理模式：emulated | llm
+AGENT_MODE=emulated          # 预脚本（默认）或真实 LLM
 
-# LiteLLM 设置（如果使用 DEFAULT_AGENT=litellm）
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
+# AGENT_MODE=emulated 时：场景 ID（echo | simple-chat | tool-call | error-handling）
+DEFAULT_SCENARIO=tool-call
 
-# DeepSeek 设置（如果使用 DEFAULT_AGENT=deepseek）
-DEEPSEEK_API_KEY=your-deepseek-api-key
-DEEPSEEK_MODEL=deepseek-chat
-DEEPSEEK_BASE_URL=https://api.deepseek.com
+# AGENT_MODE=llm 时：LLM 提供商（deepseek | openai | siliconflow | litellm）
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-api-key
+
+# 扩展模式：none | mcpui | a2ui（启用 MCPUI 工具或 A2UI 代理）
+EXTENSION_MODE=none
+MCPUI_SERVER_URL=http://localhost:3100/mcp   # EXTENSION_MODE=mcpui 时
+A2UI_SERVER_URL=http://localhost:3200        # EXTENSION_MODE=a2ui 时
 ```
 
 ### mcpui-test-server 配置
@@ -124,7 +129,16 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 编辑 `mcpui-test-server/.env`：
 
 ```env
-PORT=3001                    # 使用不同端口避免冲突
+PORT=3100                    # MCP 服务（EXTENSION_MODE=mcpui 时 agui 连接此地址）
+HOST=0.0.0.0
+```
+
+### a2ui-test-server 配置
+
+编辑 `a2ui-test-server/.env`：
+
+```env
+PORT=3200
 HOST=0.0.0.0
 ```
 
@@ -222,71 +236,28 @@ curl http://localhost:3000/scenarios
 
 ## 🔄 代理类型说明
 
-### Scenario 代理（默认 - 推荐）
+### Scenario 代理（模拟 - 默认）
 
-**适用于**：您想要可预测、确定性的响应进行测试。
+**适用于**：可预测响应进行测试。
 
-基于对话模式的预编写脚本响应。非常适合：
-- 单元测试
-- 演示录制
-- 可重现的行为
-
-**可用场景**：
+设置 `AGENT_MODE=emulated` 和 `DEFAULT_SCENARIO=<id>`：
 - `simple-chat` - 基本对话
 - `tool-call` - 功能调用演示
 - `error-handling` - 错误场景
 
 ### Echo 代理
 
-**适用于**：您只想测试连接和消息流。
+设置 `AGENT_MODE=emulated` 和 `DEFAULT_SCENARIO=echo` 可回显用户输入。
 
-简单地回显用户发送的内容。适合：
-- 测试网络
-- 调试消息格式
-- 健全性检查
+### LLM 代理
 
-启用方式：
-```env
-DEFAULT_AGENT=echo
-```
+**适用于**：真实 AI 响应。
 
-### LiteLLM 代理
+1. 设置 `AGENT_MODE=llm`（或运行 `npm run dev -- --use-llm`）
+2. 在 `.env` 中配置 `LLM_PROVIDER`、`LLM_MODEL`、`LLM_API_KEY`
+3. 支持的提供商：`deepseek`、`openai`、`siliconflow`、`litellm`
 
-**适用于**：您想要来自任何 LLM 提供商的真实 AI 响应。
-
-连接到可以路由到 OpenAI、Anthropic、DeepSeek 等的 LiteLLM 代理。
-
-**设置**：
-1. 安装 LiteLLM：
-   ```bash
-   pip install litellm
-   ```
-
-2. 启动 LiteLLM 代理：
-   ```bash
-   litellm --model deepseek/deepseek-chat --api_key $DEEPSEEK_API_KEY
-   ```
-
-3. 配置服务器：
-   ```env
-   DEFAULT_AGENT=litellm
-   LITELLM_ENDPOINT=http://localhost:4000/v1
-   ```
-
-### DeepSeek 代理
-
-**适用于**：您想要直接 DeepSeek API 集成，无需 LiteLLM。
-
-使用 DeepSeek 获得真实 AI 响应的最快途径。
-
-**设置**：
-1. 从 [DeepSeek](https://platform.deepseek.com/) 获取 API 密钥
-
-2. 配置服务器：
-   ```env
-   DEFAULT_AGENT=deepseek
-   DEEPSEEK_API_KEY=your-key-here
-   ```
+完整配置见 [agui-test-server README](agui-test-server/README.md)。
 
 ---
 
@@ -359,22 +330,22 @@ PORT=3001
    - 查找 IP：`系统设置 → 网络 → Wi-Fi → 详细信息 → IP 地址`（macOS）或网络设置（其他系统）
    - 确保设备和开发机器在同一 Wi-Fi 网络上
 
-### LiteLLM/DeepSeek 无响应
+### LLM 无响应
 
-1. **检查是否设置了 API 密钥**：
+1. **检查 API 密钥**（来自 agui `.env`）：
    ```bash
-   echo $DEEPSEEK_API_KEY
+   echo $LLM_API_KEY
    ```
 
-2. **直接测试 API**：
+2. **直接测试 API**（DeepSeek 示例）：
    ```bash
    curl https://api.deepseek.com/v1/chat/completions \
-     -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
+     -H "Authorization: Bearer $LLM_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"你好"}]}'
    ```
 
-3. **检查服务器日志**以获取特定错误消息
+3. **查看服务器日志**获取具体错误信息
 
 ### 依赖项无法安装
 
@@ -394,11 +365,11 @@ PORT=3001
 
 ## 📚 延伸阅读
 
-- [agui-test-server README](agui-test-server/README.md) - 完整的 AG-UI 服务器文档
-- [mcpui-test-server README](mcpui-test-server/README.md) - 完整的 MCP-UI 服务器文档
-- [a2ui-test-server README](a2ui-test-server/README.md) - 完整的 A2UI 服务器文档
+- [agui-test-server README](agui-test-server/README.md) - AG-UI 服务器文档
+- [mcpui-test-server README](mcpui-test-server/README.md) - MCP-UI 服务器文档
+- [a2ui-test-server README](a2ui-test-server/README.md) - A2UI 服务器文档
 - [ChatKit 开发者指南](../../docs/guides/developer-guide.md) - 移动 SDK 集成指南
-- [AG-UI 协议规范](agui-test-server/docs/agui-compliance.md) - 协议规范
+- [agui-test-server docs](agui-test-server/docs/) - architecture、agui-compliance、resilience
 
 ---
 

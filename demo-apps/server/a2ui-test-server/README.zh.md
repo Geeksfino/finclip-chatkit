@@ -86,24 +86,33 @@ npm start
 
 ### POST /agent
 
-主要 A2UI agent 端点。接受用户消息并返回包含 A2UI JSONL 消息的 SSE 流。
+主要 A2UI agent 端点。接受 **A2A Message 格式**（符合 [A2UI v0.8](https://a2ui.org/specification/v0.8-a2ui/)）并返回包含 A2UI JSONL 消息的 SSE 流。
 
-**请求**：
+**请求**（A2A Message）：
 ```json
 {
-  "threadId": "uuid",
-  "runId": "run_timestamp_random",
-  "message": "你好，给我显示一个表单",
-  "surfaceId": "main",
   "metadata": {
     "a2uiClientCapabilities": {
       "supportedCatalogIds": [
         "https://github.com/google/A2UI/blob/main/specification/v0_8/json/standard_catalog_definition.json"
       ]
+    },
+    "surfaceId": "main",
+    "threadId": "可选-会话id",
+    "runId": "可选-runid"
+  },
+  "message": {
+    "prompt": {
+      "text": "你好，给我显示一个表单"
     }
   }
 }
 ```
+
+- `message.prompt.text`（必填）：用户输入文本
+- `metadata.a2uiClientCapabilities`（可选）：Catalog 协商
+- `metadata.surfaceId`（可选）：目标 surface，默认 `"main"`
+- `metadata.threadId`、`metadata.runId`（可选）：AG-UI 编排用
 
 **响应**：`text/event-stream` (JSONL 格式)
 

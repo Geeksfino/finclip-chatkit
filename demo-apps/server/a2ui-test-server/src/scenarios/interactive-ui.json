@@ -194,9 +194,7 @@
                   "List": {
                     "children": {
                       "template": {
-                        "dataBinding": {
-                          "path": "/items"
-                        },
+                        "dataBinding": "/items",
                         "componentId": "item-template"
                       }
                     }

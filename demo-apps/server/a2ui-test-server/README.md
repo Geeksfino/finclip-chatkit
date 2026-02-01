@@ -86,24 +86,33 @@ The server will start on `http://localhost:3200`.
 
 ### POST /agent
 
-Main A2UI agent endpoint. Accepts user messages and returns SSE stream with A2UI JSONL messages.
+Main A2UI agent endpoint. Accepts **A2A Message format** (per [A2UI v0.8](https://a2ui.org/specification/v0.8-a2ui/)) and returns SSE stream with A2UI JSONL messages.
 
-**Request**:
+**Request** (A2A Message):
 ```json
 {
-  "threadId": "uuid",
-  "runId": "run_timestamp_random",
-  "message": "Hello, show me a form",
-  "surfaceId": "main",
   "metadata": {
     "a2uiClientCapabilities": {
       "supportedCatalogIds": [
         "https://github.com/google/A2UI/blob/main/specification/v0_8/json/standard_catalog_definition.json"
       ]
+    },
+    "surfaceId": "main",
+    "threadId": "optional-session-id",
+    "runId": "optional-run-id"
+  },
+  "message": {
+    "prompt": {
+      "text": "Hello, show me a form"
     }
   }
 }
 ```
+
+- `message.prompt.text` (required): User input text
+- `metadata.a2uiClientCapabilities` (optional): Catalog negotiation
+- `metadata.surfaceId` (optional): Target surface, default `"main"`
+- `metadata.threadId`, `metadata.runId` (optional): Session/run identifiers for AG-UI orchestration
 
 **Response**: `text/event-stream` (JSONL format)
 
@@ -142,6 +151,35 @@ Handle user interactions from A2UI widgets.
 **Response**: 
 - If UI update needed: SSE stream with new A2UI messages
 - Otherwise: `{"status":"ok","message":"Action received"}`
+
+### GET /a2a/card (A2UI v0.8 Agent Card)
+
+Returns Agent Card with A2UI capabilities for catalog negotiation.
+
+**Response**:
+```json
+{
+  "name": "A2UI Test Server",
+  "description": "A2UI v0.8 test server with scenario and LLM agents",
+  "capabilities": {
+    "extensions": [{
+      "uri": "https://a2ui.org/a2a-extension/a2ui/v0.8",
+      "params": {
+        "supportedCatalogIds": ["https://github.com/google/A2UI/blob/main/specification/v0_8/json/standard_catalog_definition.json"],
+        "acceptsInlineCatalogs": false
+      }
+    }]
+  }
+}
+```
+
+### POST /a2a/action (A2A Message format)
+
+Accepts client events wrapped in A2A Message format. Supports:
+- Raw: `{ "userAction": {...} }` or `{ "error": {...} }`
+- A2A wrapper: `{ "message": { "clientEvent": { "userAction": {...} } } }`
+
+Same response behavior as POST /action.
 
 ### GET /health
 

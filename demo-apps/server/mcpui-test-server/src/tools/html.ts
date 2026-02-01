@@ -15,7 +15,8 @@ export function registerHTMLTools(server: McpServer): void {
     'showSimpleHtml',
     {
       title: 'Show Simple HTML',
-      description: 'Displays basic HTML content with styling and interactive buttons',
+      description:
+        'Displays basic HTML content with styling and interactive buttons. Use ONLY when the user explicitly asks to show or display HTML/UI. Do NOT use for general conversation or questions.',
       inputSchema: simpleHtmlInputSchema as any,
     },
     async (params: unknown) => {
@@ -128,7 +129,8 @@ export function registerHTMLTools(server: McpServer): void {
     'showRawHtml',
     {
       title: 'Show Raw HTML',
-      description: 'Minimal raw HTML sample similar to MCP-UI reference demo',
+      description:
+        'Minimal raw HTML sample. Use ONLY when the user explicitly requests to display raw HTML. Do NOT use for general conversation.',
       inputSchema: emptyInputSchema,
     },
     async (params) => {
@@ -150,7 +152,8 @@ export function registerHTMLTools(server: McpServer): void {
     'showInteractiveForm',
     {
       title: 'Show Interactive Form',
-      description: 'Displays an interactive form with validation and async submission',
+      description:
+        'Displays an interactive form with validation and async submission. Use ONLY when the user explicitly asks for a form or interactive UI. Do NOT use for general conversation.',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {
@@ -317,7 +320,8 @@ export function registerHTMLTools(server: McpServer): void {
     'showComplexLayout',
     {
       title: 'Show Complex Layout',
-      description: 'Displays a multi-column layout with images and styled content',
+      description:
+        'Displays a multi-column layout with images and styled content. Use ONLY when the user explicitly asks to show a layout, dashboard, or complex UI. Do NOT use for general conversation.',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {

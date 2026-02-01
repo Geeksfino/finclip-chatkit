@@ -8,9 +8,35 @@ import { healthRoute } from './routes/health.js';
 import { scenariosRoute } from './routes/scenarios.js';
 import { sessionManager } from './streaming/session.js';
 import { sseConnectionManager } from './streaming/connection.js';
+import { mcpClientManager } from './mcp/index.js';
 
 export async function startServer() {
   const config = loadConfig();
+
+  if (config.extensionMode === 'mcpui' && config.mcp.enabled) {
+    Promise.race([
+      mcpClientManager.connect(config.mcp.serverId, {
+        url: config.mcp.serverUrl,
+        timeout: config.mcp.connectTimeoutMs,
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('MCP connect timeout')), config.mcp.connectTimeoutMs)
+      ),
+    ])
+      .then(() => {
+        const tools = mcpClientManager.getTools(config.mcp.serverId);
+        logger.info(
+          { serverId: config.mcp.serverId, toolCount: tools.length },
+          'MCP client connected'
+        );
+      })
+      .catch((err) => {
+        logger.warn(
+          { serverId: config.mcp.serverId, error: String(err) },
+          'MCP client connection failed'
+        );
+      });
+  }
 
   const fastify = Fastify({
     logger: loggerOptions,
@@ -74,7 +100,9 @@ export async function startServer() {
         host: config.host,
         agentMode: config.agentMode,
         defaultScenario: config.defaultScenario,
-        llmProvider: config.llmProvider,
+        extensionMode: config.extensionMode,
+        llmProvider: config.llm.provider,
+        llmModel: config.llm.model,
       },
       'AG-UI Test Server started'
     );

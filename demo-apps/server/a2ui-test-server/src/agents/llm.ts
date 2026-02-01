@@ -4,6 +4,7 @@
 
 import { BaseAgent } from './base.js';
 import type { A2UIRequest, A2UIMessage } from '../types/a2ui.js';
+import { selectCatalog, STANDARD_CATALOG_ID } from '../constants/catalog.js';
 import { fetch } from 'undici';
 import type { Response } from 'undici';
 import { logger } from '../utils/logger.js';
@@ -32,7 +33,7 @@ interface ChatCompletionChunk {
   }>;
 }
 
-const SYSTEM_PROMPT = `You are an AI agent that generates A2UI (Agent to UI) protocol messages.
+const SYSTEM_PROMPT_BASE = `You are an AI agent that generates A2UI (Agent to UI) protocol v0.8 messages.
 Your responses must be valid A2UI JSONL format - each line is a complete JSON object.
 
 A2UI message types:
@@ -41,7 +42,17 @@ A2UI message types:
 3. beginRendering - Signal client to render (must come last)
 4. deleteSurface - Remove a surface
 
-Standard components: Text, Button, Row, Column, Card, TextField, DateTimeInput, List, Image, etc.
+Standard catalog (${STANDARD_CATALOG_ID}):
+- Text: text (literalString/path), usageHint
+- Button: child, action (name, context array with key/value)
+- Row/Column: children (explicitList or template), alignment, distribution
+- Card: child
+- List: children (explicitList or template), direction, alignment
+- TextField: label, text (NOT "value" - use "text" for input value), textFieldType, validationRegexp
+- DateTimeInput: value, enableDate, enableTime, outputFormat
+- template: dataBinding (string path e.g. "/items"), componentId
+
+CRITICAL: TextField uses "text" property for the input value, NOT "value". DateTimeInput uses "value".
 
 Example flow:
 {"surfaceUpdate":{"surfaceId":"main","components":[{"id":"root","component":{"Column":{"children":{"explicitList":["text1"]}}}}]}}
@@ -49,7 +60,7 @@ Example flow:
 {"dataModelUpdate":{"surfaceId":"main","contents":[]}}
 {"beginRendering":{"surfaceId":"main","root":"root"}}
 
-Always generate complete, valid A2UI messages. Use the standard catalog components.`;
+Always generate complete, valid A2UI messages. Only use components from the standard catalog.`;
 
 export class LLMAgent extends BaseAgent {
   private readonly maxRetries: number;
@@ -123,11 +134,18 @@ export class LLMAgent extends BaseAgent {
     );
 
     const targetSurfaceId = surfaceId || 'main';
+    const catalogId = selectCatalog(input.metadata?.a2uiClientCapabilities);
+    const supportedIds = input.metadata?.a2uiClientCapabilities?.supportedCatalogIds;
+    const catalogHint =
+      supportedIds && supportedIds.length > 0
+        ? `\nClient supported catalogs: ${supportedIds.join(', ')}. Use only components from these catalogs.`
+        : '';
+    const systemPrompt = SYSTEM_PROMPT_BASE + catalogHint;
 
     try {
       // Build chat messages
       const chatMessages: ChatMessage[] = [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: systemPrompt },
         {
           role: 'user',
           content: `Generate A2UI messages for the following user request. Respond with JSONL format (one JSON object per line). Each line must be a valid JSON object representing an A2UI message (surfaceUpdate, dataModelUpdate, beginRendering, or deleteSurface):\n\nUser request: ${message}`,
@@ -207,8 +225,7 @@ export class LLMAgent extends BaseAgent {
 
             try {
               const message = JSON.parse(trimmed) as A2UIMessage;
-              // Ensure surfaceId is set
-              const enrichedMessage = this.enrichMessage(message, targetSurfaceId);
+              const enrichedMessage = this.enrichMessage(message, targetSurfaceId, catalogId);
               yield enrichedMessage;
             } catch (parseError) {
               // Not a complete JSON yet, continue accumulating
@@ -225,7 +242,7 @@ export class LLMAgent extends BaseAgent {
       if (buffer.trim()) {
         try {
           const message = JSON.parse(buffer.trim()) as A2UIMessage;
-          const enrichedMessage = this.enrichMessage(message, targetSurfaceId);
+          const enrichedMessage = this.enrichMessage(message, targetSurfaceId, catalogId);
           yield enrichedMessage;
         } catch (parseError) {
           logger.warn(
@@ -238,7 +255,7 @@ export class LLMAgent extends BaseAgent {
       // If no messages were generated, create a default response
       if (accumulatedContent.trim() === '') {
         logger.warn({ threadId, runId }, 'LLM returned empty response, generating default UI');
-        yield* this.generateDefaultUI(targetSurfaceId);
+        yield* this.generateDefaultUI(targetSurfaceId, catalogId);
       }
     } catch (error) {
       logger.error(
@@ -252,7 +269,11 @@ export class LLMAgent extends BaseAgent {
       );
 
       // Generate error UI
-      yield* this.generateErrorUI(targetSurfaceId, error instanceof Error ? error.message : 'Unknown error');
+      yield* this.generateErrorUI(
+        targetSurfaceId,
+        error instanceof Error ? error.message : 'Unknown error',
+        catalogId
+      );
     }
   }
 
@@ -316,11 +337,13 @@ export class LLMAgent extends BaseAgent {
   }
 
   /**
-   * Enrich message with surfaceId if needed
+   * Enrich message with surfaceId and catalogId (for beginRendering)
+   * Per A2UI v0.8: catalogId tells client which catalog to use
    */
   private enrichMessage(
     message: A2UIMessage,
-    surfaceId: string
+    surfaceId: string,
+    catalogId: string
   ): A2UIMessage {
     if ('surfaceUpdate' in message) {
       return {
@@ -345,6 +368,7 @@ export class LLMAgent extends BaseAgent {
         beginRendering: {
           ...message.beginRendering,
           surfaceId: message.beginRendering.surfaceId || surfaceId,
+          catalogId: message.beginRendering.catalogId ?? catalogId,
         },
       };
     }
@@ -364,7 +388,10 @@ export class LLMAgent extends BaseAgent {
   /**
    * Generate default UI when LLM fails
    */
-  private async *generateDefaultUI(surfaceId: string): AsyncGenerator<A2UIMessage> {
+  private async *generateDefaultUI(
+    surfaceId: string,
+    catalogId: string
+  ): AsyncGenerator<A2UIMessage> {
     yield {
       surfaceUpdate: {
         surfaceId,
@@ -404,6 +431,7 @@ export class LLMAgent extends BaseAgent {
       beginRendering: {
         surfaceId,
         root: 'root',
+        catalogId,
       },
     };
   }
@@ -411,7 +439,11 @@ export class LLMAgent extends BaseAgent {
   /**
    * Generate error UI
    */
-  private async *generateErrorUI(surfaceId: string, errorMessage: string): AsyncGenerator<A2UIMessage> {
+  private async *generateErrorUI(
+    surfaceId: string,
+    errorMessage: string,
+    catalogId: string
+  ): AsyncGenerator<A2UIMessage> {
     yield {
       surfaceUpdate: {
         surfaceId,
@@ -451,6 +483,7 @@ export class LLMAgent extends BaseAgent {
       beginRendering: {
         surfaceId,
         root: 'root',
+        catalogId,
       },
     };
   }

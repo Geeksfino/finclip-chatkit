@@ -5,13 +5,13 @@ A production-grade AG-UI protocol test server for NeuronKit SDK integration test
 ## Features
 
 - ✅ **Full AG-UI Protocol Support** - Implements the complete AG-UI specification
-- 🎭 **Multiple Agent Types** - Scenario, Echo, LiteLLM, DeepSeek
+- 🎭 **Multiple Agent Types** - Scenario, Echo, LLM (multi-provider)
 - 📡 **SSE Streaming** - Server-Sent Events with proper event encoding
 - 🧪 **Test Scenarios** - Pre-built scenarios for deterministic testing
-- 🔌 **LiteLLM Integration** - Provider-agnostic LLM access
-- 🚀 **High Performance** - Built on Fastify for maximum throughput
-- 📊 **Session Management** - Track conversations across multiple turns
-- 🔍 **Structured Logging** - Pino-based logging with pretty output
+- 🔌 **LLM Integration** - DeepSeek, OpenAI, SiliconFlow, LiteLLM
+- 🔗 **Extension Modes** - MCPUI (tools) and A2UI (declarative UI) support
+- 🚀 **High Performance** - Built on Fastify
+- 🔍 **Structured Logging** - Pino-based logging
 
 ## Quick Start
 
@@ -35,21 +35,26 @@ Copy `.env.example` to `.env` and configure:
 cp .env.example .env
 ```
 
-Key configuration options:
+Key configuration options (see `.env.example` for full list):
 
 ```env
 # Server
 PORT=3000
 HOST=0.0.0.0
 
-# Default agent type
-DEFAULT_AGENT=scenario
+# Agent mode: emulated | llm
+AGENT_MODE=emulated
+DEFAULT_SCENARIO=tool-call     # When emulated: echo | simple-chat | tool-call | error-handling
 
-# For LLM integration (optional)
-LLM_PROVIDER=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
+# LLM (when AGENT_MODE=llm)
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-key
+
+# Extensions: none | mcpui | a2ui
+EXTENSION_MODE=none
+MCPUI_SERVER_URL=http://localhost:3100/mcp
+A2UI_SERVER_URL=http://localhost:3200
 ```
 
 ### Running the Server
@@ -157,62 +162,25 @@ Health check endpoint.
 
 ## Agent Types
 
-### Scenario Agent (Default)
+### Scenario Agent (Emulated - Default)
 
-Pre-scripted responses for deterministic testing.
-
-**Available Scenarios**:
+Pre-scripted responses. Set `AGENT_MODE=emulated` and `DEFAULT_SCENARIO=<id>`:
 - `simple-chat` - Basic conversation
 - `tool-call` - Tool invocation demo
 - `error-handling` - Error scenarios
 
-**Usage**:
-```bash
-curl -X POST http://localhost:3000/scenarios/simple-chat \
-  -H "Content-Type: application/json" \
-  -d '{"messages":[{"id":"1","role":"user","content":"hello"}]}'
-```
-
 ### Echo Agent
 
-Simple echo agent for basic connectivity testing.
+Set `AGENT_MODE=emulated` and `DEFAULT_SCENARIO=echo`.
 
-**Configuration**:
-```env
-DEFAULT_AGENT=echo
-```
+### LLM Agent
 
-### LiteLLM Agent
+Real AI via `AGENT_MODE=llm` and `LLM_PROVIDER`/`LLM_MODEL`/`LLM_API_KEY`. Supported: `deepseek`, `openai`, `siliconflow`, `litellm`.
 
-Connect to any LLM via LiteLLM proxy.
+### Extension Modes
 
-**Setup LiteLLM**:
-```bash
-# Install LiteLLM
-pip install litellm
-
-# Start proxy
-litellm --model deepseek/deepseek-chat --api_key $DEEPSEEK_API_KEY
-```
-
-**Configuration**:
-```env
-DEFAULT_AGENT=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
-```
-
-### DeepSeek Agent
-
-Direct DeepSeek API integration.
-
-**Configuration**:
-```env
-DEFAULT_AGENT=deepseek
-DEEPSEEK_API_KEY=your-deepseek-key
-DEEPSEEK_MODEL=deepseek-chat
-```
+- **MCPUI** (`EXTENSION_MODE=mcpui`): LLM can call tools from mcpui-test-server. Start mcpui-test-server on port 3100.
+- **A2UI** (`EXTENSION_MODE=a2ui`): Emitted mode proxies to a2ui-test-server; LLM mode uses intent-driven `generateA2UI` tool. Start a2ui-test-server on port 3200.
 
 ## Testing with NeuronKit
 
@@ -278,28 +246,17 @@ curl -X POST http://localhost:3000/agent \
 ```
 agui-test-server/
 ├── src/
-│   ├── agents/          # Agent implementations
-│   │   ├── base.ts      # Base agent interface
-│   │   ├── echo.ts      # Echo agent
-│   │   ├── scenario.ts  # Scenario agent
-│   │   └── llm.ts       # LLM agent
-│   ├── routes/          # Fastify routes
-│   │   ├── agent.ts     # Main /agent endpoint
-│   │   ├── health.ts    # Health check
-│   │   └── scenarios.ts # Scenario management
-│   ├── scenarios/       # Test scenarios
-│   │   ├── simple-chat.json
-│   │   ├── tool-call.json
-│   │   └── error-handling.json
-│   ├── streaming/       # SSE utilities
-│   │   ├── encoder.ts   # Event encoding
-│   │   └── session.ts   # Session management
-│   ├── types/           # TypeScript types
-│   ├── utils/           # Utilities
-│   └── server.ts        # Main entry point
-├── tests/               # Tests
-├── package.json
-└── README.md
+│   ├── agents/          # Scenario, Echo, A2UI, LLM
+│   ├── a2ui/            # A2UI proxy (streamA2UIPayloads)
+│   ├── mcp/             # MCP client for MCPUI tools
+│   ├── routes/
+│   ├── scenarios/
+│   ├── streaming/
+│   ├── types/
+│   └── utils/
+├── docs/                # architecture, agui-compliance, resilience
+├── tests/
+└── package.json
 ```
 
 ### Adding Custom Scenarios

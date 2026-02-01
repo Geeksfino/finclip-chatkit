@@ -1,28 +1,37 @@
 /**
  * LLM Agent Logging Tests
- * Tests that the LLM agent properly logs errors with detailed information
- * 
- * Note: These tests validate logging behavior by testing against
- * unreachable endpoints. The key is that we get proper error logging,
- * not that the API works.
+ * Tests that the LLM agent properly logs errors with detailed information.
+ * Uses mocked fetch to fail immediately - avoids retry/network delays.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LLMAgent } from '../src/agents/llm.js';
 import { EventType } from '@ag-ui/core';
 import type { RunAgentInput, BaseEvent } from '@ag-ui/core';
 import { logger } from '../src/utils/logger.js';
 
+const mockFetch = vi.hoisted(() => vi.fn());
+
+vi.mock('undici', () => ({
+  fetch: (...args: unknown[]) => mockFetch(...args),
+}));
+
 describe('LLMAgent error logging', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockFetch.mockRejectedValue(new Error('fetch failed'));
+  });
+
   it('should log detailed error information when error occurs with tools provided', async () => {
     const infoSpy = vi.spyOn(logger, 'info');
     const errorSpy = vi.spyOn(logger, 'error');
 
-    // Use invalid endpoint to trigger an error
     const agent = new LLMAgent({
-      endpoint: 'http://invalid-nonexistent-domain-for-testing.local:9999/v1',
+      endpoint: 'https://api.example.com/v1',
       apiKey: 'test-key',
       model: 'test-model',
+      maxRetries: 0,
+      timeoutMs: 1000,
     });
 
     const input: RunAgentInput = {
@@ -118,11 +127,12 @@ describe('LLMAgent error logging', () => {
     const infoSpy = vi.spyOn(logger, 'info');
     const errorSpy = vi.spyOn(logger, 'error');
 
-    // Use invalid endpoint to trigger an error
     const agent = new LLMAgent({
-      endpoint: 'http://invalid-nonexistent-domain-for-testing.local:9999/v1',
+      endpoint: 'https://api.example.com/v1',
       apiKey: 'test-key',
       model: 'test-model',
+      maxRetries: 0,
+      timeoutMs: 1000,
     });
 
     const input: RunAgentInput = {

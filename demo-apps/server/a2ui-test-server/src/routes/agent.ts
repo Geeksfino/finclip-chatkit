@@ -1,10 +1,14 @@
 /**
  * A2UI Agent Endpoint
- * Handles agent requests and streams A2UI JSONL messages via SSE
+ * Handles agent requests (A2A Message format) and streams A2UI JSONL messages via SSE
  */
 
 import type { FastifyPluginAsync } from 'fastify';
-import { validateA2UIRequest } from '../utils/validation.js';
+import {
+  validateA2AMessageRequest,
+  normalizeA2AMessageToAgentInput,
+  generateRunId,
+} from '../utils/validation.js';
 import { JSONLEncoder } from '../streaming/jsonl-encoder.js';
 import { sessionManager } from '../streaming/session.js';
 import { createAgent } from './agent-factory.js';
@@ -18,24 +22,31 @@ export const agentRoute: FastifyPluginAsync = async (fastify) => {
     const startTime = Date.now();
 
     try {
-      // Validate input
-      validateA2UIRequest(request.body);
-      const input = request.body;
+      // Validate A2A Message format
+      validateA2AMessageRequest(request.body);
+
+      // Normalize to internal agent input
+      const input = normalizeA2AMessageToAgentInput(request.body);
+
+      // Ensure threadId for session (generate if not provided)
+      const threadId = input.threadId ?? `thread_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+      const runId = input.runId ?? generateRunId();
+      const agentInput = { ...input, threadId, runId };
 
       logger.info(
         {
-          threadId: input.threadId,
-          runId: input.runId,
-          messageLength: input.message.length,
-          surfaceId: input.surfaceId,
+          threadId: agentInput.threadId,
+          runId: agentInput.runId,
+          messageLength: agentInput.message.length,
+          surfaceId: agentInput.surfaceId,
         },
-        'Received A2UI agent request'
+        'Received A2UI agent request (A2A Message format)'
       );
 
       // Update session
-      const session = sessionManager.getOrCreate(input.threadId);
-      if (input.surfaceId) {
-        sessionManager.addSurface(session.sessionId, input.surfaceId);
+      const session = sessionManager.getOrCreate(threadId);
+      if (agentInput.surfaceId) {
+        sessionManager.addSurface(session.sessionId, agentInput.surfaceId);
       }
 
       // Create agent
@@ -53,21 +64,21 @@ export const agentRoute: FastifyPluginAsync = async (fastify) => {
 
       // Stream A2UI messages
       let messageCount = 0;
-      for await (const message of agent.run(input)) {
+      for await (const message of agent.run(agentInput)) {
         const encoded = encoder.encode(message);
         reply.raw.write(encoded);
         messageCount++;
 
         // Log progress
         if (messageCount % 10 === 0) {
-          logger.debug({ threadId: input.threadId, messageCount }, 'Streaming A2UI messages');
+          logger.debug({ threadId: agentInput.threadId, messageCount }, 'Streaming A2UI messages');
         }
       }
 
       logger.info(
         {
-          threadId: input.threadId,
-          runId: input.runId,
+          threadId: agentInput.threadId,
+          runId: agentInput.runId,
           messageCount,
           duration: Date.now() - startTime,
         },

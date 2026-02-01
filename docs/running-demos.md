@@ -325,21 +325,22 @@ Then edit `.env` with your preferred configuration:
 
 **Option A: Direct DeepSeek (Recommended)**
 ```env
-# Uncomment these lines:
+AGENT_MODE=llm
 LLM_PROVIDER=deepseek
-DEEPSEEK_API_KEY=sk-your-deepseek-key-here
-DEEPSEEK_MODEL=deepseek-chat
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=sk-your-deepseek-key-here
 ```
 
 **Option B: Via LiteLLM (supports multiple providers)**
 ```env
+AGENT_MODE=llm
 LLM_PROVIDER=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_MODEL=deepseek-chat
-LITELLM_API_KEY=your-api-key-here
+LLM_BASE_URL=http://localhost:4000/v1
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-api-key-here
 ```
 
-> **Note:** LiteLLM acts as a proxy that supports multiple LLM providers with a unified interface. You'll need to set up LiteLLM separately if using this option.
+> **Note:** LiteLLM acts as a proxy that supports multiple LLM providers. Set up LiteLLM separately if using this option.
 
 #### Step 3: Start Server with LLM Mode
 

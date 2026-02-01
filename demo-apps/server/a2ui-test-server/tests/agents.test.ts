@@ -4,6 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { ScenarioAgent } from '../src/agents/scenario.js';
+import { STANDARD_CATALOG_ID } from '../src/constants/catalog.js';
 import type { A2UIMessage } from '../src/types/a2ui.js';
 
 describe('ScenarioAgent', () => {
@@ -102,6 +103,31 @@ describe('ScenarioAgent', () => {
     expect(surfaceUpdate).toBeDefined();
     if (surfaceUpdate && 'surfaceUpdate' in surfaceUpdate) {
       expect(surfaceUpdate.surfaceUpdate.surfaceId).toBe('custom-surface');
+    }
+  });
+
+  it('should inject catalogId in beginRendering (A2UI v0.8 catalog negotiation)', async () => {
+    const agent = new ScenarioAgent();
+    const input = {
+      threadId: 'test-thread',
+      runId: 'run_123',
+      message: 'hello',
+      metadata: {
+        a2uiClientCapabilities: {
+          supportedCatalogIds: [STANDARD_CATALOG_ID],
+        },
+      },
+    };
+
+    const messages: A2UIMessage[] = [];
+    for await (const message of agent.run(input)) {
+      messages.push(message);
+    }
+
+    const beginRendering = messages.find(m => 'beginRendering' in m);
+    expect(beginRendering).toBeDefined();
+    if (beginRendering && 'beginRendering' in beginRendering) {
+      expect(beginRendering.beginRendering.catalogId).toBe(STANDARD_CATALOG_ID);
     }
   });
 });

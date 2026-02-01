@@ -79,6 +79,16 @@ The server will start on `http://localhost:3100`.
 - `GET /health` - Health check
 - `GET /tools` - List all available tools
 
+## Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Tests cover the `/health` and `/tools` endpoints. For integration tests against agui-test-server (MCP client), see `agui-test-server/tests/mcp-integration.test.ts`.
+
 ## Available Tools
 
 ### HTML Content Tools (3)

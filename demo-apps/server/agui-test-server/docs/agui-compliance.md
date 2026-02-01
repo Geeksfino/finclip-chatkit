@@ -87,12 +87,11 @@ RUN_FINISHED
 
 ```bash
 # Start server
-cd compliance-servers/agui-test-server
+cd demo-apps/server/agui-test-server
 npm run dev
 
-# Test client
-cd neuronkit/examples/ag-ui_sse
-LOCAL_DEPS=1 swift run ag-ui_sse --url http://localhost:3000 --message "Count from 1 to 5"
+# Test via curl or ChatKit demo app
+curl -X POST http://localhost:3000/agent -H "Content-Type: application/json" -d '{"threadId":"t1","runId":"r1","messages":[{"id":"m1","role":"user","content":"Count from 1 to 5"}],"tools":[],"context":[]}'
 ```
 
 Expected output:
@@ -109,6 +108,6 @@ A:  2
 ```
 
 ## Related Files
-- Server: `compliance-servers/agui-test-server/src/agents/llm.ts`
-- Client: `neuronkit/Sources/network/AGUI_Adapter.swift`
-- CLI Example: `neuronkit/examples/ag-ui_sse/Sources/ConsoleConvoUIAdapter.swift`
+
+- Server: `demo-apps/server/agui-test-server/src/agents/llm.ts`
+- Client: NeuronKit `AGUI_Adapter.swift` (AG-UI adapter for text message lifecycle)

@@ -9,6 +9,7 @@ import { loadConfig } from './utils/config.js';
 import { logger, loggerOptions } from './utils/logger.js';
 import { agentRoute } from './routes/agent.js';
 import { actionRoute } from './routes/action.js';
+import { a2aRoute } from './routes/a2a.js';
 import { healthRoute } from './routes/health.js';
 import { sessionManager } from './streaming/session.js';
 
@@ -32,6 +33,7 @@ await fastify.register(cors, {
 await fastify.register(healthRoute);
 await fastify.register(agentRoute);
 await fastify.register(actionRoute);
+await fastify.register(a2aRoute, { prefix: '/a2a' });
 
 // Root endpoint
 fastify.get('/', async (_request, _reply) => {
@@ -43,6 +45,8 @@ fastify.get('/', async (_request, _reply) => {
       health: 'GET /health',
       agent: 'POST /agent',
       action: 'POST /action',
+      a2aCard: 'GET /a2a/card',
+      a2aAction: 'POST /a2a/action',
     },
     docs: 'https://a2ui.org/',
   };

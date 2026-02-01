@@ -77,17 +77,22 @@ You should see:
 ### Running mcpui-test-server
 
 ```bash
-# Navigate to server directory
 cd demo-apps/server/mcpui-test-server
-
-# Install dependencies
 npm install
-# or
-pnpm install
-
-# Start server
 npm run dev
 ```
+
+Server runs on **http://localhost:3100**.
+
+### Running a2ui-test-server
+
+```bash
+cd demo-apps/server/a2ui-test-server
+npm install
+npm run dev
+```
+
+Server runs on **http://localhost:3200**. Required when using agui-test-server with `EXTENSION_MODE=a2ui`.
 
 ---
 
@@ -95,28 +100,28 @@ npm run dev
 
 ### agui-test-server Configuration
 
-Edit `agui-test-server/.env`:
+Edit `agui-test-server/.env` (see `.env.example` for full options):
 
 ```env
-# Server settings
-PORT=3000                    # Port to listen on
-HOST=0.0.0.0                 # Host to bind to
+# Server
+PORT=3000
+HOST=0.0.0.0
 
-# Agent type (choose one)
-DEFAULT_AGENT=scenario       # Pre-scripted responses (recommended for testing)
-# DEFAULT_AGENT=echo         # Simple echo agent
-# DEFAULT_AGENT=litellm      # LiteLLM proxy integration
-# DEFAULT_AGENT=deepseek     # Direct DeepSeek API
+# Agent mode: emulated | llm
+AGENT_MODE=emulated          # Pre-scripted (default) or real LLM
 
-# LiteLLM settings (if using DEFAULT_AGENT=litellm)
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
+# When AGENT_MODE=emulated: scenario ID (echo | simple-chat | tool-call | error-handling)
+DEFAULT_SCENARIO=tool-call
 
-# DeepSeek settings (if using DEFAULT_AGENT=deepseek)
-DEEPSEEK_API_KEY=your-deepseek-api-key
-DEEPSEEK_MODEL=deepseek-chat
-DEEPSEEK_BASE_URL=https://api.deepseek.com
+# When AGENT_MODE=llm: LLM provider (deepseek | openai | siliconflow | litellm)
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-api-key
+
+# Extension mode: none | mcpui | a2ui (enables MCPUI tools or A2UI proxy)
+EXTENSION_MODE=none
+MCPUI_SERVER_URL=http://localhost:3100/mcp   # When EXTENSION_MODE=mcpui
+A2UI_SERVER_URL=http://localhost:3200        # When EXTENSION_MODE=a2ui
 ```
 
 ### mcpui-test-server Configuration
@@ -124,7 +129,16 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 Edit `mcpui-test-server/.env`:
 
 ```env
-PORT=3001                    # Different port to avoid conflicts
+PORT=3100                    # MCP server (agui connects here when EXTENSION_MODE=mcpui)
+HOST=0.0.0.0
+```
+
+### a2ui-test-server Configuration
+
+Edit `a2ui-test-server/.env`:
+
+```env
+PORT=3200
 HOST=0.0.0.0
 ```
 
@@ -222,71 +236,28 @@ curl http://localhost:3000/scenarios
 
 ## 🔄 Agent Types Explained
 
-### Scenario Agent (Default - Recommended)
+### Scenario Agent (Emulated - Default)
 
-**Use when**: You want predictable, deterministic responses for testing.
+**Use when**: You want predictable responses for testing.
 
-Pre-scripted responses based on conversation patterns. Perfect for:
-- Unit testing
-- Demo recordings
-- Reproducible behavior
-
-**Available scenarios**:
+Set `AGENT_MODE=emulated` and `DEFAULT_SCENARIO=<id>`:
 - `simple-chat` - Basic conversation
 - `tool-call` - Feature invocation demo
 - `error-handling` - Error scenarios
 
 ### Echo Agent
 
-**Use when**: You just want to test connectivity and message flow.
+Set `AGENT_MODE=emulated` and `DEFAULT_SCENARIO=echo` to echo user input.
 
-Simply echoes back whatever the user sends. Good for:
-- Testing networking
-- Debugging message format
-- Sanity checks
+### LLM Agent
 
-Enable with:
-```env
-DEFAULT_AGENT=echo
-```
+**Use when**: You want real AI responses.
 
-### LiteLLM Agent
+1. Set `AGENT_MODE=llm` (or run `npm run dev -- --use-llm`)
+2. Configure `LLM_PROVIDER`, `LLM_MODEL`, `LLM_API_KEY` in `.env`
+3. Supported providers: `deepseek`, `openai`, `siliconflow`, `litellm`
 
-**Use when**: You want real AI responses from any LLM provider.
-
-Connects to a LiteLLM proxy that can route to OpenAI, Anthropic, DeepSeek, etc.
-
-**Setup**:
-1. Install LiteLLM:
-   ```bash
-   pip install litellm
-   ```
-
-2. Start LiteLLM proxy:
-   ```bash
-   litellm --model deepseek/deepseek-chat --api_key $DEEPSEEK_API_KEY
-   ```
-
-3. Configure server:
-   ```env
-   DEFAULT_AGENT=litellm
-   LITELLM_ENDPOINT=http://localhost:4000/v1
-   ```
-
-### DeepSeek Agent
-
-**Use when**: You want direct DeepSeek API integration without LiteLLM.
-
-Fastest path to real AI responses with DeepSeek.
-
-**Setup**:
-1. Get API key from [DeepSeek](https://platform.deepseek.com/)
-
-2. Configure server:
-   ```env
-   DEFAULT_AGENT=deepseek
-   DEEPSEEK_API_KEY=your-key-here
-   ```
+See [agui-test-server README](agui-test-server/README.md) for full configuration.
 
 ---
 
@@ -359,17 +330,17 @@ PORT=3001
    - Find IP: `System Settings → Network → Wi-Fi → Details → IP address` (macOS) or network settings (other systems)
    - Ensure device and development machine are on same Wi-Fi network
 
-### LiteLLM/DeepSeek not responding
+### LLM not responding
 
-1. **Check API key is set**:
+1. **Check API key is set** (from agui `.env`):
    ```bash
-   echo $DEEPSEEK_API_KEY
+   echo $LLM_API_KEY
    ```
 
-2. **Test API directly**:
+2. **Test API directly** (DeepSeek example):
    ```bash
    curl https://api.deepseek.com/v1/chat/completions \
-     -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
+     -H "Authorization: Bearer $LLM_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"hi"}]}'
    ```
@@ -395,10 +366,10 @@ PORT=3001
 ## 📚 Further Reading
 
 - [agui-test-server README](agui-test-server/README.md) - Full AG-UI server documentation
-- [mcpui-test-server README](mcpui-test-server/README.md) - Full MCP-UI server documentation
-- [a2ui-test-server README](a2ui-test-server/README.md) - Full A2UI server documentation
+- [mcpui-test-server README](mcpui-test-server/README.md) - MCP-UI server documentation
+- [a2ui-test-server README](a2ui-test-server/README.md) - A2UI server documentation
 - [ChatKit Developer Guide](../../docs/guides/developer-guide.md) - Mobile SDK integration guide
-- [AG-UI Protocol Spec](agui-test-server/docs/agui-compliance.md) - Protocol specification
+- [agui-test-server docs](agui-test-server/docs/) - architecture, agui-compliance, resilience
 
 ---
 

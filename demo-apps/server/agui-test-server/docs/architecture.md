@@ -27,7 +27,8 @@ The AG-UI Test Server is designed as a modular, extensible system for testing AG
 │ ├─ BaseAgent (abstract interface)                      │
 │ ├─ ScenarioAgent (pre-scripted responses)              │
 │ ├─ EchoAgent (test/debug)                              │
-│ └─ LLMAgent (LiteLLM/DeepSeek integration)             │
+│ ├─ A2UIAgent (proxy to a2ui-test-server, emulated)     │
+│ └─ LLMAgent (multi-provider + MCPUI/A2UI tools)        │
 └─────────────────────────────────────────────────────────┘
                          ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -176,23 +177,23 @@ interface SessionState {
 
 ## Configuration
 
-Configuration is loaded from environment variables:
+Configuration is loaded from environment variables. See `.env.example` for full list.
 
 ```typescript
 interface ServerConfig {
   port: number;
   host: string;
-  defaultAgent: string;
-  llmProvider: string;
-  // ... more config
+  agentMode: 'emulated' | 'llm';
+  defaultScenario: string;       // Used when agentMode=emulated
+  extensionMode: 'none' | 'mcpui' | 'a2ui';
+  llm: LLMConfig;               // Used when agentMode=llm
+  mcp: MCPConfig;               // MCPUI when extensionMode=mcpui
+  a2ui: A2UIConfig;             // A2UI when extensionMode=a2ui
+  // ...
 }
 ```
 
-**Loading Order**:
-
-1. `.env` file (via dotenv)
-2. Environment variables
-3. Default values
+**Loading Order**: `.env` (dotenv) → process.env → defaults
 
 ## Error Handling
 

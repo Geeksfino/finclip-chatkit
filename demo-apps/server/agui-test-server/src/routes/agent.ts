@@ -11,6 +11,7 @@ import { sseConnectionManager } from '../streaming/connection.js';
 import { eventQueue } from '../streaming/event-queue.js';
 import { createAgent } from './agent-factory';
 import { logger } from '../utils/logger.js';
+import { getErrorMessage } from '../utils/helpers.js';
 import { loadConfig } from '../utils/config.js';
 
 const config = loadConfig();
@@ -136,7 +137,7 @@ export const agentRoute: FastifyPluginAsync = async (fastify) => {
       // Build detailed error information
       const errorInfo: any = {
         duration,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorMessage: getErrorMessage(error),
         errorName: error instanceof Error ? error.name : 'UnknownError',
       };
 
@@ -164,7 +165,7 @@ export const agentRoute: FastifyPluginAsync = async (fastify) => {
       if (!reply.sent) {
         reply.status(500).send({
           error: 'Internal Server Error',
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: getErrorMessage(error),
         });
       }
     }

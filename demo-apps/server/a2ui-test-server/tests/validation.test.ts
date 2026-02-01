@@ -4,73 +4,128 @@
 
 import { describe, it, expect } from 'vitest';
 import {
-  validateA2UIRequest,
+  validateA2AMessageRequest,
+  normalizeA2AMessageToAgentInput,
   validateClientEventMessage,
   generateRunId,
   ValidationError,
 } from '../src/utils/validation.js';
 
-describe('validateA2UIRequest', () => {
-  it('should accept valid input', () => {
+describe('validateA2AMessageRequest', () => {
+  it('should accept valid A2A Message format', () => {
     const input = {
-      threadId: 'test-thread',
-      runId: 'run_123',
-      message: 'Hello',
+      message: {
+        prompt: {
+          text: 'Hello, show me a form',
+        },
+      },
     };
 
-    expect(() => validateA2UIRequest(input)).not.toThrow();
+    expect(() => validateA2AMessageRequest(input)).not.toThrow();
   });
 
-  it('should reject missing threadId', () => {
+  it('should accept A2A Message with metadata', () => {
     const input = {
-      runId: 'run_123',
-      message: 'Hello',
+      metadata: {
+        a2uiClientCapabilities: {
+          supportedCatalogIds: ['https://example.com/catalog.json'],
+        },
+        surfaceId: 'main',
+        threadId: 'thread-1',
+        runId: 'run-1',
+      },
+      message: {
+        prompt: {
+          text: 'form',
+        },
+      },
     };
 
-    expect(() => validateA2UIRequest(input)).toThrow(ValidationError);
-    expect(() => validateA2UIRequest(input)).toThrow('threadId is required');
-  });
-
-  it('should reject missing runId', () => {
-    const input = {
-      threadId: 'test-thread',
-      message: 'Hello',
-    };
-
-    expect(() => validateA2UIRequest(input)).toThrow(ValidationError);
-    expect(() => validateA2UIRequest(input)).toThrow('runId is required');
+    expect(() => validateA2AMessageRequest(input)).not.toThrow();
   });
 
   it('should reject missing message', () => {
-    const input = {
-      threadId: 'test-thread',
-      runId: 'run_123',
-    };
+    const input = {};
 
-    expect(() => validateA2UIRequest(input)).toThrow(ValidationError);
-    expect(() => validateA2UIRequest(input)).toThrow('message is required');
+    expect(() => validateA2AMessageRequest(input)).toThrow(ValidationError);
+    expect(() => validateA2AMessageRequest(input)).toThrow('message.prompt.text');
   });
 
-  it('should reject non-string message', () => {
+  it('should reject missing message.prompt.text', () => {
     const input = {
-      threadId: 'test-thread',
-      runId: 'run_123',
-      message: 123,
+      message: {},
     };
 
-    expect(() => validateA2UIRequest(input)).toThrow(ValidationError);
-    expect(() => validateA2UIRequest(input)).toThrow('message is required and must be a string');
+    expect(() => validateA2AMessageRequest(input)).toThrow(ValidationError);
   });
 
-  it('should accept optional surfaceId', () => {
+  it('should reject empty text', () => {
     const input = {
-      threadId: 'test-thread',
-      runId: 'run_123',
-      message: 'Hello',
-      surfaceId: 'main',
+      message: {
+        prompt: {
+          text: '   ',
+        },
+      },
     };
 
-    expect(() => validateA2UIRequest(input)).not.toThrow();
+    expect(() => validateA2AMessageRequest(input)).toThrow(ValidationError);
+  });
+
+  it('should reject non-string text', () => {
+    const input = {
+      message: {
+        prompt: {
+          text: 123,
+        },
+      },
+    };
+
+    expect(() => validateA2AMessageRequest(input)).toThrow(ValidationError);
+  });
+});
+
+describe('normalizeA2AMessageToAgentInput', () => {
+  it('should extract message and default surfaceId', () => {
+    const input = {
+      message: {
+        prompt: {
+          text: 'form',
+        },
+      },
+    };
+
+    const result = normalizeA2AMessageToAgentInput(input);
+    expect(result.message).toBe('form');
+    expect(result.surfaceId).toBe('main');
+    expect(result.threadId).toBeUndefined();
+    expect(result.runId).toBeUndefined();
+  });
+
+  it('should preserve metadata', () => {
+    const input = {
+      metadata: {
+        a2uiClientCapabilities: {
+          supportedCatalogIds: ['https://example.com/catalog.json'],
+        },
+        surfaceId: 'custom-surface',
+        threadId: 't-1',
+        runId: 'r-1',
+      },
+      message: {
+        prompt: {
+          text: 'hello',
+        },
+      },
+    };
+
+    const result = normalizeA2AMessageToAgentInput(input);
+    expect(result.message).toBe('hello');
+    expect(result.surfaceId).toBe('custom-surface');
+    expect(result.metadata?.a2uiClientCapabilities?.supportedCatalogIds).toEqual([
+      'https://example.com/catalog.json',
+    ]);
+    expect(result.threadId).toBe('t-1');
+    expect(result.runId).toBe('r-1');
   });
 });
 

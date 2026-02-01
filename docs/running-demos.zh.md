@@ -325,21 +325,22 @@ cp .env.example .env
 
 **选项 A：直接使用 DeepSeek（推荐）**
 ```env
-# 取消注释这些行：
+AGENT_MODE=llm
 LLM_PROVIDER=deepseek
-DEEPSEEK_API_KEY=sk-your-deepseek-key-here
-DEEPSEEK_MODEL=deepseek-chat
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=sk-your-deepseek-key-here
 ```
 
 **选项 B：通过 LiteLLM（支持多个提供商）**
 ```env
+AGENT_MODE=llm
 LLM_PROVIDER=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_MODEL=deepseek-chat
-LITELLM_API_KEY=your-api-key-here
+LLM_BASE_URL=http://localhost:4000/v1
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-api-key-here
 ```
 
-> **注意：** LiteLLM 充当代理，通过统一接口支持多个 LLM 提供商。如果使用此选项，您需要单独设置 LiteLLM。
+> **注意：** LiteLLM 充当代理，支持多个 LLM 提供商。使用此选项需单独设置 LiteLLM。
 
 #### 步骤 3：以 LLM 模式启动服务器
 

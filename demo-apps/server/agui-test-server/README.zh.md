@@ -5,13 +5,13 @@
 ## 功能特性
 
 - ✅ **完整的 AG-UI 协议支持** - 实现完整的 AG-UI 规范
-- 🎭 **多种代理类型** - Scenario、Echo、LiteLLM、DeepSeek
-- 📡 **SSE 流式传输** - 具有正确事件编码的服务器发送事件
-- 🧪 **测试场景** - 用于确定性测试的预构建场景
-- 🔌 **LiteLLM 集成** - 与提供商无关的 LLM 访问
-- 🚀 **高性能** - 基于 Fastify 构建，实现最大吞吐量
-- 📊 **会话管理** - 跨多轮对话跟踪会话
-- 🔍 **结构化日志** - 基于 Pino 的日志记录，具有美观的输出
+- 🎭 **多种代理类型** - Scenario、Echo、LLM（多提供商）
+- 📡 **SSE 流式传输** - 服务器发送事件
+- 🧪 **测试场景** - 预构建场景
+- 🔌 **LLM 集成** - DeepSeek、OpenAI、SiliconFlow、LiteLLM
+- 🔗 **扩展模式** - MCPUI（工具）和 A2UI（声明式 UI）支持
+- 🚀 **高性能** - 基于 Fastify
+- 🔍 **结构化日志** - 基于 Pino
 
 ## 快速开始
 
@@ -35,21 +35,26 @@ npm install
 cp .env.example .env
 ```
 
-关键配置选项：
+关键配置（完整选项见 `.env.example`）：
 
 ```env
 # 服务器
 PORT=3000
 HOST=0.0.0.0
 
-# 默认代理类型
-DEFAULT_AGENT=scenario
+# 代理模式：emulated | llm
+AGENT_MODE=emulated
+DEFAULT_SCENARIO=tool-call     # emulated 时：echo | simple-chat | tool-call | error-handling
 
-# LLM 集成（可选）
-LLM_PROVIDER=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
+# LLM（AGENT_MODE=llm 时）
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-chat
+LLM_API_KEY=your-key
+
+# 扩展：none | mcpui | a2ui
+EXTENSION_MODE=none
+MCPUI_SERVER_URL=http://localhost:3100/mcp
+A2UI_SERVER_URL=http://localhost:3200
 ```
 
 ### 运行服务器
@@ -157,62 +162,25 @@ data: {"type":"RUN_FINISHED","threadId":"...","runId":"..."}
 
 ## 代理类型
 
-### Scenario 代理（默认）
+### Scenario 代理（模拟 - 默认）
 
-用于确定性测试的预编写脚本响应。
-
-**可用场景**：
+预编写脚本响应。设置 `AGENT_MODE=emulated` 和 `DEFAULT_SCENARIO=<id>`：
 - `simple-chat` - 基本对话
 - `tool-call` - 工具调用演示
 - `error-handling` - 错误场景
 
-**使用**：
-```bash
-curl -X POST http://localhost:3000/scenarios/simple-chat \
-  -H "Content-Type: application/json" \
-  -d '{"messages":[{"id":"1","role":"user","content":"你好"}]}'
-```
-
 ### Echo 代理
 
-用于基本连接测试的简单回声代理。
+设置 `AGENT_MODE=emulated` 和 `DEFAULT_SCENARIO=echo`。
 
-**配置**：
-```env
-DEFAULT_AGENT=echo
-```
+### LLM 代理
 
-### LiteLLM 代理
+真实 AI。设置 `AGENT_MODE=llm`，并配置 `LLM_PROVIDER`/`LLM_MODEL`/`LLM_API_KEY`。支持：`deepseek`、`openai`、`siliconflow`、`litellm`。
 
-通过 LiteLLM 代理连接到任何 LLM。
+### 扩展模式
 
-**设置 LiteLLM**：
-```bash
-# 安装 LiteLLM
-pip install litellm
-
-# 启动代理
-litellm --model deepseek/deepseek-chat --api_key $DEEPSEEK_API_KEY
-```
-
-**配置**：
-```env
-DEFAULT_AGENT=litellm
-LITELLM_ENDPOINT=http://localhost:4000/v1
-LITELLM_API_KEY=your-key
-LITELLM_MODEL=deepseek-chat
-```
-
-### DeepSeek 代理
-
-直接 DeepSeek API 集成。
-
-**配置**：
-```env
-DEFAULT_AGENT=deepseek
-DEEPSEEK_API_KEY=your-deepseek-key
-DEEPSEEK_MODEL=deepseek-chat
-```
+- **MCPUI**（`EXTENSION_MODE=mcpui`）：LLM 可调用 mcpui-test-server 的工具。需启动 mcpui-test-server（端口 3100）。
+- **A2UI**（`EXTENSION_MODE=a2ui`）：模拟模式代理到 a2ui-test-server；LLM 模式使用意图驱动的 `generateA2UI` 工具。需启动 a2ui-test-server（端口 3200）。
 
 ## 使用 NeuronKit 测试
 
@@ -268,23 +236,16 @@ curl -X POST http://localhost:3000/agent \
 ```
 agui-test-server/
 ├── src/
-│   ├── server.ts              # Fastify 服务器设置
-│   ├── routes/                # API 路由
-│   │   ├── agent.ts           # /agent 端点
-│   │   ├── scenarios.ts       # /scenarios 端点
-│   │   └── health.ts          # /health 端点
-│   ├── agents/                # 代理实现
-│   │   ├── scenario.ts        # Scenario 代理
-│   │   ├── echo.ts            # Echo 代理
-│   │   ├── litellm.ts         # LiteLLM 代理
-│   │   └── deepseek.ts        # DeepSeek 代理
-│   ├── scenarios/             # 测试场景
-│   │   └── definitions.ts     # 场景定义
-│   └── utils/                 # 实用工具
-│       ├── logger.ts          # Pino 日志记录器
-│       └── sse.ts             # SSE 助手
-├── tests/                     # 单元测试
-├── .env.example               # 环境变量模板
+│   ├── agents/          # Scenario、Echo、A2UI、LLM
+│   ├── a2ui/            # A2UI 代理
+│   ├── mcp/             # MCPUI 工具客户端
+│   ├── routes/
+│   ├── scenarios/
+│   ├── streaming/
+│   ├── types/
+│   └── utils/
+├── docs/                # architecture、agui-compliance、resilience
+├── tests/
 └── package.json
 ```
 
@@ -319,28 +280,8 @@ npm run type-check
 ### Docker
 
 ```bash
-# 构建镜像
 docker build -t agui-test-server .
-
-# 运行容器
-docker run -p 3000:3000 \
-  -e DEFAULT_AGENT=scenario \
-  agui-test-server
-```
-
-### Docker Compose
-
-```yaml
-version: '3.8'
-services:
-  agui-test-server:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT=3000
-      - DEFAULT_AGENT=scenario
-    restart: unless-stopped
+docker run -p 3000:3000 --env-file .env agui-test-server
 ```
 
 ## 协议规范
@@ -376,19 +317,13 @@ lsof -i :3000
 PORT=3001 npm run dev
 ```
 
-**LiteLLM 连接失败**
+**LLM 连接失败**
 ```bash
-# 验证 LiteLLM 正在运行
-curl http://localhost:4000/health
-# 检查配置
-echo $LITELLM_ENDPOINT
-```
-
-**DeepSeek API 错误**
-```bash
-# 测试 API 密钥
+# 检查 LLM_API_KEY
+echo $LLM_API_KEY
+# 直接测试 DeepSeek API
 curl https://api.deepseek.com/v1/chat/completions \
-  -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
+  -H "Authorization: Bearer $LLM_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"测试"}]}'
 ```

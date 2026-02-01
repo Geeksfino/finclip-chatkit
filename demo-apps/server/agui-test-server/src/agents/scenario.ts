@@ -13,6 +13,7 @@ import type {
 } from '@ag-ui/core';
 import { EventType } from '@ag-ui/core';
 import type { Scenario, ScenarioTurn } from '../types/scenario.js';
+import { getLastUserMessage } from '../utils/helpers.js';
 import { logger } from '../utils/logger.js';
 
 export class ScenarioAgent extends BaseAgent {
@@ -40,12 +41,12 @@ export class ScenarioAgent extends BaseAgent {
     yield started;
 
     try {
-      // Find matching turn based on last user message
-      const lastUserMessage = messages
-        .filter((m) => m.role === 'user')
-        .pop();
-
-      const turn = this.findMatchingTurn(lastUserMessage?.content);
+      const lastUserMessage = getLastUserMessage(messages);
+      const content =
+        lastUserMessage && 'content' in lastUserMessage && typeof lastUserMessage.content === 'string'
+          ? lastUserMessage.content
+          : undefined;
+      const turn = this.findMatchingTurn(content);
 
       if (turn) {
         // Play back the turn's events

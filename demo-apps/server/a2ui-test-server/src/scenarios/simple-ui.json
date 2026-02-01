@@ -127,7 +127,7 @@
                     "label": {
                       "literalString": "Name"
                     },
-                    "value": {
+                    "text": {
                       "path": "/form/name",
                       "literalString": ""
                     }
@@ -141,7 +141,7 @@
                     "label": {
                       "literalString": "Email"
                     },
-                    "value": {
+                    "text": {
                       "path": "/form/email",
                       "literalString": ""
                     }

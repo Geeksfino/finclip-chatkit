@@ -68,12 +68,9 @@
                     "label": {
                       "literalString": "Full Name"
                     },
-                    "value": {
+                    "text": {
                       "path": "/registration/name",
                       "literalString": ""
-                    },
-                    "placeholder": {
-                      "literalString": "Enter your name"
                     }
                   }
                 }
@@ -85,12 +82,9 @@
                     "label": {
                       "literalString": "Email Address"
                     },
-                    "value": {
+                    "text": {
                       "path": "/registration/email",
                       "literalString": ""
-                    },
-                    "placeholder": {
-                      "literalString": "example@email.com"
                     }
                   }
                 }

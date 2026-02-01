@@ -108,17 +108,42 @@ export interface ErrorMessage {
 export type ClientEventMessage = UserActionMessage | ErrorMessage;
 
 /**
- * Request input for agent
+ * A2A Message request format (client → server)
+ * Per https://a2ui.org/specification/v0.8-a2ui/ and A2A Extension
  */
-export interface A2UIRequest {
-  threadId: string;
-  runId: string;
+export interface A2AMessageRequest {
+  metadata?: {
+    a2uiClientCapabilities?: {
+      supportedCatalogIds?: string[];
+      inlineCatalogs?: unknown[];
+    };
+    surfaceId?: string;
+    threadId?: string;
+    runId?: string;
+  };
+  message: {
+    prompt: {
+      text: string;
+    };
+  };
+}
+
+/**
+ * Normalized agent input (internal, used by agents)
+ * Extracted from A2AMessageRequest
+ */
+export interface NormalizedAgentInput {
   message: string;
-  surfaceId?: string; // Optional: target surface ID
+  surfaceId: string;
   metadata?: {
     a2uiClientCapabilities?: {
       supportedCatalogIds?: string[];
       inlineCatalogs?: unknown[];
     };
   };
+  threadId?: string;
+  runId?: string;
 }
+
+/** @deprecated Use NormalizedAgentInput - kept for agent signatures */
+export type A2UIRequest = NormalizedAgentInput;

@@ -6,6 +6,7 @@ import { BaseAgent } from './base.js';
 import type { A2UIRequest, A2UIMessage } from '../types/a2ui.js';
 import type { Scenario, ScenarioTurn } from '../types/scenario.js';
 import { loadAllScenarios, getDefaultScenarioDir } from '../scenarios/index.js';
+import { selectCatalog } from '../constants/catalog.js';
 import { logger } from '../utils/logger.js';
 import { loadConfig } from '../utils/config.js';
 
@@ -36,11 +37,11 @@ export class ScenarioAgent extends BaseAgent {
 
     if (turn) {
       const targetSurfaceId = surfaceId || 'main';
-      
+      const catalogId = selectCatalog(input.metadata?.a2uiClientCapabilities);
+
       // Play back the turn's messages
       for (const msg of turn.messages) {
-        // Inject surfaceId if not present
-        const enrichedMessage = this.enrichMessage(msg, targetSurfaceId);
+        const enrichedMessage = this.enrichMessage(msg, targetSurfaceId, catalogId);
         yield enrichedMessage;
 
         // Add delay between messages for streaming effect
@@ -52,7 +53,8 @@ export class ScenarioAgent extends BaseAgent {
     } else {
       // No matching turn - send a default response
       const defaultSurfaceId = surfaceId || 'main';
-      
+      const catalogId = selectCatalog(input.metadata?.a2uiClientCapabilities);
+
       yield {
         surfaceUpdate: {
           surfaceId: defaultSurfaceId,
@@ -92,6 +94,7 @@ export class ScenarioAgent extends BaseAgent {
         beginRendering: {
           surfaceId: defaultSurfaceId,
           root: 'root',
+          catalogId,
         },
       };
     }
@@ -136,18 +139,19 @@ export class ScenarioAgent extends BaseAgent {
   }
 
   /**
-   * Enrich message with surfaceId if needed
-   * Always uses the provided surfaceId, overriding any existing surfaceId in the message
+   * Enrich message with surfaceId and catalogId (for beginRendering)
+   * Per A2UI v0.8: catalogId tells client which catalog to use; if omitted, client defaults to standard
    */
   private enrichMessage(
     message: A2UIMessage,
-    surfaceId: string
+    surfaceId: string,
+    catalogId: string
   ): A2UIMessage {
     if ('surfaceUpdate' in message) {
       return {
         surfaceUpdate: {
           ...message.surfaceUpdate,
-          surfaceId: surfaceId, // Always use provided surfaceId
+          surfaceId,
         },
       };
     }
@@ -156,7 +160,7 @@ export class ScenarioAgent extends BaseAgent {
       return {
         dataModelUpdate: {
           ...message.dataModelUpdate,
-          surfaceId: surfaceId, // Always use provided surfaceId
+          surfaceId,
         },
       };
     }
@@ -165,7 +169,8 @@ export class ScenarioAgent extends BaseAgent {
       return {
         beginRendering: {
           ...message.beginRendering,
-          surfaceId: surfaceId, // Always use provided surfaceId
+          surfaceId,
+          catalogId: message.beginRendering.catalogId ?? catalogId,
         },
       };
     }
@@ -174,7 +179,7 @@ export class ScenarioAgent extends BaseAgent {
       return {
         deleteSurface: {
           ...message.deleteSurface,
-          surfaceId: surfaceId, // Always use provided surfaceId
+          surfaceId,
         },
       };
     }
