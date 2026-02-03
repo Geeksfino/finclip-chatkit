@@ -37,12 +37,11 @@ export function registerHTMLTools(server: McpServer): void {
       color: white;
     }
     .card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      background: transparent;
       border-radius: 12px;
       padding: 24px;
       margin: 16px 0;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      box-shadow: none;
     }
     h1 {
       margin: 0 0 16px 0;

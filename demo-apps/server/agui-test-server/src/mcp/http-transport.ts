@@ -1,5 +1,10 @@
 /**
  * HTTP-based MCP Client Transport
+ *
+ * MCP over Streamable HTTP requires the first request to be "initialize" (no session ID).
+ * The server then returns mcp-session-id in the response header; all subsequent requests
+ * must include that header. This transport ensures we send initialize first when we don't
+ * yet have a session.
  */
 
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
@@ -7,8 +12,29 @@ import type { JSONRPCMessage, JSONRPCRequest } from '@modelcontextprotocol/sdk/t
 import { logger } from '../utils/logger.js';
 import { getErrorMessage } from '../utils/helpers.js';
 
+const PACKAGE_NAME = 'agui-test-server';
+const PACKAGE_VERSION = '1.0.0';
+
 function isJSONRPCRequest(message: JSONRPCMessage): message is JSONRPCRequest {
   return 'method' in message;
+}
+
+function isInitializeRequest(message: JSONRPCMessage): boolean {
+  return isJSONRPCRequest(message) && message.method === 'initialize';
+}
+
+/** Build the MCP initialize request (must be first request to establish session). */
+function buildInitializeRequest(): Record<string, unknown> {
+  return {
+    jsonrpc: '2.0',
+    id: 0,
+    method: 'initialize',
+    params: {
+      protocolVersion: '2024-11-05',
+      capabilities: {},
+      clientInfo: { name: PACKAGE_NAME, version: PACKAGE_VERSION },
+    },
+  };
 }
 
 export interface HTTPClientTransportConfig {
@@ -38,7 +64,45 @@ export class HTTPClientTransport implements Transport {
     logger.debug({ url: this.url }, 'MCP HTTP transport ready');
   }
 
+  /**
+   * Send the MCP initialize request (no mcp-session-id) and store the session ID from the response.
+   * Called automatically before the first non-initialize request when we don't have a session yet.
+   */
+  private async sendInitialize(): Promise<void> {
+    const body = buildInitializeRequest();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...this.headers,
+    };
+
+    logger.debug({ url: this.url }, 'Sending MCP initialize request to establish session');
+
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    const sessionId = response.headers.get('mcp-session-id');
+    if (sessionId) {
+      this._sessionId = sessionId;
+      logger.info({ sessionId }, 'MCP session established via HTTP (initialize)');
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+    }
+  }
+
   async send(message: JSONRPCMessage): Promise<void> {
+    // MCP Streamable HTTP: first request must be "initialize" (no mcp-session-id).
+    // If we don't have a session yet and this message is not initialize, send initialize first.
+    if (!this._sessionId && !isInitializeRequest(message)) {
+      await this.sendInitialize();
+    }
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json, text/event-stream',

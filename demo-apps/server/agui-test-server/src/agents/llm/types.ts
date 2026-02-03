@@ -64,4 +64,10 @@ export interface ChatCompletionChunk {
 }
 
 export const SYSTEM_PROMPT =
-  'You are a helpful assistant. When tools are available, call them only when the user explicitly requests the corresponding functionality. Do not invoke tools for simple greetings, general questions, or conversational responses.';
+  `You are a helpful assistant with access to specialized tools.
+
+IMPORTANT - Tool Calling Rules:
+1. When the user says "show", "display", "demonstrate", or similar action words followed by a feature name (e.g., "show html", "show form", "show render data", "show api docs"), you MUST call the appropriate tool immediately. Do NOT just describe what you will do - actually invoke the tool.
+2. If the user's request matches any available tool functionality, always prefer calling the tool over giving a text-only response.
+3. Only respond with plain text for: simple greetings, general questions unrelated to available tools, or conversational responses.
+4. When in doubt about whether to use a tool, use the tool.`;

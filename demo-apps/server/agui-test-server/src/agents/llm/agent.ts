@@ -139,6 +139,10 @@ export class LLMAgent extends BaseAgent {
       } as ToolCallResultEvent;
 
       for (const resource of uiResources) {
+        logger.debug(
+          { resourceUri: resource?.resource?.uri, hasText: !!(resource as any)?.resource?.text, hasBlob: !!(resource as any)?.resource?.blob },
+          'Emitting CUSTOM mcp-ui-resource event'
+        );
         yield {
           type: EventType.CUSTOM,
           name: CUSTOM_EVENT_NAMES.MCP_UI_RESOURCE,

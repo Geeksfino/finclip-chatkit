@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.finclip.chatkit.ChatKit
 import com.finclip.chatkit.ChatKitCoordinator
-import com.finclip.chatkit.compose.ChatKitChatView
+import com.finclip.chatkit.compose.ChatKitComposeChatView
 import com.finclip.chatkit.compose.ConnectionStatusBanner
 import com.finclip.chatkit.error.ChatKitError
 import com.finclip.chatkit.examples.settings.ChatKitHelper
@@ -142,13 +142,9 @@ fun ComposeExampleScreen(
                         )
                     }
                     conversationRecord != null -> {
-                        ChatKitChatView(
+                        ChatKitComposeChatView(
                             sessionId = conversationRecord!!.id,
-                            modifier = Modifier.fillMaxSize(),
-                            onMessageSent = { },
-                            onError = { error ->
-                                errorMessage = error.userMessage
-                            }
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }

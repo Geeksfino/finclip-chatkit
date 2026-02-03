@@ -1,6 +1,8 @@
 package com.finclip.chatkit.examples.mock
 
+import com.finclip.chatkit.context.ConversationContextItem
 import com.finclip.chatkit.model.Agent
+import com.finclip.neuronkit.convoui.ConvoUIAdapter
 import com.finclip.chatkit.model.ConversationItem
 import com.finclip.chatkit.model.Message
 import com.finclip.chatkit.runtime.Conversation
@@ -146,7 +148,8 @@ class MockConversation(
         "这是一个有趣的话题！让我分享一些想法...\n\n1. 首先，Mock 模式非常适合开发测试\n2. 其次，它不需要网络连接\n3. 最后，响应速度很快\n\n还有其他问题吗？"
     )
 
-    override suspend fun sendMessage(text: String) {
+    override suspend fun sendMessage(text: String, contextItems: List<ConversationContextItem>) {
+        // Mock mode ignores contextItems
         // Reset cancellation flag
         shouldCancelStreaming = false
         
@@ -203,7 +206,10 @@ class MockConversation(
                 runtime.updateMessage(sessionId, responseMessageId, fullResponse)
             }
         }
-        
+    }
+
+    override suspend fun sendMessage(text: String) {
+        sendMessage(text, emptyList())
     }
 
     private fun generateMockResponse(userInput: String): String {
@@ -240,6 +246,10 @@ class MockConversation(
     override fun cancelCurrentRun() {
         // Mock mode: Set cancellation flag to stop streaming
         shouldCancelStreaming = true
+    }
+
+    override fun bindUI(adapter: ConvoUIAdapter) {
+        // Mock mode: no MCP-UI resources to bind
     }
 
     override fun unbindUI() {}
