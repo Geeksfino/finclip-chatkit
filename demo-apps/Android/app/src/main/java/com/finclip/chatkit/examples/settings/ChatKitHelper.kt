@@ -30,13 +30,14 @@ object ChatKitHelper {
     ): ChatKitCoordinator {
         val serverUrl = AppSettings.serverUrl
         val userId = AppSettings.userId
+        val config = chatKitConfiguration ?: ChatKitConfiguration.defaultWithDemoContextPicker()
 
         return ChatKit.createCoordinator(
             context = context,
             serverURL = serverUrl,
             userId = userId,
             titleProvider = titleProvider,
-            chatKitConfiguration = chatKitConfiguration
+            chatKitConfiguration = config
         )
     }
 
@@ -46,11 +47,12 @@ object ChatKitHelper {
     ): ChatKitCoordinator {
         // Reuse or create MockRuntime
         val runtime = mockRuntime ?: MockRuntime().also { mockRuntime = it }
+        val config = chatKitConfiguration ?: ChatKitConfiguration.defaultWithDemoContextPicker()
 
         return ChatKit.createCoordinatorWithRuntime(
             customRuntime = runtime,
             titleProvider = titleProvider,
-            chatKitConfiguration = chatKitConfiguration
+            chatKitConfiguration = config
         )
     }
 
