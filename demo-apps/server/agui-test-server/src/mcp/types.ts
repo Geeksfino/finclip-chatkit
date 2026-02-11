@@ -10,6 +10,8 @@ export interface MCPClientConfig {
 
 export interface MCPTool {
   name: string;
+  /** Human-readable name for intent matching (e.g. "VIP客户开户表单"). When present, agui includes it in the tool description sent to the LLM. */
+  title?: string;
   description?: string;
   inputSchema?: Record<string, unknown>;
 }

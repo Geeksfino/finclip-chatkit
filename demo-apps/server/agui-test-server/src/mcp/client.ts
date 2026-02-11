@@ -68,14 +68,19 @@ export class MCPClientManager {
 
   getToolsAsOpenAIFormat(serverId: string): OpenAITool[] {
     const tools = this.toolsCache.get(serverId) || [];
-    return tools.map((tool) => ({
-      type: 'function' as const,
-      function: {
-        name: tool.name,
-        description: tool.description || `Tool: ${tool.name}`,
-        parameters: tool.inputSchema || {},
-      },
-    }));
+    return tools.map((tool) => {
+      const desc = tool.description || `Tool: ${tool.name}`;
+      const withTitle =
+        tool.title && !desc.startsWith(tool.title) ? `${tool.title}。${desc}` : desc;
+      return {
+        type: 'function' as const,
+        function: {
+          name: tool.name,
+          description: withTitle,
+          parameters: tool.inputSchema || {},
+        },
+      };
+    });
   }
 
   async callTool(

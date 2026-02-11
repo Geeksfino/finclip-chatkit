@@ -8,7 +8,7 @@ export function registerMetadataTools(server: McpServer): void {
     'showWithPreferredSize',
     {
       title: 'Show with Preferred Size',
-      description: 'Demonstrates preferred-frame-size metadata',
+      description: 'Show with Preferred Size. Demonstrates preferred-frame-size metadata.',
       inputSchema: {},
     },
     async () => {
@@ -64,7 +64,7 @@ export function registerMetadataTools(server: McpServer): void {
     'showWithRenderData',
     {
       title: 'Show with Render Data',
-      description: 'Demonstrates initial-render-data metadata',
+      description: 'Show with Render Data. Demonstrates initial-render-data metadata.',
       inputSchema: {},
     },
     async () => {

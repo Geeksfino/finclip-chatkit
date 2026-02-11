@@ -8,7 +8,7 @@ export function registerRemoteDOMTools(server: McpServer): void {
     'showRemoteDomButton',
     {
       title: 'Show Remote DOM Button',
-      description: 'Interactive button using Remote DOM',
+      description: 'Show Remote DOM Button. Interactive button using Remote DOM.',
       inputSchema: {},
     },
     async () => {
@@ -71,7 +71,7 @@ root.appendChild(container);
     'showRemoteDomForm',
     {
       title: 'Show Remote DOM Form',
-      description: 'Form with validation using Remote DOM',
+      description: 'Show Remote DOM Form. Form with validation using Remote DOM.',
       inputSchema: {},
     },
     async () => {

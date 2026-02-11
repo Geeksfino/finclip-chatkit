@@ -16,7 +16,7 @@ export function registerHTMLTools(server: McpServer): void {
     {
       title: 'Show Simple HTML',
       description:
-        'Displays basic HTML content with styling and interactive buttons. Use ONLY when the user explicitly asks to show or display HTML/UI. Do NOT use for general conversation or questions.',
+        'Show Simple HTML. Displays basic HTML content with styling and interactive buttons. Use when the user asks to show or display HTML/UI.',
       inputSchema: simpleHtmlInputSchema as any,
     },
     async (params: unknown) => {
@@ -129,7 +129,7 @@ export function registerHTMLTools(server: McpServer): void {
     {
       title: 'Show Raw HTML',
       description:
-        'Minimal raw HTML sample. Use ONLY when the user explicitly requests to display raw HTML. Do NOT use for general conversation.',
+        'Show Raw HTML. Minimal raw HTML sample. Use when the user requests to display raw HTML.',
       inputSchema: emptyInputSchema,
     },
     async (params) => {
@@ -152,7 +152,7 @@ export function registerHTMLTools(server: McpServer): void {
     {
       title: 'Show Interactive Form',
       description:
-        'Displays an interactive form with validation and async submission. Use ONLY when the user explicitly asks for a form or interactive UI. Do NOT use for general conversation.',
+        'Show Interactive Form. Displays an interactive form with validation and async submission. Use when the user asks for a form, 开户表单, or interactive UI (e.g. 打开表单, 打开开户表单).',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {
@@ -320,7 +320,7 @@ export function registerHTMLTools(server: McpServer): void {
     {
       title: 'Show Complex Layout',
       description:
-        'Displays a multi-column layout with images and styled content. Use ONLY when the user explicitly asks to show a layout, dashboard, or complex UI. Do NOT use for general conversation.',
+        'Show Complex Layout. Displays a multi-column layout with images and styled content. Use when the user asks to show a layout, dashboard, or complex UI.',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {

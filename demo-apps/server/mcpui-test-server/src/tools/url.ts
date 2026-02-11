@@ -15,7 +15,7 @@ export function registerURLTools(server: McpServer): void {
     'showExampleSite',
     {
       title: 'Show Example Site',
-      description: 'Displays example.com in an iframe',
+      description: 'Show Example Site. Displays example.com in an iframe.',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {
@@ -37,7 +37,7 @@ export function registerURLTools(server: McpServer): void {
     'showCustomUrl',
     {
       title: 'Show Custom URL',
-      description: 'Displays a custom URL provided by the user',
+      description: 'Show Custom URL. Displays a custom URL provided by the user.',
       inputSchema: customUrlInputSchema as any,
     },
     async (params: unknown) => {
@@ -64,7 +64,7 @@ export function registerURLTools(server: McpServer): void {
     'showApiDocs',
     {
       title: 'Show API Documentation',
-      description: 'Displays MCP-UI documentation',
+      description: 'Show API Documentation. Displays MCP-UI documentation.',
       inputSchema: emptyInputSchema,
     },
     async (params: unknown) => {

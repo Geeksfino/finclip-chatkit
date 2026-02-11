@@ -47,7 +47,7 @@ export class HTTPClientTransport implements Transport {
   private url: string;
   private headers: Record<string, string>;
   private timeout: number;
-  private _sessionId?: string;
+  private _sessionId: string | null = null;
   private abortController?: AbortController;
 
   onclose?: () => void;
@@ -84,10 +84,21 @@ export class HTTPClientTransport implements Transport {
       body: JSON.stringify(body),
     });
 
-    const sessionId = response.headers.get('mcp-session-id');
-    if (sessionId) {
-      this._sessionId = sessionId;
-      logger.info({ sessionId }, 'MCP session established via HTTP (initialize)');
+    let sessionId = response.headers.get('mcp-session-id') ?? response.headers.get('Mcp-Session-Id');
+    if (!sessionId && response.ok) {
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text) as { result?: { sessionId?: string }; sessionId?: string };
+        sessionId = data?.result?.sessionId ?? data?.sessionId ?? null;
+      } catch {
+        // ignore
+      }
+    }
+    const sid: string | null =
+      typeof sessionId === 'string' && sessionId !== '' ? sessionId : null;
+    if (sid) {
+      this._sessionId = sid;
+      logger.info({ sessionId: sid }, 'MCP session established via HTTP (initialize)');
     }
 
     if (!response.ok) {
@@ -135,10 +146,21 @@ export class HTTPClientTransport implements Transport {
 
       clearTimeout(timeoutId);
 
-      const sessionId = response.headers.get('mcp-session-id');
-      if (sessionId && !this._sessionId) {
-        this._sessionId = sessionId;
-        logger.info({ sessionId }, 'MCP session established via HTTP');
+      let sessionId = response.headers.get('mcp-session-id') ?? response.headers.get('Mcp-Session-Id');
+      if (!sessionId && !this._sessionId && response.ok) {
+        const rawText = await response.clone().text();
+        try {
+          const data = JSON.parse(rawText) as { result?: { sessionId?: string }; sessionId?: string };
+          sessionId = data?.result?.sessionId ?? data?.sessionId ?? null;
+        } catch {
+          // ignore
+        }
+      }
+      const sid: string | null =
+        typeof sessionId === 'string' && sessionId !== '' ? sessionId : null;
+      if (sid && !this._sessionId) {
+        this._sessionId = sid;
+        logger.info({ sessionId: sid }, 'MCP session established via HTTP');
       }
 
       if (!response.ok) {
@@ -159,6 +181,18 @@ export class HTTPClientTransport implements Transport {
         if (dataLines.length > 0) {
           const jsonString = dataLines.join('\n');
           responseData = JSON.parse(jsonString);
+          if (!this._sessionId) {
+            try {
+              const d = responseData as { result?: { sessionId?: string }; sessionId?: string };
+              const sid = d?.result?.sessionId ?? d?.sessionId;
+              if (sid) {
+                this._sessionId = sid;
+                logger.info({ sessionId: sid }, 'MCP session established via SSE response body');
+              }
+            } catch {
+              // ignore
+            }
+          }
         } else if (text.trim() === '') {
           return;
         } else {
@@ -203,7 +237,7 @@ export class HTTPClientTransport implements Transport {
       } catch {
         // ignore
       }
-      this._sessionId = undefined;
+      this._sessionId = null;
     }
 
     if (this.onclose) {

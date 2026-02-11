@@ -14,7 +14,7 @@ export function registerAsyncTools(server: McpServer): void {
     'showAsyncToolCall',
     {
       title: 'Show Async Tool Call',
-      description: 'Demonstrates async message protocol with message IDs',
+      description: 'Show Async Tool Call. Demonstrates async message protocol with message IDs.',
       inputSchema: {},
     },
     async () => {
@@ -132,7 +132,7 @@ export function registerAsyncTools(server: McpServer): void {
     'processAsyncRequest',
     {
       title: 'Process Async Request',
-      description: 'Handles async tool call demo requests and returns processed data',
+      description: 'Process Async Request. Handles async tool call demo requests and returns processed data.',
       inputSchema: asyncRequestInputShape as any,
     },
     async (params: unknown) => {
