@@ -14,15 +14,34 @@ import type {
   OpenAITool,
 } from './types.js';
 
+/** Errors that may be fixed by reconnecting (e.g. session invalid, connection lost). */
+function isRecoverableMCPError(error: unknown): boolean {
+  const msg = getErrorMessage(error).toLowerCase();
+  return (
+    msg.includes('session') ||
+    msg.includes('bad request') ||
+    msg.includes('400') ||
+    msg.includes('401') ||
+    msg.includes('403') ||
+    msg.includes('404') ||
+    msg.includes('econnrefused') ||
+    msg.includes('econnreset') ||
+    msg.includes('fetch failed') ||
+    msg.includes('network')
+  );
+}
+
 export class MCPClientManager {
   private clients: Map<string, Client> = new Map();
   private toolsCache: Map<string, MCPTool[]> = new Map();
+  private configs: Map<string, MCPClientConfig> = new Map();
 
   async connect(serverId: string, config: MCPClientConfig): Promise<void> {
     if (this.clients.has(serverId)) {
       return;
     }
 
+    this.configs.set(serverId, config);
     try {
       const transport = new HTTPClientTransport({
         url: config.url,
@@ -86,19 +105,36 @@ export class MCPClientManager {
   async callTool(
     serverId: string,
     toolName: string,
-    args: Record<string, unknown>
+    args: Record<string, unknown>,
+    retried = false
   ): Promise<MCPToolCallResult> {
     const client = this.clients.get(serverId);
     if (!client) {
       throw new Error(`MCP client not connected: ${serverId}`);
     }
 
-    const result = await client.callTool({
-      name: toolName,
-      arguments: args,
-    });
-
-    return result as MCPToolCallResult;
+    try {
+      const result = await client.callTool({
+        name: toolName,
+        arguments: args,
+      });
+      return result as MCPToolCallResult;
+    } catch (error) {
+      if (retried || !isRecoverableMCPError(error)) {
+        throw error;
+      }
+      logger.warn(
+        { serverId, toolName, error: getErrorMessage(error) },
+        'MCP tool call failed, reconnecting and retrying once'
+      );
+      await this.disconnect(serverId);
+      const config = this.configs.get(serverId);
+      if (!config) {
+        throw error;
+      }
+      await this.connect(serverId, config);
+      return this.callTool(serverId, toolName, args, true);
+    }
   }
 
   isConnected(serverId: string): boolean {
@@ -111,10 +147,11 @@ export class MCPClientManager {
 
     try {
       await client.close();
-      this.clients.delete(serverId);
-      this.toolsCache.delete(serverId);
     } catch (error) {
       logger.error({ serverId }, 'Error disconnecting MCP client');
+    } finally {
+      this.clients.delete(serverId);
+      this.toolsCache.delete(serverId);
     }
   }
 }
