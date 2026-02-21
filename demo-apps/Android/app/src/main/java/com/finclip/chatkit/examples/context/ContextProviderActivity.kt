@@ -170,7 +170,7 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
             _timestamp = Date(),
             isLoading = false,
         ).apply {
-            setContent(welcomeText, this@ContextProviderActivity)
+            setContent(welcomeText)
         }
         // 使用 ConvoUIChatView API
         chatView.displayMessage(welcomeModel)
@@ -335,7 +335,7 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
                                 _timestamp = msg.timestamp,
                                 isLoading = false,
                             ).apply {
-                                setContent(msg.content, this@ContextProviderActivity)
+                                setContent(msg.content)
                             }
                         }
 
@@ -359,10 +359,10 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
                                 isLoading = true  // Still streaming
                             ).apply {
                                 if (recordedLength == 0 && fullText.isNotEmpty()) {
-                                    setContent(fullText, this@ContextProviderActivity)
+                                    setContent(fullText)
                                 } else {
                                     val currentContent = existingModel.markdownContent
-                                    setContent(currentContent, this@ContextProviderActivity)
+                                    setContent(currentContent)
                                     val delta = fullText.substring(recordedLength)
                                     appendDelta(delta)
                                 }
@@ -389,7 +389,7 @@ class ContextProviderActivity : AppCompatActivity(), FinConvoChatViewDelegate {
                                 _timestamp = existingModel.timestamp ?: Date(),
                                 isLoading = false
                             ).apply {
-                                setContent(fullText, this@ContextProviderActivity)
+                                setContent(fullText)
                             }
                             chatView.replaceOrUpdateMessage(msgId, updatedModel)
                             messageMap[msgId] = updatedModel

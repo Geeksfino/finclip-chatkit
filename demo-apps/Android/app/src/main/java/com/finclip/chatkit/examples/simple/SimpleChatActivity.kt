@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.finclip.chatkit.ChatKitConfiguration
+import com.finclip.chatkit.ChatHeaderVisibility
 import com.finclip.chatkit.examples.MainActivity
 import com.finclip.chatkit.examples.R
 import com.finclip.chatkit.examples.settings.ChatKitHelper
@@ -28,9 +30,15 @@ class SimpleChatActivity : AppCompatActivity() {
     }
 
     private fun initChatKit() {
-        // Both Mock and Server modes use the same ChatFragment (ConvoUI)
-        // The difference is only in the data source (MockRuntime vs RealNeuronRuntime)
-        val coordinator = ChatKitHelper.createCoordinator(this)
+        val config = ChatKitConfiguration.default().copy(
+            headerVisibility = ChatHeaderVisibility(
+                showMenuButton = true,
+                showAddButton = true,
+                showSupportButton = false,
+            ),
+            composerContextProvider = null,
+        )
+        val coordinator = ChatKitHelper.createCoordinator(this, config)
 
         lifecycleScope.launch {
             try {
