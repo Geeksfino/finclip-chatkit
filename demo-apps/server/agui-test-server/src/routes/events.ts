@@ -65,16 +65,18 @@ export const eventsRoute: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    // Set up heartbeat interval to keep connection alive
+    const heartbeatMs = process.env.HEARTBEAT_INTERVAL_MS
+      ? parseInt(process.env.HEARTBEAT_INTERVAL_MS, 10) || config.sseHeartbeatMs
+      : config.sseHeartbeatMs;
+
     const heartbeatInterval = setInterval(() => {
       try {
         reply.raw.write(SSEEncoder.comment('heartbeat'));
       } catch (error) {
-        // Connection closed, stop heartbeat
         clearInterval(heartbeatInterval);
         sseConnectionManager.unregister(sessionId);
       }
-    }, config.sseHeartbeatMs);
+    }, heartbeatMs);
 
     // Handle connection close
     request.raw.on('close', () => {

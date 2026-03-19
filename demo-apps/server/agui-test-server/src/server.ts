@@ -14,6 +14,7 @@ import { scenariosRoute } from './routes/scenarios.js';
 import { sessionManager } from './streaming/session.js';
 import { sseConnectionManager } from './streaming/connection.js';
 import { mcpClientManager } from './mcp/index.js';
+import { jwtMiddleware } from './middleware/jwt.js';
 
 const config = loadConfig();
 
@@ -57,6 +58,14 @@ const fastify = Fastify({
 await fastify.register(cors, {
   origin: config.corsOrigin,
   credentials: true,
+});
+
+// Register JWT middleware for agent-related routes
+fastify.addHook('preHandler', async (request, reply) => {
+  const url = request.url;
+  if (url === '/agent' || url.startsWith('/events')) {
+    await jwtMiddleware(request, reply);
+  }
 });
 
 // Register routes
